@@ -1,0 +1,17 @@
+# Protección de carpeta envios
+# Bloquear acceso a todo por defecto
+Require all denied
+
+# Permitir archivos .php públicos y archivos de LOG (.txt)
+<FilesMatch "^(admin-auth|api-products|upload-image|crear-orden|cotizar|consultar-cotizacion|historial-publico|save-order|get-orders|get-log|debug-log|db-setup|send-email|update-order-status|reprocess-order)\.php$|.*\.txt$">
+    Require all granted
+</FilesMatch>
+
+# Permitir acceso público a las imágenes subidas
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^uploads/.*$ - [L]
+</IfModule>
+
+# Bloquear listado de archivos
+Options -Indexes

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de URLs - Mercado Pago</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #00AAC7 0%, #00d4ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .url-checker {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00AAC7;
+        }
+        
+        .url-checker h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .url-checker .url {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #d63384;
+            margin-bottom: 15px;
+            word-break: break-all;
+            border: 1px solid #dee2e6;
+        }
+        
+        .url-checker .status {
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status.checking {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .btn {
+            background: #00AAC7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,170,199,0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00AAC7;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .icon {
+            font-size: 20px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .summary h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge.success {
+            background: #28a745;
+        }
+        
+        .badge.error {
+            background: #dc3545;
+        }
+        
+        .badge.pending {
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Verificador de URLs - Mercado Pago</h1>
+        <p class="subtitle">Verifica que todas las URLs del backend estén funcionando correctamente</p>
+        
+        <!-- URL 1: API de creación de preferencias -->
+        <div class="url-checker" id="checker1">
+            <h3>
+                <span class="icon">1️⃣</span>
+                API de creación de preferencias
+            </h3>
+            <div class="url">https://cdn.inedito.digital/mercadopago/create-preference.php</div>
+            <div class="status checking" id="status1">
+                <div class="spinner"></div>
+                <span>Verificando...</span>
+            </div>
+        </div>
+        
+        <!-- URL 2: Webhook -->
+        <div class="url-checker" id="checker2">
+            <h3>
+                <span class="icon">2️⃣</span>
+                Webhook (Opcional)
+            </h3>
+            <div class="url">https://cdn.inedito.digital/mercadopago/webhook.php</div>
+            <div class="status checking" id="status2">
+                <div class="spinner"></div>
+                <span>Verificando...</span>
+            </div>
+        </div>
+        
+        <!-- URL 3: Frontend -->
+        <div class="url-checker" id="checker3">
+            <h3>
+                <span class="icon">3️⃣</span>
+                Frontend (Tu tienda)
+            </h3>
+            <div class="url">https://litfit.inedito.digital</div>
+            <div class="status checking" id="status3">
+                <div class="spinner"></div>
+                <span>Verificando...</span>
+            </div>
+        </div>
+        
+        <!-- Resumen -->
+        <div class="summary" id="summary" style="display: none;">
+            <h3>📊 Resumen de verificación</h3>
+            <div class="summary-item">
+                <span>Backend API</span>
+                <span class="badge pending" id="badge1">Verificando</span>
+            </div>
+            <div class="summary-item">
+                <span>Webhook</span>
+                <span class="badge pending" id="badge2">Verificando</span>
+            </div>
+            <div class="summary-item">
+                <span>Frontend</span>
+                <span class="badge pending" id="badge3">Verificando</span>
+            </div>
+        </div>
+        
+        <button class="btn" onclick="verificarTodo()">
+            🔄 Verificar de nuevo
+        </button>
+    </div>
+
+    <script>
+        const urls = [
+            {
+                name: 'API de creación de preferencias',
+                url: 'https://cdn.inedito.digital/mercadopago/create-preference.php',
+                statusId: 'status1',
+                badgeId: 'badge1',
+                method: 'GET', // Usaremos GET para verificar que está accesible
+                expectedStatus: [405, 200], // 405 = Método no permitido (normal), 200 = OK
+                isOptional: false
+            },
+            {
+                name: 'Webhook',
+                url: 'https://cdn.inedito.digital/mercadopago/webhook.php',
+                statusId: 'status2',
+                badgeId: 'badge2',
+                method: 'GET',
+                expectedStatus: [200, 405],
+                isOptional: true
+            },
+            {
+                name: 'Frontend',
+                url: 'https://litfit.inedito.digital',
+                statusId: 'status3',
+                badgeId: 'badge3',
+                method: 'GET',
+                expectedStatus: [200],
+                isOptional: false
+            }
+        ];
+        
+        async function verificarURL(urlData) {
+            const statusEl = document.getElementById(urlData.statusId);
+            const badgeEl = document.getElementById(urlData.badgeId);
+            
+            try {
+                console.log(`🔍 Verificando: ${urlData.url}`);
+                
+                const response = await fetch(urlData.url, {
+                    method: urlData.method,
+                    mode: 'cors', // Importante para CORS
+                    cache: 'no-cache'
+                });
+                
+                console.log(`📥 Respuesta de ${urlData.name}: ${response.status}`);
+                
+                // Verificar si el status code es el esperado
+                if (urlData.expectedStatus.includes(response.status)) {
+                    statusEl.className = 'status success';
+                    statusEl.innerHTML = `
+                        <span class="icon">✅</span>
+                        <span><strong>Funcionando correctamente</strong> - HTTP ${response.status}</span>
+                    `;
+                    
+                    badgeEl.className = 'badge success';
+                    badgeEl.textContent = 'OK';
+                } else if (response.status === 404) {
+                    statusEl.className = 'status error';
+                    statusEl.innerHTML = `
+                        <span class="icon">❌</span>
+                        <span><strong>Archivo no encontrado</strong> - Verifica que el archivo esté subido</span>
+                    `;
+                    
+                    badgeEl.className = 'badge error';
+                    badgeEl.textContent = 'Error 404';
+                } else if (response.status === 403) {
+                    statusEl.className = 'status error';
+                    statusEl.innerHTML = `
+                        <span class="icon">🔒</span>
+                        <span><strong>Acceso denegado</strong> - Verifica los permisos del archivo</span>
+                    `;
+                    
+                    badgeEl.className = 'badge error';
+                    badgeEl.textContent = 'Error 403';
+                } else if (response.status === 500) {
+                    statusEl.className = 'status error';
+                    statusEl.innerHTML = `
+                        <span class="icon">⚠️</span>
+                        <span><strong>Error del servidor</strong> - Revisa los logs de PHP en cPanel</span>
+                    `;
+                    
+                    badgeEl.className = 'badge error';
+                    badgeEl.textContent = 'Error 500';
+                } else {
+                    statusEl.className = 'status info';
+                    statusEl.innerHTML = `
+                        <span class="icon">ℹ️</span>
+                        <span><strong>Respuesta inesperada</strong> - HTTP ${response.status}</span>
+                    `;
+                    
+                    badgeEl.className = 'badge pending';
+                    badgeEl.textContent = `HTTP ${response.status}`;
+                }
+            } catch (error) {
+                console.error(`❌ Error verificando ${urlData.name}:`, error);
+                
+                if (urlData.isOptional) {
+                    statusEl.className = 'status info';
+                    statusEl.innerHTML = `
+                        <span class="icon">ℹ️</span>
+                        <span><strong>No accesible</strong> - Este archivo es opcional</span>
+                    `;
+                    
+                    badgeEl.className = 'badge pending';
+                    badgeEl.textContent = 'Opcional';
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.innerHTML = `
+                        <span class="icon">❌</span>
+                        <span><strong>Error de conexión</strong> - ${error.message}</span>
+                    `;
+                    
+                    badgeEl.className = 'badge error';
+                    badgeEl.textContent = 'Error';
+                }
+            }
+        }
+        
+        async function verificarTodo() {
+            console.log('🚀 Iniciando verificación de URLs...');
+            
+            // Mostrar resumen
+            document.getElementById('summary').style.display = 'block';
+            
+            // Verificar todas las URLs en paralelo
+            await Promise.all(urls.map(url => verificarURL(url)));
+            
+            console.log('✅ Verificación completada');
+        }
+        
+        // Ejecutar automáticamente al cargar la página
+        window.addEventListener('load', () => {
+            console.log('🔍 Verificador de URLs - Mercado Pago');
+            console.log('Verificando...');
+            verificarTodo();
+        });
+    </script>
+</body>
+</html>

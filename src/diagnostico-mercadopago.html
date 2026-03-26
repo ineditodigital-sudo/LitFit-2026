@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Mercado Pago - LITFIT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00AAC7;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .result {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .result.success {
+            border-left: 4px solid #28a745;
+            background: #d4edda;
+        }
+        
+        .result.error {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+        }
+        
+        .result.info {
+            border-left: 4px solid #17a2b8;
+            background: #d1ecf1;
+        }
+        
+        .btn {
+            background: #00AAC7;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-badge.success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-badge.error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .status-badge.pending {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00AAC7;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico de Mercado Pago</h1>
+        <p class="subtitle">Herramienta de diagnóstico completa para verificar la configuración</p>
+        
+        <div id="mainStatus"></div>
+        
+        <!-- Test 1: Verificar acceso a la URL -->
+        <div class="test-section">
+            <h3>
+                1️⃣ Verificar acceso al backend
+                <span id="status1" class="status-badge pending">Esperando</span>
+            </h3>
+            <p>URL: <code>https://cdn.inedito.digital/mercadopago/create-preference.php</code></p>
+            <button class="btn btn-small" onclick="testBackendAccess()">🔍 Probar acceso</button>
+            <div id="result1"></div>
+        </div>
+        
+        <!-- Test 2: Verificar CORS -->
+        <div class="test-section">
+            <h3>
+                2️⃣ Verificar configuración CORS
+                <span id="status2" class="status-badge pending">Esperando</span>
+            </h3>
+            <p>Verificar si el servidor permite peticiones desde litfit.inedito.digital</p>
+            <button class="btn btn-small" onclick="testCORS()">🔍 Probar CORS</button>
+            <div id="result2"></div>
+        </div>
+        
+        <!-- Test 3: Prueba completa de creación de preferencia -->
+        <div class="test-section">
+            <h3>
+                3️⃣ Prueba completa de creación de preferencia
+                <span id="status3" class="status-badge pending">Esperando</span>
+            </h3>
+            <p>Simular una compra real para verificar que el backend crea la preferencia correctamente</p>
+            <button class="btn btn-small" onclick="testFullPayment()">🔍 Probar pago completo</button>
+            <div id="result3"></div>
+        </div>
+        
+        <!-- Test 4: Verificar credenciales -->
+        <div class="test-section">
+            <h3>
+                4️⃣ Información de configuración
+                <span id="status4" class="status-badge pending">Info</span>
+            </h3>
+            <p>Credenciales esperadas (modo TEST):</p>
+            <div class="code-block">
+Public Key: TEST-cec7b3b0-43d7-4e14-bf86-0031029e83d5
+Access Token: TEST-2656381259343864-040222-1cd4c8ea4d69b0c72788a643b1b74915-198666053
+            </div>
+            <div id="result4"></div>
+        </div>
+        
+        <!-- Resumen final -->
+        <div id="finalSummary"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://cdn.inedito.digital/mercadopago/create-preference.php';
+        let testResults = {
+            access: false,
+            cors: false,
+            payment: false
+        };
+        
+        // Test 1: Verificar acceso al backend
+        async function testBackendAccess() {
+            const statusEl = document.getElementById('status1');
+            const resultEl = document.getElementById('result1');
+            
+            statusEl.className = 'status-badge pending';
+            statusEl.textContent = 'Probando...';
+            
+            resultEl.innerHTML = '<div class="result info">⏳ Verificando acceso al servidor...</div>';
+            
+            try {
+                console.log('🔍 Test 1: Verificando acceso a:', API_URL);
+                
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                console.log('📥 Respuesta:', response.status, response.statusText);
+                
+                const contentType = response.headers.get('content-type');
+                console.log('📄 Content-Type:', contentType);
+                
+                let resultHtml = '<div class="result ';
+                
+                if (response.status === 405) {
+                    // Método no permitido - esto es BUENO, significa que el archivo existe
+                    statusEl.className = 'status-badge success';
+                    statusEl.textContent = '✅ OK';
+                    testResults.access = true;
+                    
+                    resultHtml += 'success">✅ Backend ACCESIBLE\n\n';
+                    resultHtml += `HTTP Status: ${response.status} (Método no permitido)\n`;
+                    resultHtml += 'Content-Type: ' + contentType + '\n\n';
+                    resultHtml += '✅ Esto es CORRECTO - El archivo existe y responde\n';
+                    resultHtml += '✅ Rechaza GET y solo acepta POST (comportamiento esperado)';
+                    
+                } else if (response.status === 200) {
+                    statusEl.className = 'status-badge success';
+                    statusEl.textContent = '✅ OK';
+                    testResults.access = true;
+                    
+                    const text = await response.text();
+                    resultHtml += 'success">✅ Backend ACCESIBLE\n\n';
+                    resultHtml += `HTTP Status: ${response.status}\n`;
+                    resultHtml += 'Content-Type: ' + contentType + '\n\n';
+                    resultHtml += 'Respuesta:\n' + text.substring(0, 500);
+                    
+                } else if (response.status === 404) {
+                    statusEl.className = 'status-badge error';
+                    statusEl.textContent = '❌ Error';
+                    testResults.access = false;
+                    
+                    resultHtml += 'error">❌ ARCHIVO NO ENCONTRADO (404)\n\n';
+                    resultHtml += '🔧 SOLUCIÓN:\n';
+                    resultHtml += '1. Verifica que el archivo esté en: /home/inedito/public_html/cdn/mercadopago/create-preference.php\n';
+                    resultHtml += '2. Asegúrate de haber creado la carpeta "mercadopago" dentro de "cdn"\n';
+                    resultHtml += '3. Verifica que el nombre del archivo sea exactamente: create-preference.php';
+                    
+                } else if (response.status === 403) {
+                    statusEl.className = 'status-badge error';
+                    statusEl.textContent = '❌ Error';
+                    testResults.access = false;
+                    
+                    resultHtml += 'error">❌ ACCESO DENEGADO (403)\n\n';
+                    resultHtml += '🔧 SOLUCIÓN:\n';
+                    resultHtml += '1. Verifica los permisos del archivo (deben ser 644)\n';
+                    resultHtml += '2. En cPanel, haz clic derecho en el archivo → Permissions → 644';
+                    
+                } else {
+                    statusEl.className = 'status-badge error';
+                    statusEl.textContent = '⚠️ Inesperado';
+                    
+                    resultHtml += 'info">⚠️ Respuesta inesperada\n\n';
+                    resultHtml += `HTTP Status: ${response.status}\n`;
+                    resultHtml += 'Content-Type: ' + contentType;
+                }
+                
+                resultHtml += '</div>';
+                resultEl.innerHTML = resultHtml;
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                statusEl.className = 'status-badge error';
+                statusEl.textContent = '❌ Error';
+                testResults.access = false;
+                
+                let errorMsg = '<div class="result error">❌ ERROR DE CONEXIÓN\n\n';
+                errorMsg += `Error: ${error.message}\n\n`;
+                errorMsg += '🔧 POSIBLES CAUSAS:\n';
+                errorMsg += '1. El archivo no está subido a cPanel\n';
+                errorMsg += '2. La carpeta "mercadopago" no existe\n';
+                errorMsg += '3. La ruta es incorrecta\n';
+                errorMsg += '4. El servidor está caído\n\n';
+                errorMsg += '💡 SOLUCIÓN:\n';
+                errorMsg += 'Verifica que el archivo esté en:\n';
+                errorMsg += '/home/inedito/public_html/cdn/mercadopago/create-preference.php';
+                errorMsg += '</div>';
+                
+                resultEl.innerHTML = errorMsg;
+            }
+            
+            updateFinalSummary();
+        }
+        
+        // Test 2: Verificar CORS
+        async function testCORS() {
+            const statusEl = document.getElementById('status2');
+            const resultEl = document.getElementById('result2');
+            
+            statusEl.className = 'status-badge pending';
+            statusEl.textContent = 'Probando...';
+            
+            resultEl.innerHTML = '<div class="result info">⏳ Verificando CORS...</div>';
+            
+            try {
+                console.log('🔍 Test 2: Verificando CORS');
+                
+                const response = await fetch(API_URL, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'https://litfit.inedito.digital',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                const allowOrigin = response.headers.get('Access-Control-Allow-Origin');
+                const allowMethods = response.headers.get('Access-Control-Allow-Methods');
+                const allowHeaders = response.headers.get('Access-Control-Allow-Headers');
+                
+                console.log('CORS Headers:');
+                console.log('  Allow-Origin:', allowOrigin);
+                console.log('  Allow-Methods:', allowMethods);
+                console.log('  Allow-Headers:', allowHeaders);
+                
+                let resultHtml = '<div class="result ';
+                
+                if (allowOrigin && allowOrigin.includes('litfit.inedito.digital')) {
+                    statusEl.className = 'status-badge success';
+                    statusEl.textContent = '✅ OK';
+                    testResults.cors = true;
+                    
+                    resultHtml += 'success">✅ CORS CONFIGURADO CORRECTAMENTE\n\n';
+                    resultHtml += 'Access-Control-Allow-Origin: ' + allowOrigin + '\n';
+                    resultHtml += 'Access-Control-Allow-Methods: ' + (allowMethods || 'POST, OPTIONS') + '\n';
+                    resultHtml += 'Access-Control-Allow-Headers: ' + (allowHeaders || 'Content-Type') + '\n\n';
+                    resultHtml += '✅ El servidor permite peticiones desde litfit.inedito.digital';
+                    
+                } else {
+                    statusEl.className = 'status-badge error';
+                    statusEl.textContent = '❌ Error';
+                    testResults.cors = false;
+                    
+                    resultHtml += 'error">❌ CORS MAL CONFIGURADO\n\n';
+                    resultHtml += 'Se esperaba: Access-Control-Allow-Origin: https://litfit.inedito.digital\n';
+                    resultHtml += 'Se recibió: ' + (allowOrigin || 'NINGUNO') + '\n\n';
+                    resultHtml += '🔧 SOLUCIÓN:\n';
+                    resultHtml += 'Verifica que el archivo create-preference.php tenga estas líneas al inicio:\n\n';
+                    resultHtml += "header('Access-Control-Allow-Origin: https://litfit.inedito.digital');\n";
+                    resultHtml += "header('Access-Control-Allow-Methods: POST, OPTIONS');\n";
+                    resultHtml += "header('Access-Control-Allow-Headers: Content-Type');";
+                }
+                
+                resultHtml += '</div>';
+                resultEl.innerHTML = resultHtml;
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                statusEl.className = 'status-badge error';
+                statusEl.textContent = '❌ Error';
+                testResults.cors = false;
+                
+                resultEl.innerHTML = '<div class="result error">❌ Error al verificar CORS: ' + error.message + '</div>';
+            }
+            
+            updateFinalSummary();
+        }
+        
+        // Test 3: Prueba completa de pago
+        async function testFullPayment() {
+            const statusEl = document.getElementById('status3');
+            const resultEl = document.getElementById('result3');
+            
+            statusEl.className = 'status-badge pending';
+            statusEl.textContent = 'Probando...';
+            
+            resultEl.innerHTML = '<div class="result info">⏳ Creando preferencia de pago de prueba...</div>';
+            
+            // Datos de prueba
+            const testData = {
+                items: [
+                    {
+                        name: 'Proteína ISO LITFIT',
+                        variant: 'Chocolate',
+                        size: '1kg',
+                        price: 500,
+                        quantity: 1
+                    }
+                ],
+                formData: {
+                    firstName: 'Test',
+                    lastName: 'Usuario',
+                    email: 'test@litfit.com',
+                    phone: '5555555555',
+                    street: 'Calle Test 123',
+                    colonia: 'Centro',
+                    city: 'Monterrey',
+                    state: 'Nuevo León',
+                    zipCode: '64000',
+                    country: 'México'
+                },
+                totalPrice: 500,
+                shippingCost: 0,
+                total: 500,
+                orderId: 'TEST-' + Date.now()
+            };
+            
+            try {
+                console.log('🔍 Test 3: Creando preferencia de pago');
+                console.log('📦 Datos:', testData);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                console.log('📥 Respuesta:', response.status);
+                
+                const data = await response.json();
+                console.log('📦 Datos recibidos:', data);
+                
+                let resultHtml = '<div class="result ';
+                
+                if (data.success && data.checkoutUrl) {
+                    statusEl.className = 'status-badge success';
+                    statusEl.textContent = '✅ OK';
+                    testResults.payment = true;
+                    
+                    resultHtml += 'success">✅ PREFERENCIA CREADA EXITOSAMENTE\n\n';
+                    resultHtml += 'Preference ID: ' + (data.preferenceId || 'N/A') + '\n';
+                    resultHtml += 'Order ID: ' + (data.orderId || 'N/A') + '\n';
+                    resultHtml += 'Checkout URL: ' + data.checkoutUrl.substring(0, 100) + '...\n\n';
+                    resultHtml += '✅ El backend de Mercado Pago está funcionando PERFECTAMENTE\n';
+                    resultHtml += '✅ Las credenciales son válidas\n';
+                    resultHtml += '✅ La API de Mercado Pago responde correctamente\n\n';
+                    resultHtml += '🎉 ¡TODO ESTÁ LISTO PARA ACEPTAR PAGOS!';
+                    
+                } else {
+                    statusEl.className = 'status-badge error';
+                    statusEl.textContent = '❌ Error';
+                    testResults.payment = false;
+                    
+                    resultHtml += 'error">❌ ERROR AL CREAR PREFERENCIA\n\n';
+                    resultHtml += 'Respuesta del servidor:\n';
+                    resultHtml += JSON.stringify(data, null, 2) + '\n\n';
+                    resultHtml += '🔧 POSIBLES CAUSAS:\n';
+                    resultHtml += '1. Credenciales de Mercado Pago incorrectas\n';
+                    resultHtml += '2. Error en el archivo mercadopago-config.php\n';
+                    resultHtml += '3. El Access Token no es válido\n\n';
+                    resultHtml += '💡 VERIFICA:\n';
+                    resultHtml += 'Que el archivo mercadopago-config.php tenga:\n';
+                    resultHtml += "define('MP_ACCESS_TOKEN', 'TEST-2656381259343864-040222-...');\n";
+                    resultHtml += "define('MP_PUBLIC_KEY', 'TEST-cec7b3b0-43d7-4e14-bf86-...');";
+                }
+                
+                resultHtml += '</div>';
+                resultEl.innerHTML = resultHtml;
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                statusEl.className = 'status-badge error';
+                statusEl.textContent = '❌ Error';
+                testResults.payment = false;
+                
+                let errorMsg = '<div class="result error">❌ ERROR DE CONEXIÓN\n\n';
+                errorMsg += `Error: ${error.message}\n\n`;
+                errorMsg += '🔧 VERIFICA:\n';
+                errorMsg += '1. Que los archivos PHP estén subidos correctamente\n';
+                errorMsg += '2. Que el CORS esté configurado\n';
+                errorMsg += '3. Que no haya errores de sintaxis en el PHP';
+                errorMsg += '</div>';
+                
+                resultEl.innerHTML = errorMsg;
+            }
+            
+            updateFinalSummary();
+        }
+        
+        // Actualizar resumen final
+        function updateFinalSummary() {
+            const summaryEl = document.getElementById('finalSummary');
+            const statusEl = document.getElementById('mainStatus');
+            
+            const allPassed = testResults.access && testResults.cors && testResults.payment;
+            const somePassed = testResults.access || testResults.cors || testResults.payment;
+            
+            if (allPassed) {
+                statusEl.innerHTML = '<div class="alert success"><strong>✅ TODO ESTÁ FUNCIONANDO PERFECTAMENTE</strong><br>Mercado Pago está listo para aceptar pagos reales.</div>';
+            } else if (somePassed) {
+                statusEl.innerHTML = '<div class="alert warning"><strong>⚠️ ALGUNOS TESTS PASARON</strong><br>Revisa los resultados de cada test para ver qué falta configurar.</div>';
+            } else {
+                statusEl.innerHTML = '<div class="alert error"><strong>❌ HAY PROBLEMAS DE CONFIGURACIÓN</strong><br>Revisa cada test para ver qué está fallando.</div>';
+            }
+            
+            let summary = '<div class="test-section"><h3>📊 Resumen Final</h3>';
+            summary += '<p>Estado de cada componente:</p>';
+            summary += '<ul style="margin-left: 20px; margin-top: 10px;">';
+            summary += '<li>Acceso al backend: ' + (testResults.access ? '✅ OK' : '❌ Fallo') + '</li>';
+            summary += '<li>Configuración CORS: ' + (testResults.cors ? '✅ OK' : '❌ Fallo') + '</li>';
+            summary += '<li>Creación de preferencias: ' + (testResults.payment ? '✅ OK' : '❌ Fallo') + '</li>';
+            summary += '</ul></div>';
+            
+            summaryEl.innerHTML = summary;
+        }
+        
+        // Auto-ejecutar test de acceso al cargar
+        window.addEventListener('load', () => {
+            console.log('🔍 Diagnóstico de Mercado Pago - LITFIT');
+            console.log('Iniciando pruebas automáticas...');
+            setTimeout(() => testBackendAccess(), 500);
+        });
+    </script>
+</body>
+</html>

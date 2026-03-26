@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API DIRECTA - enviosinternacionales.com</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #dc3545;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 30px;
+            border-radius: 4px;
+        }
+        
+        .warning strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .warning p {
+            color: #856404;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.3);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .log-entry {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .log-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .log-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .log-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin: 10px 0;
+            max-height: 400px;
+        }
+        
+        .credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .credentials code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Test API DIRECTA</h1>
+            <p>Prueba directa a enviosinternacionales.com (sin tu servidor PHP)</p>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ ATENCIÓN:</strong>
+            <p>Este test llama DIRECTAMENTE a la API desde tu navegador. Si falla por CORS, es normal - significa que debes usar tu servidor PHP como intermediario.</p>
+        </div>
+        
+        <div class="content">
+            <div class="credentials">
+                <strong>🔐 Credenciales configuradas:</strong><br>
+                <small>API Key: <code>brvLtZ...BLG0</code></small><br>
+                <small>Secret Key: <code>Lh5Mdo...mBog</code></small><br>
+                <small style="color: #6c757d;">Las credenciales completas están en el código pero no se muestran por seguridad</small>
+            </div>
+            
+            <div class="form-group">
+                <label>URL de la API</label>
+                <input type="text" id="apiUrl" value="https://app.enviosinternacionales.com/api/v1/quotations">
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>CP Origen</label>
+                    <input type="text" id="originZip" value="64000" placeholder="Ej: 64000">
+                </div>
+                
+                <div class="form-group">
+                    <label>CP Destino</label>
+                    <input type="text" id="destZip" value="06600" placeholder="Ej: 06600">
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Ciudad Destino</label>
+                    <input type="text" id="destCity" value="CDMX" placeholder="Ej: CDMX">
+                </div>
+                
+                <div class="form-group">
+                    <label>Estado Destino</label>
+                    <input type="text" id="destState" value="Ciudad de México" placeholder="Ej: Ciudad de México">
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" id="weight" value="1.5" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label>Dimensiones (LxAxH en cm)</label>
+                    <input type="text" id="dimensions" value="30x20x10">
+                </div>
+            </div>
+            
+            <button onclick="testDirectAPI()" id="testBtn">⚡ Probar API Directa</button>
+            
+            <div class="results" id="results">
+                <h3>📊 Resultados:</h3>
+                <div id="logs"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 🔐 CREDENCIALES (SOLO PARA TESTING - NUNCA en producción)
+        const API_KEY = 'brvLtZIWJaJTOZxEWxUlOA6dZksfLOMDfS9ZvEHBLG0';
+        const API_SECRET = 'Lh5MdoKxgcgn-PfQi7141KTq-Sdkifg8t_pa87QmBog';
+        
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = message;
+            logs.appendChild(entry);
+            console.log(message);
+        }
+        
+        function addPre(content, title = null) {
+            const logs = document.getElementById('logs');
+            if (title) {
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'log-entry log-info';
+                titleDiv.textContent = title;
+                logs.appendChild(titleDiv);
+            }
+            const pre = document.createElement('pre');
+            pre.textContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+            logs.appendChild(pre);
+        }
+        
+        async function testDirectAPI() {
+            const results = document.getElementById('results');
+            const logs = document.getElementById('logs');
+            const btn = document.getElementById('testBtn');
+            
+            // Limpiar resultados previos
+            logs.innerHTML = '';
+            results.classList.add('show');
+            btn.disabled = true;
+            btn.textContent = '⏳ Probando...';
+            
+            try {
+                const apiUrl = document.getElementById('apiUrl').value;
+                const originZip = document.getElementById('originZip').value;
+                const destZip = document.getElementById('destZip').value;
+                const destCity = document.getElementById('destCity').value;
+                const destState = document.getElementById('destState').value;
+                const weight = parseFloat(document.getElementById('weight').value);
+                const dims = document.getElementById('dimensions').value.split('x').map(Number);
+                
+                addLog('⚡ Iniciando test DIRECTO a la API de enviosinternacionales.com', 'info');
+                addLog(`🌐 URL: ${apiUrl}`, 'info');
+                
+                // Crear token de autenticación Basic
+                const authToken = btoa(`${API_KEY}:${API_SECRET}`);
+                addLog('🔐 Token de autenticación Basic generado', 'success');
+                addLog(`   Primeros 20 caracteres: ${authToken.substring(0, 20)}...`, 'info');
+                
+                const requestBody = {
+                    origin: {
+                        zipCode: originZip,
+                        country: 'MX'
+                    },
+                    destination: {
+                        zipCode: destZip,
+                        city: destCity,
+                        state: destState,
+                        country: 'MX'
+                    },
+                    parcel: {
+                        weight: weight,
+                        length: dims[0] || 30,
+                        width: dims[1] || 20,
+                        height: dims[2] || 10
+                    }
+                };
+                
+                addPre(requestBody, '📤 Request Body:');
+                
+                const startTime = Date.now();
+                
+                addLog('🚀 Enviando petición...', 'info');
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const duration = Date.now() - startTime;
+                addLog(`⏱️ Tiempo de respuesta: ${duration}ms`, 'info');
+                addLog(`📥 HTTP Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                // Leer respuesta como texto primero
+                const responseText = await response.text();
+                
+                addPre(responseText, '📥 Response RAW:');
+                
+                // Intentar parsear JSON
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    addLog('✅ Respuesta es JSON válido', 'success');
+                    addPre(data, '📋 Response parseado:');
+                } catch (e) {
+                    addLog('❌ La respuesta NO es JSON válido', 'error');
+                    throw new Error('Respuesta no es JSON');
+                }
+                
+                // Analizar la respuesta
+                if (response.ok) {
+                    addLog('✅ Petición exitosa (HTTP 200-299)', 'success');
+                    
+                    // Buscar cotizaciones en diferentes estructuras posibles
+                    let quotes = null;
+                    
+                    if (data.data && data.data.quotes) {
+                        quotes = data.data.quotes;
+                        addLog('📦 Estructura encontrada: data.quotes', 'success');
+                    } else if (data.quotes) {
+                        quotes = data.quotes;
+                        addLog('📦 Estructura encontrada: quotes', 'success');
+                    } else if (data.data && Array.isArray(data.data)) {
+                        quotes = data.data;
+                        addLog('📦 Estructura encontrada: data (array)', 'success');
+                    } else if (Array.isArray(data)) {
+                        quotes = data;
+                        addLog('📦 Estructura encontrada: respuesta es un array', 'success');
+                    } else {
+                        addLog('⚠️ No se encontró estructura de cotizaciones conocida', 'warning');
+                        addLog('🔍 Claves en el objeto: ' + Object.keys(data).join(', '), 'info');
+                    }
+                    
+                    if (quotes && quotes.length > 0) {
+                        addLog(`🎉 ¡ÉXITO! Se encontraron ${quotes.length} cotizaciones`, 'success');
+                        addLog('', 'info');
+                        addLog('📋 Cotizaciones encontradas:', 'success');
+                        quotes.forEach((q, i) => {
+                            addLog(`  ${i+1}. ${q.carrier || q.provider || '?'} - ${q.provider_service_name || q.service || '?'} - $${q.total || q.price || '?'} - ${q.days || q.delivery_days || '?'} días`, 'info');
+                        });
+                    } else if (quotes) {
+                        addLog('⚠️ La petición fue exitosa pero no hay cotizaciones disponibles', 'warning');
+                    }
+                    
+                } else {
+                    addLog(`❌ Error HTTP ${response.status}`, 'error');
+                    
+                    if (response.status === 401) {
+                        addLog('🔐 Error 401: Credenciales incorrectas o token inválido', 'error');
+                    } else if (response.status === 404) {
+                        addLog('🔍 Error 404: Endpoint no encontrado - verifica la URL', 'error');
+                    } else if (response.status === 400) {
+                        addLog('📝 Error 400: Datos del request incorrectos', 'error');
+                    } else if (response.status === 403) {
+                        addLog('🚫 Error 403: Sin permisos - verifica tu cuenta', 'error');
+                    }
+                }
+                
+            } catch (error) {
+                addLog('', 'info');
+                addLog(`❌ ERROR: ${error.message}`, 'error');
+                
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    addLog('', 'info');
+                    addLog('🔴 Error de red detectado. Posibles causas:', 'error');
+                    addLog('  1️⃣ CORS: La API no permite peticiones desde el navegador', 'warning');
+                    addLog('      → Solución: Usa tu servidor PHP como proxy', 'warning');
+                    addLog('  2️⃣ La URL es incorrecta', 'warning');
+                    addLog('  3️⃣ La API está caída temporalmente', 'warning');
+                    addLog('  4️⃣ Problema de firewall/red', 'warning');
+                    addLog('', 'info');
+                    addLog('💡 Si es error de CORS, esto es NORMAL y esperado.', 'info');
+                    addLog('   Tu servidor PHP debe hacer las peticiones, no el navegador.', 'info');
+                } else if (error.message.includes('JSON')) {
+                    addLog('', 'info');
+                    addLog('🔴 La respuesta no es JSON válido', 'error');
+                    addLog('   Revisa la respuesta RAW arriba para ver qué retornó', 'error');
+                }
+                
+                console.error('Error completo:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textNode = '⚡ Probar API Directa';
+            }
+        }
+        
+        // Permitir presionar Enter
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                testDirectAPI();
+            }
+        });
+        
+        // Info al cargar
+        console.log('🔐 Credenciales configuradas');
+        console.log('API Key:', API_KEY);
+        console.log('API Secret:', API_SECRET);
+        console.log('Auth Token:', btoa(`${API_KEY}:${API_SECRET}`));
+    </script>
+</body>
+</html>

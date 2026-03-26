@@ -1,0 +1,23 @@
+# Node
+node_modules/
+dist/
+dist-build/
+public_html/
+build/
+.env
+
+# Zips
+*.zip
+
+# Logs
+*.log
+log_envios.txt
+payments.log
+orders.log
+
+# PHP Mailer vendor
+/php-mailer/
+
+# DS_Store
+.DS_Store
+Thumbs.db

@@ -1,0 +1,174 @@
+📡 Primera respuesta (cotización creada): {
+    "step": "2-after-api-call",
+    "received_from_frontend": {
+        "order_id": "LITFIT-1773789299143",
+        "address_from": {
+            "country_code": "MX",
+            "postal_code": "66477",
+            "area_level1": "Nuevo León",
+            "area_level2": "San Pedro Garza García",
+            "area_level3": "Centro",
+            "address_line_1": "Calle Principal 123",
+            "address_line_2": ""
+        },
+        "address_to": {
+            "country_code": "MX",
+            "postal_code": "20196",
+            "area_level1": "Aguascalientes",
+            "area_level2": "Aguascalientes",
+            "area_level3": "Vistas de Oriente",
+            "address_line_1": "Calle Destino 456",
+            "address_line_2": ""
+        },
+        "parcel": {
+            "length": 30,
+            "width": 20,
+            "height": 10,
+            "weight": 1.5,
+            "package_protected": false,
+            "declared_value": 790
+        },
+        "requested_carriers": [
+            "fedex",
+            "dhl",
+            "estafeta"
+        ]
+    },
+    "constructed_body": {
+        "order_id": "LITFIT-1773789299143",
+        "address_from": {
+            "country_code": "MX",
+            "postal_code": "66477",
+            "area_level1": "Nuevo León",
+            "area_level2": "San Pedro Garza García",
+            "area_level3": "Centro",
+            "address_line_1": "Calle Principal 123",
+            "address_line_2": ""
+        },
+        "address_to": {
+            "country_code": "MX",
+            "postal_code": "20196",
+            "area_level1": "Aguascalientes",
+            "area_level2": "Aguascalientes",
+            "area_level3": "Vistas de Oriente",
+            "address_line_1": "Calle Destino 456",
+            "address_line_2": ""
+        },
+        "parcel": {
+            "length": 30,
+            "width": 20,
+            "height": 10,
+            "weight": 1.5,
+            "package_protected": false,
+            "declared_value": 790
+        },
+        "requested_carriers": [
+            "fedex",
+            "dhl",
+            "estafeta"
+        ]
+    },
+    "json_string": "{\"order_id\":\"LITFIT-1773789299143\",\"address_from\":{\"country_code\":\"MX\",\"postal_code\":\"66477\",\"area_level1\":\"Nuevo León\",\"area_level2\":\"San Pedro Garza García\",\"area_level3\":\"Centro\",\"address_line_1\":\"Calle Principal 123\",\"address_line_2\":\"\"},\"address_to\":{\"country_code\":\"MX\",\"postal_code\":\"20196\",\"area_level1\":\"Aguascalientes\",\"area_level2\":\"Aguascalientes\",\"area_level3\":\"Vistas de Oriente\",\"address_line_1\":\"Calle Destino 456\",\"address_line_2\":\"\"},\"parcel\":{\"length\":30,\"width\":20,\"height\":10,\"weight\":1.5,\"package_protected\":false,\"declared_value\":790},\"requested_carriers\":[\"fedex\",\"dhl\",\"estafeta\"]}",
+    "json_length": 608,
+    "token": "1JUf+uKpoTiidud3e9Ia...",
+    "api_http_code": 422,
+    "api_raw_response": "{\"errors\":{\"address_from\":{\"country_code\":[\"no puede estar en blanco\",\"no está incluido en la lista\"],\"postal_code\":[\"no puede estar en blanco\"],\"area_level1\":[\"no puede estar en blanco\"],\"area_level2\":[\"no puede estar en blanco\"],\"area_level3\":[\"no puede estar en blanco\"]},\"address_to\":{\"country_code\":[\"no puede estar en blanco\",\"no está incluido en la lista\"],\"postal_code\":[\"no puede estar en blanco\"],\"area_level1\":[\"no puede estar en blanco\"],\"area_level2\":[\"no puede estar en blanco\"],\"area_level3\":[\"no puede estar en blanco\"]},\"parcel\":{\"weight\":[\"no puede estar en blanco\",\"no es un número\"],\"length\":[\"no puede estar en blanco\",\"no es un número\"],\"width\":[\"no puede estar en blanco\",\"no es un número\"],\"height\":[\"no puede estar en blanco\",\"no es un número\"]}}}",
+    "api_parsed_response": {
+        "errors": {
+            "address_from": {
+                "country_code": [
+                    "no puede estar en blanco",
+                    "no está incluido en la lista"
+                ],
+                "postal_code": [
+                    "no puede estar en blanco"
+                ],
+                "area_level1": [
+                    "no puede estar en blanco"
+                ],
+                "area_level2": [
+                    "no puede estar en blanco"
+                ],
+                "area_level3": [
+                    "no puede estar en blanco"
+                ]
+            },
+            "address_to": {
+                "country_code": [
+                    "no puede estar en blanco",
+                    "no está incluido en la lista"
+                ],
+                "postal_code": [
+                    "no puede estar en blanco"
+                ],
+                "area_level1": [
+                    "no puede estar en blanco"
+                ],
+                "area_level2": [
+                    "no puede estar en blanco"
+                ],
+                "area_level3": [
+                    "no puede estar en blanco"
+                ]
+            },
+            "parcel": {
+                "weight": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "length": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "width": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "height": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ]
+            }
+        }
+    },
+    "curl_info": {
+        "url": "https:\/\/app.enviosinternacionales.com\/api\/v1\/quotations",
+        "content_type": "application\/json; charset=utf-8",
+        "http_code": 422,
+        "header_size": 612,
+        "request_size": 586,
+        "filetime": -1,
+        "ssl_verify_result": 0,
+        "redirect_count": 0,
+        "total_time": 0.5210850000000000203925765163148753345012664794921875,
+        "namelookup_time": 0.001070999999999999903466108008842638810165226459503173828125,
+        "connect_time": 0.030994000000000000716315895488150999881327152252197265625,
+        "pretransfer_time": 0.0846780000000000032667202276570606045424938201904296875,
+        "size_upload": 608,
+        "size_download": 778,
+        "speed_download": 1493,
+        "speed_upload": 1166,
+        "download_content_length": 778,
+        "upload_content_length": 608,
+        "starttransfer_time": 0.08468499999999999638955472391899093054234981536865234375,
+        "redirect_time": 0,
+        "redirect_url": "",
+        "primary_ip": "2606:4700:3037::6815:4d12",
+        "certinfo": [],
+        "primary_port": 443,
+        "local_ip": "2603:3:6100:33f0::",
+        "local_port": 59608,
+        "http_version": 3,
+        "protocol": 2,
+        "ssl_verifyresult": 0,
+        "scheme": "HTTPS",
+        "appconnect_time_us": 84522,
+        "connect_time_us": 30994,
+        "namelookup_time_us": 1071,
+        "pretransfer_time_us": 84678,
+        "redirect_time_us": 0,
+        "starttransfer_time_us": 84685,
+        "total_time_us": 521085
+    },
+    "curl_verbose": "*   Trying 2606:4700:3037::6815:4d12:443...\n* Connected to app.enviosinternacionales.com (2606:4700:3037::6815:4d12) port 443 (#0)\n* ALPN, offering h2\n* ALPN, offering http\/1.1\n*  CAfile: \/etc\/pki\/tls\/certs\/ca-bundle.crt\n* SSL connection using TLSv1.3 \/ TLS_AES_256_GCM_SHA384\n* ALPN, server accepted to use h2\n* Server certificate:\n*  subject: CN=app.enviosinternacionales.com\n*  start date: Feb 28 12:44:59 2026 GMT\n*  expire date: May 29 13:44:52 2026 GMT\n*  subjectAltName: host \"app.enviosinternacionales.com\" matched cert's \"app.enviosinternacionales.com\"\n*  issuer: C=US; O=Google Trust Services; CN=WE1\n*  SSL certificate verify ok.\n* Using HTTP2, server supports multi-use\n* Connection state changed (HTTP\/2 confirmed)\n* Copying HTTP\/2 data in stream buffer to connection buffer after upgrade: len=0\n* Using Stream ID: 1 (easy handle 0x1d712e0)\n> POST \/api\/v1\/quotations HTTP\/2\r\nHost: app.enviosinternacionales.com\r\ncontent-type: application\/json\r\naccept: application\/json\r\nauthorization: Bearer 1JUf+uKpoTiidud3e9Ia0OgNsUb6ps6qeFReNGitoE4aNjF+10pFHp4Tcc\/povZgQFxKBNBUXJ5K3yGL6pKN5Fl1FfkrKUS2K06jQHysWXVS45c4cn1WWqXyJr3Bin58CnNJ\/lOyMQmdhOCYPx89cFf1rxmW\/NfieXxe1D8Kfyympy4x8mcKfQeFZfZwKukkvqOjQvnaw1IsKHS69BHYn8tPDNflJviOXAehFKo9zDqaMockhPcwWks1jiX2QXVdtrDs263ksw9MscxnNakm\/ceXzLpO4sVhv4SLsSbBisAj99gMSCWiEQe+6CdQ9P5uFN+e4+VIvy3do6FJF1d6OQuRtTHlwpyDSax8Oq\/DEfKB6iqc--tdXWVZ6tA26YR7ha--dFOdNuvoR0yvNZsdQ96qdQ==\r\ncontent-length: 608\r\n\r\n* We are completely uploaded and fine\n* old SSL session ID is stale, removing\n< HTTP\/2 422 \r\n< date: Tue, 17 Mar 2026 23:15:00 GMT\r\n< content-type: application\/json; charset=utf-8\r\n< content-length: 778\r\n< cache-control: no-cache\r\n< referrer-policy: strict-origin-when-cross-origin\r\n< strict-transport-security: max-age=15724800; includeSubDomains\r\n< vary: Accept-Encoding\r\n< vary: Accept\r\n< x-cache: bypass\r\n< x-content-type-options: nosniff\r\n< x-frame-options: SAMEORIGIN\r\n< x-permitted-cross-domain-policies: none\r\n< x-request-id: 8143b571c7938def0a58817690b39a34\r\n< x-runtime: 0.354234\r\n< x-xss-protection: 0\r\n< cf-cache-status: DYNAMIC\r\n< server: cloudflare\r\n< cf-ray: 9ddfb2759d5770a3-DFW\r\n< alt-svc: h3=\":443\"; ma=86400\r\n< \r\n* Connection #0 to host app.enviosinternacionales.com left intact\n"
+}

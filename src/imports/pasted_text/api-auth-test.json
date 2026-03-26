@@ -1,0 +1,114 @@
+🔐 PASO 1: Obtener Token de Autenticación
+📥 HTTP Status Code: 200
+
+📥 Response:
+
+{"access_token":"Al+Lx4RM06OPeaar81mERnqW6RBys8xgB60aXPFKNXrPKzCtb6G+6SD0+6LY7HVfsTCn9B/nFw89jhf0DGvO62Nl4dwW+4Jdp80whlj03wR82RTVVmV5EN29J4ve8kaHBRHWbyeG3L683FG8V1dLp641AvPdeqRDw526Co31GGuYB1+/L+iuo4VeWYj/FvlZvI/Bl3SpxMhxL2vBbiIeTUy8oq/xMLyGYc7uJ9+ICofk5Xiawo8a9rNAD3/CXVbW+yweoPzMdpLOkHYVu+DflQ0i10zb8Yp06MGW3k4ONiBQ5yB9THn9US0ju6IDnKdudRJmi6Zc/ltqHeUxlsVVnm2VlmGJPypGaGzB3eU956zVO+Jo--pTQ45hrd8wB4rnw+--wst+wLxkcB/OESdG+WbHmw==","token_type":"Bearer","expires_in":7200,"scope":"default","created_at":1773786489}
+✅ Token obtenido exitosamente!
+
+🎟️ Token (primeros 50 caracteres): Al+Lx4RM06OPeaar81mERnqW6RBys8xgB60aXPFKNXrPKzCtb6...
+
+⏰ Expira en: 7200 segundos
+
+📦 PASO 2: Crear Envío de Prueba con el Token
+📤 Datos del envío:
+
+{
+    "order": {
+        "reference": "TEST-DIAGNOSTICO-1773786489",
+        "reference_number": "TEST-1773786489",
+        "payment_status": "paid",
+        "total_price": "1049.00",
+        "platform": "custom",
+        "package_type": "box",
+        "parcels": [
+            {
+                "weight": 1.1999999999999999555910790149937383830547332763671875,
+                "length": 30,
+                "width": 20,
+                "height": 15,
+                "quantity": 1,
+                "dimension_unit": "cm",
+                "mass_unit": "kg",
+                "package_type": "box",
+                "consignment_note": "Prueba de diagnóstico - Suplementos alimenticios"
+            }
+        ],
+        "products": [
+            {
+                "name": "Proteína ISO - Prueba",
+                "sku": "TEST-SKU-123",
+                "price": "899.00",
+                "quantity": 1,
+                "weight": 1,
+                "length": 10,
+                "width": 10,
+                "height": 15,
+                "hs_code": "2106909900"
+            }
+        ],
+        "shipper_address": {
+            "address": "Av. Constitución 123, Col. Centro",
+            "internal_number": "",
+            "reference": "Almacén LITFIT",
+            "sector": "Centro",
+            "city": "Monterrey",
+            "state": "Nuevo León",
+            "postal_code": "64000",
+            "country": "MX",
+            "person_name": "LITFIT - Almacén Principal",
+            "company": "LITFIT",
+            "phone": "8112345678",
+            "email": "ricoro845@gmail.com"
+        },
+        "recipient_address": {
+            "address": "Vallarta 216 #8",
+            "internal_number": "",
+            "reference": "Prueba de diagnóstico",
+            "sector": "Vistas de Oriente",
+            "city": "Aguascalientes",
+            "state": "Aguascalientes",
+            "postal_code": "20196",
+            "country": "MX",
+            "person_name": "Ricardo Ledesma",
+            "company": "",
+            "phone": "4492610335",
+            "email": "ricoro845@gmail.com"
+        }
+    }
+}
+🧪 INTENTO 1: Authorization: Bearer {token}
+📤 Headers:
+
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer Al+Lx4RM06OPeaar81mERnqW6RBys8...
+📥 HTTP Status Code: 401
+
+📥 Response:
+
+❌ Este método NO funcionó (HTTP 401)
+
+⚠️ La API NO devolvió ningún mensaje de error (respuesta vacía)
+
+🧪 INTENTO 2: Token en URL (?access_token=...)
+📤 URL:
+
+https://app.enviosinternacionales.com/api/v1/orders?access_token=...
+📥 HTTP Status Code: 401
+
+📥 Response:
+
+❌ Este método NO funcionó (HTTP 401)
+
+🧪 INTENTO 3: X-API-TOKEN header
+📤 Headers:
+
+Content-Type: application/json
+Accept: application/json
+X-API-TOKEN: Al+Lx4RM06OPeaar81mERnqW6RBys8...
+📥 HTTP Status Code: 401
+
+📥 Response:
+
+❌ Este método NO funcionó (HTTP 401)

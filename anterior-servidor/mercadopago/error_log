@@ -1,0 +1,476 @@
+[07-Jan-2026 22:14:39 UTC] ====== Nueva solicitud a Mercado Pago create-preference.php ======
+[07-Jan-2026 22:26:40 UTC] ====== Nueva solicitud a Mercado Pago create-preference.php ======
+[07-Jan-2026 22:31:14 UTC] ====== Nueva solicitud a Mercado Pago create-preference.php ======
+[07-Jan-2026 22:31:26 UTC] ====== Nueva solicitud a Mercado Pago create-preference.php ======
+[20-Jan-2026 20:23:09 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:25:28 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:32:53 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:32:53 UTC] ❌ Método no permitido: GET
+[20-Jan-2026 20:32:59 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:32:59 UTC] ❌ Método no permitido: GET
+[20-Jan-2026 20:33:08 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:33:10 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:33:23 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:33:23 UTC] ❌ Método no permitido: GET
+[20-Jan-2026 20:35:01 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:35:01 UTC] ❌ Método no permitido: GET
+[20-Jan-2026 20:37:14 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:39:44 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:39:44 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:39:44 UTC] ❌ ERROR: No se encuentra el archivo de configuración en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[20-Jan-2026 20:42:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:42:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:42:24 UTC] ✅ Configuración cargada correctamente
+[20-Jan-2026 20:42:24 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1768940523761-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1},{"id":"proteina-regular-chocolate-1768940523761-1","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@a","phone":"121...
+[20-Jan-2026 20:42:24 UTC] 📦 Pedido: LITFIT-1768941711682-7PC3BTZD4
+[20-Jan-2026 20:42:24 UTC] 💰 Total: $1560
+[20-Jan-2026 20:42:24 UTC] 📦 Items: 2
+[20-Jan-2026 20:42:24 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"}]
+[20-Jan-2026 20:42:24 UTC] 📤 Enviando preferencia a Mercado Pago...
+[20-Jan-2026 20:42:24 UTC] 📥 Respuesta HTTP: 201
+[20-Jan-2026 20:42:24 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-20T16:42:24.933-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1768941711682-7PC3BTZD4","id":"198666053-e05e3329-628f-4b8e-866e-bec7c3f70d5f","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-e05e3329-628f-4b8e-866e-bec7c3f70d5f","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Pr...
+[20-Jan-2026 20:42:24 UTC] ✅ Preferencia creada exitosamente
+[20-Jan-2026 20:42:24 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-e05e3329-628f-4b8e-866e-bec7c3f70d5f
+[20-Jan-2026 20:42:24 UTC] 🆔 Preference ID: 198666053-e05e3329-628f-4b8e-866e-bec7c3f70d5f
+[20-Jan-2026 20:42:24 UTC] ✅ Respuesta enviada al frontend
+[20-Jan-2026 20:53:51 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:53:51 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:53:51 UTC] ✅ Configuración cargada correctamente
+[20-Jan-2026 20:53:51 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1768942385779-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1},{"id":"proteina-regular-chocolate-1768942385779-1","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@a","phone":"546...
+[20-Jan-2026 20:53:51 UTC] 📦 Pedido: LITFIT-1768942399082-OSRT610LE
+[20-Jan-2026 20:53:51 UTC] 💰 Total: $1560
+[20-Jan-2026 20:53:51 UTC] 📦 Items: 2
+[20-Jan-2026 20:53:51 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"}]
+[20-Jan-2026 20:53:51 UTC] 📤 Enviando preferencia a Mercado Pago...
+[20-Jan-2026 20:53:52 UTC] 📥 Respuesta HTTP: 201
+[20-Jan-2026 20:53:52 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-20T16:53:52.345-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1768942399082-OSRT610LE","id":"198666053-b20b7dbc-9ea5-4ca8-b1ec-2938d7521907","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-b20b7dbc-9ea5-4ca8-b1ec-2938d7521907","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Pr...
+[20-Jan-2026 20:53:52 UTC] ✅ Preferencia creada exitosamente
+[20-Jan-2026 20:53:52 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-b20b7dbc-9ea5-4ca8-b1ec-2938d7521907
+[20-Jan-2026 20:53:52 UTC] 🆔 Preference ID: 198666053-b20b7dbc-9ea5-4ca8-b1ec-2938d7521907
+[20-Jan-2026 20:53:52 UTC] ✅ Respuesta enviada al frontend
+[20-Jan-2026 20:59:13 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:59:13 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 20:59:13 UTC] ✅ Configuración cargada correctamente
+[20-Jan-2026 20:59:13 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1768940523761-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1},{"id":"proteina-regular-chocolate-1768940523761-1","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@aas","phone":"a...
+[20-Jan-2026 20:59:13 UTC] 📦 Pedido: LITFIT-1768942720995-98TLKIQD9
+[20-Jan-2026 20:59:13 UTC] 💰 Total: $1560
+[20-Jan-2026 20:59:13 UTC] 📦 Items: 2
+[20-Jan-2026 20:59:13 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"}]
+[20-Jan-2026 20:59:13 UTC] 📤 Enviando preferencia a Mercado Pago...
+[20-Jan-2026 20:59:14 UTC] 📥 Respuesta HTTP: 201
+[20-Jan-2026 20:59:14 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-20T16:59:14.284-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1768942720995-98TLKIQD9","id":"198666053-069f23f9-67de-46e5-bc8a-37652fd97427","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-069f23f9-67de-46e5-bc8a-37652fd97427","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Pr...
+[20-Jan-2026 20:59:14 UTC] ✅ Preferencia creada exitosamente
+[20-Jan-2026 20:59:14 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-069f23f9-67de-46e5-bc8a-37652fd97427
+[20-Jan-2026 20:59:14 UTC] 🆔 Preference ID: 198666053-069f23f9-67de-46e5-bc8a-37652fd97427
+[20-Jan-2026 20:59:14 UTC] ✅ Respuesta enviada al frontend
+[20-Jan-2026 21:03:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 21:03:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 21:03:24 UTC] ✅ Configuración cargada correctamente
+[20-Jan-2026 21:03:24 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1768434746072-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@asdas","phone":"456456456","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":127,"totalPrice":780,"total":907,"orderId":"LITFIT-1768942972106-ZXHVEE6QM"}...
+[20-Jan-2026 21:03:24 UTC] 📦 Pedido: LITFIT-1768942972106-ZXHVEE6QM
+[20-Jan-2026 21:03:24 UTC] 💰 Total: $907
+[20-Jan-2026 21:03:24 UTC] 📦 Items: 1
+[20-Jan-2026 21:03:24 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Env\u00edo a domicilio","description":"Costo de env\u00edo","quantity":1,"unit_price":127,"currency_id":"MXN"}]
+[20-Jan-2026 21:03:24 UTC] 📤 Enviando preferencia a Mercado Pago...
+[20-Jan-2026 21:03:25 UTC] 📥 Respuesta HTTP: 201
+[20-Jan-2026 21:03:25 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-20T17:03:25.410-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1768942972106-ZXHVEE6QM","id":"198666053-76d08090-61f1-4596-bf29-79cd32b84f89","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-76d08090-61f1-4596-bf29-79cd32b84f89","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Costo de envío","title":"...
+[20-Jan-2026 21:03:25 UTC] ✅ Preferencia creada exitosamente
+[20-Jan-2026 21:03:25 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-76d08090-61f1-4596-bf29-79cd32b84f89
+[20-Jan-2026 21:03:25 UTC] 🆔 Preference ID: 198666053-76d08090-61f1-4596-bf29-79cd32b84f89
+[20-Jan-2026 21:03:25 UTC] ✅ Respuesta enviada al frontend
+[20-Jan-2026 21:35:44 UTC] ====== Nueva solicitud a create-preference.php ======
+[20-Jan-2026 21:35:44 UTC] ❌ Método no permitido: GET
+[21-Jan-2026 19:24:22 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:24:22 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:24:22 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:24:22 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1768434746072-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@asas","phone":"45656151","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":127,"totalPrice":780,"total":907,"orderId":"LITFIT-1769023427524-DR34AFBGB"}...
+[21-Jan-2026 19:24:22 UTC] 📦 Pedido: LITFIT-1769023427524-DR34AFBGB
+[21-Jan-2026 19:24:22 UTC] 💰 Total: $907
+[21-Jan-2026 19:24:22 UTC] 📦 Items: 1
+[21-Jan-2026 19:24:22 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Env\u00edo a domicilio","description":"Costo de env\u00edo","quantity":1,"unit_price":127,"currency_id":"MXN"}]
+[21-Jan-2026 19:24:22 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:24:23 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:24:23 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:24:23.210-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769023427524-DR34AFBGB","id":"198666053-39652ec8-db60-492f-ba83-0f3e6bbbd752","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-39652ec8-db60-492f-ba83-0f3e6bbbd752","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Costo de envío","title":"...
+[21-Jan-2026 19:24:23 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:24:23 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-39652ec8-db60-492f-ba83-0f3e6bbbd752
+[21-Jan-2026 19:24:23 UTC] 🆔 Preference ID: 198666053-39652ec8-db60-492f-ba83-0f3e6bbbd752
+[21-Jan-2026 19:24:23 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:36:22 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:36:22 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:36:22 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:36:22 UTC] 📥 Input recibido: {"items":[{"id":"proteina-regular-chocolate-1769024124232-0","name":"Proteína ISO","price":780,"image":"https://imagenes.inedito.digital/LITFIT/IMAGENES-DE-PRODUCTO/prote-negra.webp","variant":"Chocolate","quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@asas","phone":"5464564","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":"a"},"shippingCost":127,"totalPrice":780,"total":907,"orderId":"LITFIT-1769024147207-5YZ0FUQ81"}...
+[21-Jan-2026 19:36:22 UTC] 📦 Pedido: LITFIT-1769024147207-5YZ0FUQ81
+[21-Jan-2026 19:36:22 UTC] 💰 Total: $907
+[21-Jan-2026 19:36:22 UTC] 📦 Items: 1
+[21-Jan-2026 19:36:22 UTC] 📋 Items preparados: [{"title":"Prote\u00edna ISO - Chocolate","description":"Prote\u00edna ISO","quantity":1,"unit_price":780,"currency_id":"MXN"},{"title":"Env\u00edo a domicilio","description":"Costo de env\u00edo","quantity":1,"unit_price":127,"currency_id":"MXN"}]
+[21-Jan-2026 19:36:22 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:36:22 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:36:22 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:36:22.907-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769024147207-5YZ0FUQ81","id":"198666053-d75d5ac4-c977-454a-b964-aae2fd72ac57","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-d75d5ac4-c977-454a-b964-aae2fd72ac57","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Proteína ISO","title":"Proteína ISO - Chocolate","quantity":1,"unit_price":780},{"id":"","category_id":"","currency_id":"MXN","description":"Costo de envío","title":"...
+[21-Jan-2026 19:36:22 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:36:22 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-d75d5ac4-c977-454a-b964-aae2fd72ac57
+[21-Jan-2026 19:36:22 UTC] 🆔 Preference ID: 198666053-d75d5ac4-c977-454a-b964-aae2fd72ac57
+[21-Jan-2026 19:36:22 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:45:55 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:45:55 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:45:55 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:45:55 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769024636136","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"julian","lastName":"cajero","email":"jcajero.dg@gmail.com","phone":"4494610772","street":"colorin 222","colonia":"trojes del cobano","city":"aguascalientes","state":"Aguascalientes","zipCode":"20158","country":"México","notes":"cuidad...
+[21-Jan-2026 19:45:55 UTC] 📦 Pedido: LITFIT-1769024755234-IZ146CABW
+[21-Jan-2026 19:45:55 UTC] 💰 Total: $0.01
+[21-Jan-2026 19:45:55 UTC] 📦 Items: 1
+[21-Jan-2026 19:45:55 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 19:45:55 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:45:56 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:45:56 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:45:56.012-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769024755234-IZ146CABW","id":"198666053-7e4fdc32-371a-4e18-9737-2ae160116125","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-7e4fdc32-371a-4e18-9737-2ae160116125","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 19:45:56 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:45:56 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-7e4fdc32-371a-4e18-9737-2ae160116125
+[21-Jan-2026 19:45:56 UTC] 🆔 Preference ID: 198666053-7e4fdc32-371a-4e18-9737-2ae160116125
+[21-Jan-2026 19:45:56 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:48:44 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:48:44 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:48:44 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:48:44 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769024897100","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"ricoro845@gmail.com","phone":"4492610335","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":0.01,"total":0.01,"orderId":"LITFIT-...
+[21-Jan-2026 19:48:44 UTC] 📦 Pedido: LITFIT-1769024923701-HASYKC0E6
+[21-Jan-2026 19:48:44 UTC] 💰 Total: $0.01
+[21-Jan-2026 19:48:44 UTC] 📦 Items: 1
+[21-Jan-2026 19:48:44 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 19:48:44 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:48:44 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:48:44 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:48:44.522-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769024923701-HASYKC0E6","id":"198666053-8cc7f35f-c4a6-45c3-9889-70f1efae84da","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-8cc7f35f-c4a6-45c3-9889-70f1efae84da","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 19:48:44 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:48:44 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-8cc7f35f-c4a6-45c3-9889-70f1efae84da
+[21-Jan-2026 19:48:44 UTC] 🆔 Preference ID: 198666053-8cc7f35f-c4a6-45c3-9889-70f1efae84da
+[21-Jan-2026 19:48:44 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:52:23 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:52:23 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:52:23 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:52:23 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769024897100","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@jdjsh","phone":"449615181","street":"jajdhdha","colonia":"kwjdhsjah","city":"aguascalientes","state":"aguascalientes","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":0.01,"to...
+[21-Jan-2026 19:52:23 UTC] 📦 Pedido: LITFIT-1769025143505-863WH4B6F
+[21-Jan-2026 19:52:23 UTC] 💰 Total: $0.01
+[21-Jan-2026 19:52:23 UTC] 📦 Items: 1
+[21-Jan-2026 19:52:23 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 19:52:23 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:52:24 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:52:24 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:52:24.233-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769025143505-863WH4B6F","id":"198666053-eddcff18-28ea-417c-879b-e7f6b1eaf30e","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-eddcff18-28ea-417c-879b-e7f6b1eaf30e","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 19:52:24 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:52:24 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-eddcff18-28ea-417c-879b-e7f6b1eaf30e
+[21-Jan-2026 19:52:24 UTC] 🆔 Preference ID: 198666053-eddcff18-28ea-417c-879b-e7f6b1eaf30e
+[21-Jan-2026 19:52:24 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:53:23 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:53:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:53:24 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:53:24 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025177954","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"jejajd@fjahdb","phone":"45455168","street":"bajsjajsjdb","colonia":"jajdhaba","city":"aguas","state":"aguas","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":0.01,"total":0.01,"...
+[21-Jan-2026 19:53:24 UTC] 📦 Pedido: LITFIT-1769025203691-KZXREYVNT
+[21-Jan-2026 19:53:24 UTC] 💰 Total: $0.01
+[21-Jan-2026 19:53:24 UTC] 📦 Items: 1
+[21-Jan-2026 19:53:24 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 19:53:24 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:53:24 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:53:24 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:53:24.441-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769025203691-KZXREYVNT","id":"198666053-20142f39-9247-433b-8110-e9ad67836e71","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-20142f39-9247-433b-8110-e9ad67836e71","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 19:53:24 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:53:24 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-20142f39-9247-433b-8110-e9ad67836e71
+[21-Jan-2026 19:53:24 UTC] 🆔 Preference ID: 198666053-20142f39-9247-433b-8110-e9ad67836e71
+[21-Jan-2026 19:53:24 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 19:54:51 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:54:51 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 19:54:51 UTC] ✅ Configuración cargada correctamente
+[21-Jan-2026 19:54:51 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025213540","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"Ricardo","lastName":"Ledesma","email":"ricoro845@gmail.com","phone":"4492610335","street":"Vallarta 216 #8","colonia":"Vistas de Oriente","city":"Aguascalientes","state":"Aguascalientes","zipCode":"20196","country":"México","notes":""...
+[21-Jan-2026 19:54:51 UTC] 📦 Pedido: LITFIT-1769025256472-38Q5UD3OO
+[21-Jan-2026 19:54:51 UTC] 💰 Total: $0.01
+[21-Jan-2026 19:54:51 UTC] 📦 Items: 1
+[21-Jan-2026 19:54:51 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 19:54:51 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 19:54:52 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 19:54:52 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T15:54:52.260-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769025256472-38Q5UD3OO","id":"198666053-c1eb5453-1815-4857-a507-9ab118b411ef","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-c1eb5453-1815-4857-a507-9ab118b411ef","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 19:54:52 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 19:54:52 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-c1eb5453-1815-4857-a507-9ab118b411ef
+[21-Jan-2026 19:54:52 UTC] 🆔 Preference ID: 198666053-c1eb5453-1815-4857-a507-9ab118b411ef
+[21-Jan-2026 19:54:52 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:03:41 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:03:41 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:03:41 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:03:41 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:03:41 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025213540","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"Ricardo","lastName":"Ledesma","email":"ricoro845@gmail.com","phone":"4492610335","street":"Vallarta 216 #8","colonia":"Vistas de Oriente","city":"Aguascalientes","state":"Aguascalientes","zipCode":"20196","country":"México","notes":""...
+[21-Jan-2026 20:03:41 UTC] 📦 Pedido: LITFIT-1769025786327-MDADSYZXL
+[21-Jan-2026 20:03:41 UTC] 💰 Total: $0.01
+[21-Jan-2026 20:03:41 UTC] 📦 Items: 1
+[21-Jan-2026 20:03:41 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 20:03:41 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:03:41 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:03:42 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:03:42 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:03:42.161-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769025786327-MDADSYZXL","id":"198666053-3c521854-cec3-43c2-8596-de08711c7f3c","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-3c521854-cec3-43c2-8596-de08711c7f3c","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 20:03:42 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:03:42 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-3c521854-cec3-43c2-8596-de08711c7f3c
+[21-Jan-2026 20:03:42 UTC] 🆔 Preference ID: 198666053-3c521854-cec3-43c2-8596-de08711c7f3c
+[21-Jan-2026 20:03:42 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:04:53 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:04:53 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:04:53 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:04:53 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:04:53 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025213540","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"ralsdnjas@asd","phone":"4564564","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":0.01,"total":0.01,"orderId":"LITFIT-176902585...
+[21-Jan-2026 20:04:53 UTC] 📦 Pedido: LITFIT-1769025858433-Y1BD03FEI
+[21-Jan-2026 20:04:53 UTC] 💰 Total: $0.01
+[21-Jan-2026 20:04:53 UTC] 📦 Items: 1
+[21-Jan-2026 20:04:53 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 20:04:53 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:04:53 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:04:54 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:04:54 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:04:54.204-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769025858433-Y1BD03FEI","id":"198666053-6c948a60-6e85-4cfd-8a62-43b07ae5dcfe","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-6c948a60-6e85-4cfd-8a62-43b07ae5dcfe","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 20:04:54 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:04:54 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-6c948a60-6e85-4cfd-8a62-43b07ae5dcfe
+[21-Jan-2026 20:04:54 UTC] 🆔 Preference ID: 198666053-6c948a60-6e85-4cfd-8a62-43b07ae5dcfe
+[21-Jan-2026 20:04:54 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:16:11 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:16:11 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:16:11 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:16:11 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:16:11 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025213540","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"asd@aasd","phone":"4492610335","street":"asdasd","colonia":"asdasd","city":"asd","state":"asd","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":0.01,"total":0.01,"orderId":"LITF...
+[21-Jan-2026 20:16:11 UTC] 📦 Pedido: LITFIT-1769026535949-UL1J4QT9D
+[21-Jan-2026 20:16:11 UTC] 💰 Total: $0.01
+[21-Jan-2026 20:16:11 UTC] 📦 Items: 1
+[21-Jan-2026 20:16:11 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 20:16:11 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:16:11 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:16:11 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:16:11 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:16:11.749-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769026535949-UL1J4QT9D","id":"198666053-fae74931-54e5-4c79-916f-a53940970258","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-fae74931-54e5-4c79-916f-a53940970258","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer...
+[21-Jan-2026 20:16:11 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:16:11 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-fae74931-54e5-4c79-916f-a53940970258
+[21-Jan-2026 20:16:11 UTC] 🆔 Preference ID: 198666053-fae74931-54e5-4c79-916f-a53940970258
+[21-Jan-2026 20:16:11 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:26:07 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:26:07 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:26:07 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:26:07 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:26:07 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769025213540","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1},{"id":"producto-prueba-1769027116385","name":"PRODUCTO DE PRUEBA","price":0.01,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","la...
+[21-Jan-2026 20:26:07 UTC] 📦 Pedido: LITFIT-1769027132320-AL5O93O0Y
+[21-Jan-2026 20:26:07 UTC] 💰 Total: $0.02
+[21-Jan-2026 20:26:07 UTC] 📦 Items: 2
+[21-Jan-2026 20:26:07 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"},{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":0.01000000000000000020816681711721685132943093776702880859375,"currency_id":"MXN"}]
+[21-Jan-2026 20:26:07 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:26:07 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:26:07 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[21-Jan-2026 20:26:08 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:26:08 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:26:08.070-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769027132320-AL5O93O0Y","id":"198666053-a769e30d-6219-44e4-a714-0bbacf033f21","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-a769e30d-6219-44e4-a714-0bbacf033f21","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":0.01},{"id":"","category_id":"","currency_id":"MXN","description":"PR...
+[21-Jan-2026 20:26:08 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:26:08 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-a769e30d-6219-44e4-a714-0bbacf033f21
+[21-Jan-2026 20:26:08 UTC] 🆔 Preference ID: 198666053-a769e30d-6219-44e4-a714-0bbacf033f21
+[21-Jan-2026 20:26:08 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:30:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:30:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:30:24 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:30:24 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:30:24 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769027343556","name":"PRODUCTO DE PRUEBA","price":10,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@asdasd","phone":"a","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":10,"total":10,"orderId":"LITFIT-1769027388761-AY2QCNLDJ"}...
+[21-Jan-2026 20:30:24 UTC] 📦 Pedido: LITFIT-1769027388761-AY2QCNLDJ
+[21-Jan-2026 20:30:24 UTC] 💰 Total: $10
+[21-Jan-2026 20:30:24 UTC] 📦 Items: 1
+[21-Jan-2026 20:30:24 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":10,"currency_id":"MXN"}]
+[21-Jan-2026 20:30:24 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:30:24 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:30:24 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[21-Jan-2026 20:30:24 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:30:24 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:30:24.649-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769027388761-AY2QCNLDJ","id":"198666053-f98fb292-600a-4b75-b41a-3b7ad2c59725","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-f98fb292-600a-4b75-b41a-3b7ad2c59725","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":10}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer_e...
+[21-Jan-2026 20:30:24 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:30:24 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-f98fb292-600a-4b75-b41a-3b7ad2c59725
+[21-Jan-2026 20:30:24 UTC] 🆔 Preference ID: 198666053-f98fb292-600a-4b75-b41a-3b7ad2c59725
+[21-Jan-2026 20:30:24 UTC] ✅ Respuesta enviada al frontend
+[21-Jan-2026 20:31:13 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:31:13 UTC] ====== Nueva solicitud a create-preference.php ======
+[21-Jan-2026 20:31:13 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:31:13 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[21-Jan-2026 20:31:13 UTC] 📥 Input recibido: {"items":[{"id":"producto-prueba-1769027424288","name":"PRODUCTO DE PRUEBA","price":10,"image":"https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80","variant":"Prueba de Mercado Pago","testProduct":true,"quantity":1}],"formData":{"firstName":"a","lastName":"a","email":"a@asdasd","phone":"a","street":"a","colonia":"a","city":"a","state":"a","zipCode":"20196","country":"México","notes":""},"shippingCost":0,"totalPrice":10,"total":10,"orderId":"LITFIT-1769027438074-Z1X7B507E"}...
+[21-Jan-2026 20:31:13 UTC] 📦 Pedido: LITFIT-1769027438074-Z1X7B507E
+[21-Jan-2026 20:31:13 UTC] 💰 Total: $10
+[21-Jan-2026 20:31:13 UTC] 📦 Items: 1
+[21-Jan-2026 20:31:13 UTC] 📋 Items preparados: [{"title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","description":"PRODUCTO DE PRUEBA","quantity":1,"unit_price":10,"currency_id":"MXN"}]
+[21-Jan-2026 20:31:13 UTC] 📤 Enviando preferencia a Mercado Pago...
+[21-Jan-2026 20:31:13 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[21-Jan-2026 20:31:13 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[21-Jan-2026 20:31:13 UTC] 📥 Respuesta HTTP: 201
+[21-Jan-2026 20:31:13 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-01-21T16:31:13.777-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1769027438074-Z1X7B507E","id":"198666053-13bdbcd5-e70f-4a3c-826c-601982e3da76","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-13bdbcd5-e70f-4a3c-826c-601982e3da76","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"PRODUCTO DE PRUEBA","title":"PRODUCTO DE PRUEBA - Prueba de Mercado Pago","quantity":1,"unit_price":10}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer_e...
+[21-Jan-2026 20:31:13 UTC] ✅ Preferencia creada exitosamente
+[21-Jan-2026 20:31:13 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-13bdbcd5-e70f-4a3c-826c-601982e3da76
+[21-Jan-2026 20:31:13 UTC] 🆔 Preference ID: 198666053-13bdbcd5-e70f-4a3c-826c-601982e3da76
+[21-Jan-2026 20:31:13 UTC] ✅ Respuesta enviada al frontend
+[09-Mar-2026 21:29:28 UTC] ====== Nueva solicitud a create-preference.php ======
+[09-Mar-2026 21:29:28 UTC] ====== Nueva solicitud a create-preference.php ======
+[09-Mar-2026 21:29:28 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[09-Mar-2026 21:29:28 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[09-Mar-2026 21:29:28 UTC] 📥 Input recibido: {"items":[{"id":"barras-surtido-24-1773091693707-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773091698012-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773091698012-1","name":"Barras de Proteína","price":790,"imag...
+[09-Mar-2026 21:29:28 UTC] 📦 Pedido: LITFIT-1773091773099-M6IDKEKSZ
+[09-Mar-2026 21:29:28 UTC] 💰 Total: $2370
+[09-Mar-2026 21:29:28 UTC] 📦 Items: 3
+[09-Mar-2026 21:29:28 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[09-Mar-2026 21:29:28 UTC] 📤 Enviando preferencia a Mercado Pago...
+[09-Mar-2026 21:29:28 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[09-Mar-2026 21:29:28 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[09-Mar-2026 21:29:28 UTC] 📥 Respuesta HTTP: 201
+[09-Mar-2026 21:29:28 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-09T17:29:28.747-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773091773099-M6IDKEKSZ","id":"198666053-69dde841-968c-4996-90f7-255c5f652c87","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-69dde841-968c-4996-90f7-255c5f652c87","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Surtido (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","...
+[09-Mar-2026 21:29:28 UTC] ✅ Preferencia creada exitosamente
+[09-Mar-2026 21:29:28 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-69dde841-968c-4996-90f7-255c5f652c87
+[09-Mar-2026 21:29:28 UTC] 🆔 Preference ID: 198666053-69dde841-968c-4996-90f7-255c5f652c87
+[09-Mar-2026 21:29:28 UTC] ✅ Respuesta enviada al frontend
+[09-Mar-2026 21:45:29 UTC] ====== Nueva solicitud a create-preference.php ======
+[09-Mar-2026 21:45:29 UTC] ====== Nueva solicitud a create-preference.php ======
+[09-Mar-2026 21:45:29 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[09-Mar-2026 21:45:29 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[09-Mar-2026 21:45:29 UTC] 📥 Input recibido: {"items":[{"id":"barras-surtido-24-1773092676307-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773092676307-1","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773092676307-2","name":"Barras de Proteína","price":790,"imag...
+[09-Mar-2026 21:45:29 UTC] 📦 Pedido: LITFIT-1773092734259-S8SP2FLUW
+[09-Mar-2026 21:45:29 UTC] 💰 Total: $3160
+[09-Mar-2026 21:45:29 UTC] 📦 Items: 4
+[09-Mar-2026 21:45:29 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[09-Mar-2026 21:45:29 UTC] 📤 Enviando preferencia a Mercado Pago...
+[09-Mar-2026 21:45:29 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[09-Mar-2026 21:45:29 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[09-Mar-2026 21:45:29 UTC] 📥 Respuesta HTTP: 201
+[09-Mar-2026 21:45:29 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-09T17:45:29.873-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773092734259-S8SP2FLUW","id":"198666053-a022b8b5-6852-48af-ab4d-3ffb722ef786","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-a022b8b5-6852-48af-ab4d-3ffb722ef786","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Surtido (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","...
+[09-Mar-2026 21:45:29 UTC] ✅ Preferencia creada exitosamente
+[09-Mar-2026 21:45:29 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-a022b8b5-6852-48af-ab4d-3ffb722ef786
+[09-Mar-2026 21:45:29 UTC] 🆔 Preference ID: 198666053-a022b8b5-6852-48af-ab4d-3ffb722ef786
+[09-Mar-2026 21:45:29 UTC] ✅ Respuesta enviada al frontend
+[12-Mar-2026 00:56:01 UTC] ====== Nueva solicitud a create-preference.php ======
+[12-Mar-2026 00:56:02 UTC] ====== Nueva solicitud a create-preference.php ======
+[12-Mar-2026 00:56:02 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[12-Mar-2026 00:56:02 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[12-Mar-2026 00:56:02 UTC] 📥 Input recibido: {"items":[{"id":"barras-tiramisu-24-1773276823465-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/tiramisu.webp","variant":"Tiramisú","size":"24 barras","quantity":2}],"formData":{"firstName":"Pedro ","lastName":"Paredes","email":"peterwalls_10@hotmail.com","phone":"4461995701","street":"Carranco 378","colonia":"El Refugio","city":"Queretaro","state":"Queretaro","zipCode":"76146","country":"México","notes":"Afuera está estacionado un Kia blanco o u...
+[12-Mar-2026 00:56:02 UTC] 📦 Pedido: LITFIT-1773276961612-QR2J8Z3A3
+[12-Mar-2026 00:56:02 UTC] 💰 Total: $1580
+[12-Mar-2026 00:56:02 UTC] 📦 Items: 1
+[12-Mar-2026 00:56:02 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Tiramis\u00fa (24 barras)","description":"Barras de Prote\u00edna","quantity":2,"unit_price":790,"currency_id":"MXN"}]
+[12-Mar-2026 00:56:02 UTC] 📤 Enviando preferencia a Mercado Pago...
+[12-Mar-2026 00:56:02 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[12-Mar-2026 00:56:02 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[12-Mar-2026 00:56:02 UTC] 📥 Respuesta HTTP: 201
+[12-Mar-2026 00:56:02 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-11T20:56:02.509-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773276961612-QR2J8Z3A3","id":"198666053-8e1310fc-04aa-4459-8cf0-dcabcf9587c0","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-8e1310fc-04aa-4459-8cf0-dcabcf9587c0","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Tiramisú (24 barras)","quantity":2,"unit_price":790}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer_email":"peterwall...
+[12-Mar-2026 00:56:02 UTC] ✅ Preferencia creada exitosamente
+[12-Mar-2026 00:56:02 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-8e1310fc-04aa-4459-8cf0-dcabcf9587c0
+[12-Mar-2026 00:56:02 UTC] 🆔 Preference ID: 198666053-8e1310fc-04aa-4459-8cf0-dcabcf9587c0
+[12-Mar-2026 00:56:02 UTC] ✅ Respuesta enviada al frontend
+[12-Mar-2026 00:56:04 UTC] ====== Nueva solicitud a create-preference.php ======
+[12-Mar-2026 00:56:04 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[12-Mar-2026 00:56:04 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[12-Mar-2026 00:56:04 UTC] 📥 Input recibido: {"items":[{"id":"barras-tiramisu-24-1773276823465-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/tiramisu.webp","variant":"Tiramisú","size":"24 barras","quantity":2}],"formData":{"firstName":"Pedro ","lastName":"Paredes","email":"peterwalls_10@hotmail.com","phone":"4461995701","street":"Carranco 378","colonia":"El Refugio","city":"Queretaro","state":"Queretaro","zipCode":"76146","country":"México","notes":"Afuera está estacionado un Kia blanco o u...
+[12-Mar-2026 00:56:04 UTC] 📦 Pedido: LITFIT-1773276964477-0KN2UFPLX
+[12-Mar-2026 00:56:04 UTC] 💰 Total: $1580
+[12-Mar-2026 00:56:04 UTC] 📦 Items: 1
+[12-Mar-2026 00:56:04 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Tiramis\u00fa (24 barras)","description":"Barras de Prote\u00edna","quantity":2,"unit_price":790,"currency_id":"MXN"}]
+[12-Mar-2026 00:56:04 UTC] 📤 Enviando preferencia a Mercado Pago...
+[12-Mar-2026 00:56:04 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[12-Mar-2026 00:56:04 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[12-Mar-2026 00:56:04 UTC] 📥 Respuesta HTTP: 201
+[12-Mar-2026 00:56:04 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-11T20:56:04.865-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773276964477-0KN2UFPLX","id":"198666053-082c22ec-dc73-4a8f-ab9e-e2f3937f9b10","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-082c22ec-dc73-4a8f-ab9e-e2f3937f9b10","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Tiramisú (24 barras)","quantity":2,"unit_price":790}],"marketplace":"NONE","marketplace_fee":0,"metadata":{"customer_email":"peterwall...
+[12-Mar-2026 00:56:04 UTC] ✅ Preferencia creada exitosamente
+[12-Mar-2026 00:56:04 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-082c22ec-dc73-4a8f-ab9e-e2f3937f9b10
+[12-Mar-2026 00:56:04 UTC] 🆔 Preference ID: 198666053-082c22ec-dc73-4a8f-ab9e-e2f3937f9b10
+[12-Mar-2026 00:56:04 UTC] ✅ Respuesta enviada al frontend
+[13-Mar-2026 17:07:03 UTC] ====== Nueva solicitud a create-preference.php ======
+[13-Mar-2026 17:07:03 UTC] ====== Nueva solicitud a create-preference.php ======
+[13-Mar-2026 17:07:03 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[13-Mar-2026 17:07:03 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[13-Mar-2026 17:07:03 UTC] 📥 Input recibido: {"items":[{"id":"barras-chocolate-truffle-24-1773421572329-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/trufa.webp","variant":"Chocolate Truffle","size":"24 barras","quantity":1}],"formData":{"firstName":"ds","lastName":"d","email":"JV@GMAILCO","phone":"vd","street":"VFS","colonia":"VWE","city":"VDW","state":"VWE","zipCode":"20158","country":"México","notes":"WD"},"shippingCost":119,"totalPrice":790,"total":909,"orderId":"LITFIT-1773421622840-DETO...
+[13-Mar-2026 17:07:03 UTC] 📦 Pedido: LITFIT-1773421622840-DETO5XSNA
+[13-Mar-2026 17:07:03 UTC] 💰 Total: $909
+[13-Mar-2026 17:07:03 UTC] 📦 Items: 1
+[13-Mar-2026 17:07:03 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Chocolate Truffle (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Env\u00edo a domicilio","description":"Costo de env\u00edo","quantity":1,"unit_price":119,"currency_id":"MXN"}]
+[13-Mar-2026 17:07:03 UTC] 📤 Enviando preferencia a Mercado Pago...
+[13-Mar-2026 17:07:03 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[13-Mar-2026 17:07:03 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[13-Mar-2026 17:07:03 UTC] 📥 Respuesta HTTP: 201
+[13-Mar-2026 17:07:03 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-13T13:07:03.605-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773421622840-DETO5XSNA","id":"198666053-37ef81fc-923a-4cec-b32e-ed83bac03385","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-37ef81fc-923a-4cec-b32e-ed83bac03385","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Chocolate Truffle (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Costo de env...
+[13-Mar-2026 17:07:03 UTC] ✅ Preferencia creada exitosamente
+[13-Mar-2026 17:07:03 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-37ef81fc-923a-4cec-b32e-ed83bac03385
+[13-Mar-2026 17:07:03 UTC] 🆔 Preference ID: 198666053-37ef81fc-923a-4cec-b32e-ed83bac03385
+[13-Mar-2026 17:07:03 UTC] ✅ Respuesta enviada al frontend
+[16-Mar-2026 03:15:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[16-Mar-2026 03:15:24 UTC] ====== Nueva solicitud a create-preference.php ======
+[16-Mar-2026 03:15:24 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[16-Mar-2026 03:15:24 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[16-Mar-2026 03:15:24 UTC] 📥 Input recibido: {"items":[{"id":"barras-chocolate-truffle-24-1773629814585-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/trufa.webp","variant":"Chocolate Truffle","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773630669382-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1}],"formData":{"firstName":"Judith ","lastName":"Pinedo","email":"Jurpimo@...
+[16-Mar-2026 03:15:24 UTC] 📦 Pedido: LITFIT-1773630923912-FVWF2Q3R1
+[16-Mar-2026 03:15:24 UTC] 💰 Total: $1580
+[16-Mar-2026 03:15:24 UTC] 📦 Items: 2
+[16-Mar-2026 03:15:24 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Chocolate Truffle (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[16-Mar-2026 03:15:24 UTC] 📤 Enviando preferencia a Mercado Pago...
+[16-Mar-2026 03:15:24 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[16-Mar-2026 03:15:24 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[16-Mar-2026 03:15:24 UTC] 📥 Respuesta HTTP: 201
+[16-Mar-2026 03:15:24 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-15T23:15:24.778-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773630923912-FVWF2Q3R1","id":"198666053-7ec0e3c9-ce9c-4907-8d28-90439d359d21","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-7ec0e3c9-ce9c-4907-8d28-90439d359d21","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Chocolate Truffle (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Pr...
+[16-Mar-2026 03:15:24 UTC] ✅ Preferencia creada exitosamente
+[16-Mar-2026 03:15:24 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-7ec0e3c9-ce9c-4907-8d28-90439d359d21
+[16-Mar-2026 03:15:24 UTC] 🆔 Preference ID: 198666053-7ec0e3c9-ce9c-4907-8d28-90439d359d21
+[16-Mar-2026 03:15:24 UTC] ✅ Respuesta enviada al frontend
+[16-Mar-2026 14:44:31 UTC] ====== Nueva solicitud a create-preference.php ======
+[16-Mar-2026 14:44:31 UTC] ====== Nueva solicitud a create-preference.php ======
+[16-Mar-2026 14:44:31 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[16-Mar-2026 14:44:31 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[16-Mar-2026 14:44:31 UTC] 📥 Input recibido: {"items":[{"id":"barras-surtido-24-1773672203652-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1}],"formData":{"firstName":"valeria","lastName":"romero","email":"vale.rogu24@gmail.com","phone":"4494686733","street":"olmo 26","colonia":"residencial arbolada","city":"benito juarez","state":"quintana roo","zipCode":"77560","country":"México","notes":""},"shippingCost":194,"totalPrice":7...
+[16-Mar-2026 14:44:31 UTC] 📦 Pedido: LITFIT-1773672271285-67BOY2T7V
+[16-Mar-2026 14:44:31 UTC] 💰 Total: $984
+[16-Mar-2026 14:44:31 UTC] 📦 Items: 1
+[16-Mar-2026 14:44:31 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Env\u00edo a domicilio","description":"Costo de env\u00edo","quantity":1,"unit_price":194,"currency_id":"MXN"}]
+[16-Mar-2026 14:44:31 UTC] 📤 Enviando preferencia a Mercado Pago...
+[16-Mar-2026 14:44:31 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[16-Mar-2026 14:44:31 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[16-Mar-2026 14:44:32 UTC] 📥 Respuesta HTTP: 201
+[16-Mar-2026 14:44:32 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-16T10:44:32.100-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773672271285-67BOY2T7V","id":"198666053-aedb3d03-a147-416c-acdd-60a6041a6bf9","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-aedb3d03-a147-416c-acdd-60a6041a6bf9","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Surtido (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Costo de envío","titl...
+[16-Mar-2026 14:44:32 UTC] ✅ Preferencia creada exitosamente
+[16-Mar-2026 14:44:32 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-aedb3d03-a147-416c-acdd-60a6041a6bf9
+[16-Mar-2026 14:44:32 UTC] 🆔 Preference ID: 198666053-aedb3d03-a147-416c-acdd-60a6041a6bf9
+[16-Mar-2026 14:44:32 UTC] ✅ Respuesta enviada al frontend
+[18-Mar-2026 18:51:17 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 18:51:17 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 18:51:17 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 18:51:17 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 18:51:17 UTC] 📥 Input recibido: {"items":[{"id":"barras-choco-peanutbutter-24-1773859810721-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/peanut-butter.webp","variant":"Choco-Peanutbutter","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773859817650-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1}],"formData":{"firstName":"Raul ","lastName":"Garay Silva","ema...
+[18-Mar-2026 18:51:17 UTC] 📦 Pedido: LITFIT-1773859876909-3MFFYYX9N
+[18-Mar-2026 18:51:17 UTC] 💰 Total: $1580
+[18-Mar-2026 18:51:17 UTC] 📦 Items: 2
+[18-Mar-2026 18:51:17 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Choco-Peanutbutter (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[18-Mar-2026 18:51:17 UTC] 📤 Enviando preferencia a Mercado Pago...
+[18-Mar-2026 18:51:17 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[18-Mar-2026 18:51:17 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[18-Mar-2026 18:51:17 UTC] 📥 Respuesta HTTP: 201
+[18-Mar-2026 18:51:17 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-18T14:51:17.829-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773859876909-3MFFYYX9N","id":"198666053-e8837e99-4c08-48de-88a1-c75e1cf98ea7","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-e8837e99-4c08-48de-88a1-c75e1cf98ea7","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Choco-Peanutbutter (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de P...
+[18-Mar-2026 18:51:17 UTC] ✅ Preferencia creada exitosamente
+[18-Mar-2026 18:51:17 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-e8837e99-4c08-48de-88a1-c75e1cf98ea7
+[18-Mar-2026 18:51:17 UTC] 🆔 Preference ID: 198666053-e8837e99-4c08-48de-88a1-c75e1cf98ea7
+[18-Mar-2026 18:51:17 UTC] ✅ Respuesta enviada al frontend
+[18-Mar-2026 20:26:47 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 20:27:06 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 20:28:02 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 20:28:19 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 20:28:30 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 20:29:07 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 21:17:20 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 21:17:20 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 21:17:20 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 21:17:20 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 21:17:20 UTC] 📥 Input recibido: {"items":[{"id":"barras-surtido-24-1773868480174-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773868480175-1","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1}],"formData":{"firstName":"Laura Monica","lastName":"Sumano","email":"monica.sumanoj@gmai...
+[18-Mar-2026 21:17:20 UTC] 📦 Pedido: LITFIT-1773868639841-WDXWIS5SU
+[18-Mar-2026 21:17:20 UTC] 💰 Total: $1580
+[18-Mar-2026 21:17:20 UTC] 📦 Items: 2
+[18-Mar-2026 21:17:20 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[18-Mar-2026 21:17:20 UTC] 📤 Enviando preferencia a Mercado Pago...
+[18-Mar-2026 21:17:20 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[18-Mar-2026 21:17:20 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[18-Mar-2026 21:17:20 UTC] 📥 Respuesta HTTP: 201
+[18-Mar-2026 21:17:20 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-18T17:17:20.605-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773868639841-WDXWIS5SU","id":"198666053-56ccc645-b9e8-4ab5-ab88-688559b6f573","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-56ccc645-b9e8-4ab5-ab88-688559b6f573","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Surtido (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","...
+[18-Mar-2026 21:17:20 UTC] ✅ Preferencia creada exitosamente
+[18-Mar-2026 21:17:20 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-56ccc645-b9e8-4ab5-ab88-688559b6f573
+[18-Mar-2026 21:17:20 UTC] 🆔 Preference ID: 198666053-56ccc645-b9e8-4ab5-ab88-688559b6f573
+[18-Mar-2026 21:17:20 UTC] ✅ Respuesta enviada al frontend
+[18-Mar-2026 21:17:23 UTC] ====== Nueva solicitud a create-preference.php ======
+[18-Mar-2026 21:17:23 UTC] ✅ Archivo de configuración encontrado en: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 21:17:23 UTC] ✅ Configuración cargada correctamente desde: /home/inedito/public_html/cdn.inedito.digital/mercadopago/mercadopago-config.php
+[18-Mar-2026 21:17:23 UTC] 📥 Input recibido: {"items":[{"id":"barras-surtido-24-1773868480174-0","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1},{"id":"barras-surtido-24-1773868480175-1","name":"Barras de Proteína","price":790,"image":"https://imagenes.inedito.digital/LITFIT/4-sabores.webp","variant":"Surtido","size":"24 barras","quantity":1}],"formData":{"firstName":"Laura Monica","lastName":"Sumano","email":"monica.sumanoj@gmai...
+[18-Mar-2026 21:17:23 UTC] 📦 Pedido: LITFIT-1773868643039-YE657QZNI
+[18-Mar-2026 21:17:23 UTC] 💰 Total: $1580
+[18-Mar-2026 21:17:23 UTC] 📦 Items: 2
+[18-Mar-2026 21:17:23 UTC] 📋 Items preparados: [{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"},{"title":"Barras de Prote\u00edna - Surtido (24 barras)","description":"Barras de Prote\u00edna","quantity":1,"unit_price":790,"currency_id":"MXN"}]
+[18-Mar-2026 21:17:23 UTC] 📤 Enviando preferencia a Mercado Pago...
+[18-Mar-2026 21:17:23 UTC] 💳 IMPORTANTE: Permitiendo TODOS los métodos de pago (account_money incluido)
+[18-Mar-2026 21:17:23 UTC] 🔓 Sobrescribiendo excluded_payment_methods y excluded_payment_types con arrays vacíos
+[18-Mar-2026 21:17:23 UTC] 📥 Respuesta HTTP: 201
+[18-Mar-2026 21:17:23 UTC] 📥 Respuesta completa: {"additional_info":"","auto_return":"approved","back_urls":{"failure":"https://litfitmexico.com/payment-failure-mp","pending":"https://litfitmexico.com/payment-pending-mp","success":"https://litfitmexico.com/payment-success-mp"},"binary_mode":false,"client_id":"2656381259343864","collector_id":198666053,"coupon_code":null,"coupon_labels":null,"date_created":"2026-03-18T17:17:23.473-04:00","date_of_expiration":null,"expiration_date_from":null,"expiration_date_to":null,"expires":false,"external_reference":"LITFIT-1773868643039-YE657QZNI","id":"198666053-b7872399-6fb2-4cbb-a3ac-800cf6af18d6","init_point":"https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-b7872399-6fb2-4cbb-a3ac-800cf6af18d6","internal_metadata":null,"items":[{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","title":"Barras de Proteína - Surtido (24 barras)","quantity":1,"unit_price":790},{"id":"","category_id":"","currency_id":"MXN","description":"Barras de Proteína","...
+[18-Mar-2026 21:17:23 UTC] ✅ Preferencia creada exitosamente
+[18-Mar-2026 21:17:23 UTC] 🔗 URL de checkout: https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=198666053-b7872399-6fb2-4cbb-a3ac-800cf6af18d6
+[18-Mar-2026 21:17:23 UTC] 🆔 Preference ID: 198666053-b7872399-6fb2-4cbb-a3ac-800cf6af18d6
+[18-Mar-2026 21:17:23 UTC] ✅ Respuesta enviada al frontend

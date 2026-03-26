@@ -1,0 +1,134 @@
+📡 Primera respuesta (cotización creada): {
+    "api_http_code": 422,
+    "api_response": {
+        "errors": {
+            "address_from": {
+                "country_code": [
+                    "no puede estar en blanco",
+                    "no está incluido en la lista"
+                ],
+                "postal_code": [
+                    "no puede estar en blanco"
+                ],
+                "area_level1": [
+                    "no puede estar en blanco"
+                ],
+                "area_level2": [
+                    "no puede estar en blanco"
+                ],
+                "area_level3": [
+                    "no puede estar en blanco"
+                ]
+            },
+            "address_to": {
+                "country_code": [
+                    "no puede estar en blanco",
+                    "no está incluido en la lista"
+                ],
+                "postal_code": [
+                    "no puede estar en blanco"
+                ],
+                "area_level1": [
+                    "no puede estar en blanco"
+                ],
+                "area_level2": [
+                    "no puede estar en blanco"
+                ],
+                "area_level3": [
+                    "no puede estar en blanco"
+                ]
+            },
+            "parcel": {
+                "weight": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "length": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "width": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ],
+                "height": [
+                    "no puede estar en blanco",
+                    "no es un número"
+                ]
+            }
+        }
+    },
+    "sent_to_api": {
+        "order_id": "LITFIT-1773788858189",
+        "address_from": {
+            "country_code": "MX",
+            "postal_code": "66477",
+            "area_level1": "Nuevo León",
+            "area_level2": "San Pedro Garza García",
+            "area_level3": "Centro",
+            "address_line_1": "Calle Principal 123",
+            "address_line_2": ""
+        },
+        "address_to": {
+            "country_code": "MX",
+            "postal_code": "20196",
+            "area_level1": "Aguascalientes",
+            "area_level2": "Aguascalientes",
+            "area_level3": "Vistas de Oriente",
+            "address_line_1": "Calle Destino 456",
+            "address_line_2": ""
+        },
+        "parcels": [
+            {
+                "length": 30,
+                "width": 20,
+                "height": 10,
+                "weight": "1.5",
+                "package_protected": false,
+                "declared_value": "790"
+            }
+        ],
+        "requested_carriers": [
+            "fedex",
+            "dhl",
+            "estafeta"
+        ]
+    },
+    "received_from_frontend": {
+        "order_id": "LITFIT-1773788858189",
+        "address_from": {
+            "country_code": "MX",
+            "postal_code": "66477",
+            "area_level1": "Nuevo León",
+            "area_level2": "San Pedro Garza García",
+            "area_level3": "Centro",
+            "address_line_1": "Calle Principal 123",
+            "address_line_2": ""
+        },
+        "address_to": {
+            "country_code": "MX",
+            "postal_code": "20196",
+            "area_level1": "Aguascalientes",
+            "area_level2": "Aguascalientes",
+            "area_level3": "Vistas de Oriente",
+            "address_line_1": "Calle Destino 456",
+            "address_line_2": ""
+        },
+        "parcels": [
+            {
+                "length": 30,
+                "width": 20,
+                "height": 10,
+                "weight": "1.5",
+                "package_protected": false,
+                "declared_value": "790"
+            }
+        ],
+        "requested_carriers": [
+            "fedex",
+            "dhl",
+            "estafeta"
+        ]
+    },
+    "token_obtained": "aAUFKP8HKydy5UrLrb\/r..."
+}
