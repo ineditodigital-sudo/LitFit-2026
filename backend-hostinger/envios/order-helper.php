@@ -208,7 +208,9 @@ function shipping_create_externally($orderId) {
                 'address_from' => [
                     'street1' => 'Cedro 305', 'name' => 'LITFIT Admin', 'company' => 'LITFIT', 
                     'phone' => '4491952361', 'email' => 'mmedellin_89@hotmail.com', 
-                    'reference' => 'LITFIT Office', 'postal_code' => '20020', 'country_code' => 'MX'
+                    'reference' => 'LITFIT Office', 'postal_code' => '20020', 'country_code' => 'MX',
+                    'city' => 'Aguascalientes', 'state' => 'Aguascalientes',
+                    'area_level1' => 'Aguascalientes', 'area_level2' => 'Aguascalientes', 'area_level3' => 'Circunvalación Nte'
                 ],
                 'address_to' => [
                     'street1' => cleanStr($formData['street'] ?? 'No especificada', 45),
@@ -241,6 +243,7 @@ function shipping_create_externally($orderId) {
                 ]],
                 'shipper_address' => [
                     'address' => 'Cedro 305', 'postal_code' => '20020', 'reference' => 'LITFIT Office',
+                    'city' => 'Aguascalientes', 'state' => 'Aguascalientes',
                     'country' => 'MX', 'person_name' => 'LITFIT Admin', 'phone' => '4491952361', 'email' => 'mmedellin_89@hotmail.com'
                 ],
                 'recipient_address' => [

@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * ============================================
- * INTEGRACIÓN CON ENVÍOS INTERNACIONALES - API REAL
+ * INTEGRACIÃ“N CON ENVÃOS INTERNACIONALES - API REAL
  * ============================================
  * 
- * Este archivo crea automáticamente envíos en enviosinternacionales.com
- * usando su API REST después de un pago exitoso, con autenticación dinámica.
+ * Este archivo crea automÃ¡ticamente envÃ­os en enviosinternacionales.com
+ * usando su API REST despuÃ©s de un pago exitoso, con autenticaciÃ³n dinÃ¡mica.
  * 
- * 📍 UBICACIÓN EN CPANEL:
+ * ðŸ“ UBICACIÃ“N EN CPANEL:
  * /home/inedito/public_html/cdn.inedito.digital/envios/crear-orden.php
  */
 
@@ -15,7 +15,7 @@
 // CREDENCIALES DE LA API (PERMANENTES)
 // ============================================
 
-// ⚠️ PEGA AQUÍ TUS CREDENCIALES (Desde Integraciones > API)
+// âš ï¸ PEGA AQUÃ TUS CREDENCIALES (Desde Integraciones > API)
 define('ENVIOS_CLIENT_ID', 'brvLtZIWJaJTOZxEWxUlOA6dZksfLOMDfS9ZvEHBLG0');
 define('ENVIOS_CLIENT_SECRET', 'Lh5MdoKxgcgn-PfQi7141KTq-Sdkifg8t_pa87QmBog');
 
@@ -24,18 +24,18 @@ define('ENVIOS_API_BASE', 'https://app.enviosinternacionales.com/api/v1');
 define('ENVIOS_AUTH_URL', ENVIOS_API_BASE . '/oauth/token');
 define('ENVIOS_CREATE_ORDER_URL', ENVIOS_API_BASE . '/orders');
 
-// Datos de origen (tu almacén/oficina) - AJUSTAR SEGÚN TU UBICACIÓN
-define('ORIGIN_NAME', 'LITFIT - Almacén Principal');
-define('ORIGIN_STREET', 'Av. Constitución 123, Col. Centro');
-define('ORIGIN_CITY', 'Monterrey');
-define('ORIGIN_STATE', 'Nuevo León');
-define('ORIGIN_ZIP', '64000');
+// Datos de origen (tu almacÃ©n/oficina) - AJUSTAR SEGÃšN TU UBICACIÃ“N
+define('ORIGIN_NAME', 'LITFIT - AlmacÃ©n Principal');
+define('ORIGIN_STREET', 'Av. ConstituciÃ³n 123, Col. Centro');
+define('ORIGIN_CITY', 'Aguascalientes');
+define('ORIGIN_STATE', 'Nuevo LeÃ³n');
+define('ORIGIN_ZIP', '20020');
 define('ORIGIN_COUNTRY', 'MX');
-define('ORIGIN_PHONE', '8112345678');
-define('ORIGIN_EMAIL', 'ricoro845@gmail.com');
+define('ORIGIN_PHONE', '4491952361');
+define('ORIGIN_EMAIL', 'mmedellin_89@hotmail.com');
 
 // ============================================
-// CONFIGURACIÓN DE HEADERS Y CORS
+// CONFIGURACIÃ“N DE HEADERS Y CORS
 // ============================================
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+    echo json_encode(['success' => false, 'message' => 'MÃ©todo no permitido']);
     exit;
 }
 
@@ -83,13 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // ============================================
 
 $rawInput = file_get_contents('php://input');
-error_log("📥 Datos recibidos: " . substr($rawInput, 0, 500));
+error_log("ðŸ“¥ Datos recibidos: " . substr($rawInput, 0, 500));
 
 $input = json_decode($rawInput, true);
 
 if (!$input) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'JSON inválido']);
+    echo json_encode(['success' => false, 'message' => 'JSON invÃ¡lido']);
     exit;
 }
 
@@ -111,10 +111,10 @@ $shippingCost = $input['shippingCost'] ?? 0;
 $totalPrice = $input['totalPrice'] ?? ($total - $shippingCost);
 $paymentMethod = $input['paymentMethod'] ?? 'Mercado Pago';
 
-error_log("📦 Procesando orden: " . $orderId);
+error_log("ðŸ“¦ Procesando orden: " . $orderId);
 
 // ============================================
-// FUNCIÓN PARA OBTENER TOKEN FRESCO
+// FUNCIÃ“N PARA OBTENER TOKEN FRESCO
 // ============================================
 function obtenerTokenFresco() {
     $data = [
@@ -140,7 +140,7 @@ function obtenerTokenFresco() {
         return $json['access_token'] ?? false;
     }
     
-    error_log("❌ Error obteniendo Token. HTTP Code: " . $httpCode . " Respuesta: " . $response);
+    error_log("âŒ Error obteniendo Token. HTTP Code: " . $httpCode . " Respuesta: " . $response);
     return false;
 }
 
@@ -155,7 +155,7 @@ function calcularPesoTotal($items) {
         $nombreLower = strtolower($item['name']);
         $cantidad = intval($item['quantity'] ?? 1);
         
-        if (strpos($nombreLower, 'proteína') !== false || strpos($nombreLower, 'protein') !== false) {
+        if (strpos($nombreLower, 'proteÃ­na') !== false || strpos($nombreLower, 'protein') !== false) {
             $pesoTotal += 1.2 * $cantidad;
         } elseif (strpos($nombreLower, 'barra') !== false || strpos($nombreLower, 'bar') !== false) {
             $pesoTotal += 0.1 * $cantidad;
@@ -168,7 +168,7 @@ function calcularPesoTotal($items) {
 }
 
 $pesoTotal = calcularPesoTotal($items);
-error_log("⚖️ Peso calculado: " . $pesoTotal . " kg");
+error_log("âš–ï¸ Peso calculado: " . $pesoTotal . " kg");
 
 $dimensions = [
     'length' => 30,
@@ -177,7 +177,7 @@ $dimensions = [
 ];
 
 // ============================================
-// PREPARAR DESCRIPCIÓN DE PRODUCTOS
+// PREPARAR DESCRIPCIÃ“N DE PRODUCTOS
 // ============================================
 
 $productosTexto = '';
@@ -192,7 +192,7 @@ foreach ($items as $item) {
         $descripcion .= " (" . $item['size'] . ")";
     }
     
-    $productosTexto .= "• " . $descripcion . " x" . $item['quantity'] . "\n";
+    $productosTexto .= "â€¢ " . $descripcion . " x" . $item['quantity'] . "\n";
     
     $productosArray[] = [
         'name' => $item['name'],
@@ -239,7 +239,7 @@ $shipmentData = [
                 'dimension_unit' => 'cm',
                 'mass_unit' => 'kg',
                 'package_type' => 'box',
-                'consignment_note' => 'Suplementos alimenticios - Proteínas y barras energéticas'
+                'consignment_note' => 'Suplementos alimenticios - ProteÃ­nas y barras energÃ©ticas'
             ]
         ],
         
@@ -248,7 +248,7 @@ $shipmentData = [
         'shipper_address' => [
             'address' => ORIGIN_STREET,
             'internal_number' => '',
-            'reference' => 'Almacén LITFIT',
+            'reference' => 'AlmacÃ©n LITFIT',
             'sector' => 'Centro',
             'city' => ORIGIN_CITY,
             'state' => ORIGIN_STATE,
@@ -264,7 +264,7 @@ $shipmentData = [
             'address' => $formData['street'] ?? '',
             'internal_number' => '',
             'reference' => $formData['notes'] ?? '',
-            'sector' => $formData['colonia'] ?? '', // ✅ CORREGIDO: usar 'colonia' en lugar de 'neighborhood'
+            'sector' => $formData['colonia'] ?? '', // âœ… CORREGIDO: usar 'colonia' en lugar de 'neighborhood'
             'city' => $formData['city'] ?? '',
             'state' => $formData['state'] ?? '',
             'postal_code' => $formData['zipCode'] ?? '',
@@ -277,25 +277,25 @@ $shipmentData = [
     ]
 ];
 
-error_log("📤 Datos preparados para API de Envíos Internacionales");
-error_log("📦 Destino: " . $shipmentData['order']['recipient_address']['city'] . ", " . $shipmentData['order']['recipient_address']['state']);
-error_log("📋 Colonia: " . ($formData['colonia'] ?? 'N/A'));
+error_log("ðŸ“¤ Datos preparados para API de EnvÃ­os Internacionales");
+error_log("ðŸ“¦ Destino: " . $shipmentData['order']['recipient_address']['city'] . ", " . $shipmentData['order']['recipient_address']['state']);
+error_log("ðŸ“‹ Colonia: " . ($formData['colonia'] ?? 'N/A'));
 
 // ============================================
-// LLAMAR A LA API PARA CREAR EL ENVÍO
+// LLAMAR A LA API PARA CREAR EL ENVÃO
 // ============================================
 
-error_log("🔄 Obteniendo token de autorización fresco...");
+error_log("ðŸ”„ Obteniendo token de autorizaciÃ³n fresco...");
 $tokenFresco = obtenerTokenFresco();
 
 if (!$tokenFresco) {
-    error_log("❌ No se pudo autenticar con la API de envíos. Abortando creación.");
+    error_log("âŒ No se pudo autenticar con la API de envÃ­os. Abortando creaciÃ³n.");
     enviarEmailFallback($orderId, $formData, $productosTexto, $total, $shippingCost, $paymentMethod);
     
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => 'Orden guardada (Fallo de autenticación API, notificación por email)',
+        'message' => 'Orden guardada (Fallo de autenticaciÃ³n API, notificaciÃ³n por email)',
         'orderId' => $orderId,
         'method' => 'email_fallback'
     ]);
@@ -310,7 +310,7 @@ $headers = [
     $authHeader
 ];
 
-error_log("🚀 Llamando a API con token fresco: " . ENVIOS_CREATE_ORDER_URL);
+error_log("ðŸš€ Llamando a API con token fresco: " . ENVIOS_CREATE_ORDER_URL);
 
 $ch = curl_init(ENVIOS_CREATE_ORDER_URL);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -325,21 +325,21 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlError = curl_error($ch);
 curl_close($ch);
 
-error_log("📥 HTTP Code: " . $httpCode);
+error_log("ðŸ“¥ HTTP Code: " . $httpCode);
 
 // ============================================
 // MANEJAR RESPUESTA DE LA API
 // ============================================
 
 if ($curlError) {
-    error_log("❌ CURL Error: " . $curlError);
+    error_log("âŒ CURL Error: " . $curlError);
     
     enviarEmailFallback($orderId, $formData, $productosTexto, $total, $shippingCost, $paymentMethod);
     
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => 'Orden guardada (API no disponible, notificación por email)',
+        'message' => 'Orden guardada (API no disponible, notificaciÃ³n por email)',
         'orderId' => $orderId,
         'method' => 'email_fallback',
         'apiError' => $curlError
@@ -347,7 +347,7 @@ if ($curlError) {
     exit;
 }
 
-error_log("📥 Respuesta API: " . substr($response, 0, 500));
+error_log("ðŸ“¥ Respuesta API: " . substr($response, 0, 500));
 
 $apiResponse = json_decode($response, true);
 
@@ -356,14 +356,14 @@ $apiResponse = json_decode($response, true);
 // ============================================
 
 if ($httpCode === 200 || $httpCode === 201) {
-    error_log("✅ Envío creado exitosamente en Envíos Internacionales");
+    error_log("âœ… EnvÃ­o creado exitosamente en EnvÃ­os Internacionales");
     
     guardarLog($orderId, $formData, $total, $paymentMethod, 'API', $apiResponse);
     
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => 'Envío creado exitosamente',
+        'message' => 'EnvÃ­o creado exitosamente',
         'orderId' => $orderId,
         'method' => 'api',
         'shipmentId' => $apiResponse['id'] ?? null,
@@ -378,15 +378,15 @@ if ($httpCode === 200 || $httpCode === 201) {
 // MANEJAR ERRORES DE LA API
 // ============================================
 
-error_log("❌ Error HTTP " . $httpCode . " de Envíos Internacionales");
-error_log("📋 Respuesta: " . $response);
+error_log("âŒ Error HTTP " . $httpCode . " de EnvÃ­os Internacionales");
+error_log("ðŸ“‹ Respuesta: " . $response);
 
 enviarEmailFallback($orderId, $formData, $productosTexto, $total, $shippingCost, $paymentMethod);
 
 http_response_code(200);
 echo json_encode([
     'success' => true,
-    'message' => 'Orden guardada (error en API, notificación por email)',
+    'message' => 'Orden guardada (error en API, notificaciÃ³n por email)',
     'orderId' => $orderId,
     'method' => 'email_fallback',
     'apiError' => [
@@ -400,12 +400,12 @@ echo json_encode([
 // ============================================
 
 function enviarEmailFallback($orderId, $formData, $productosTexto, $total, $shippingCost, $paymentMethod) {
-    error_log("📧 Enviando email de fallback...");
+    error_log("ðŸ“§ Enviando email de fallback...");
     
     $emailDestino = 'ricoro845@gmail.com';
     
     $direccionCompleta = sprintf(
-        "%s, Col. %s, %s, %s, CP %s, México",
+        "%s, Col. %s, %s, %s, CP %s, MÃ©xico",
         $formData['street'] ?? '',
         $formData['colonia'] ?? '',
         $formData['city'] ?? '',
@@ -413,7 +413,7 @@ function enviarEmailFallback($orderId, $formData, $productosTexto, $total, $ship
         $formData['zipCode'] ?? ''
     );
     
-    $asunto = "⚠️ Nueva Orden de Envío - LITFIT - #" . $orderId . " (Crear Manualmente)";
+    $asunto = "âš ï¸ Nueva Orden de EnvÃ­o - LITFIT - #" . $orderId . " (Crear Manualmente)";
     
     $mensaje = "
 <!DOCTYPE html>
@@ -435,50 +435,50 @@ function enviarEmailFallback($orderId, $formData, $productosTexto, $total, $ship
 <body>
     <div class='container'>
         <div class='header'>
-            <h1>⚠️ Nueva Orden de Envío - LITFIT</h1>
+            <h1>âš ï¸ Nueva Orden de EnvÃ­o - LITFIT</h1>
             <p>Orden #" . htmlspecialchars($orderId) . "</p>
         </div>
         
         <div class='alert'>
-            <strong>⚠️ ATENCIÓN:</strong> Esta orden no pudo ser creada automáticamente en la API de Envíos Internacionales.
-            Por favor, créala manualmente en su sistema usando los siguientes datos.
+            <strong>âš ï¸ ATENCIÃ“N:</strong> Esta orden no pudo ser creada automÃ¡ticamente en la API de EnvÃ­os Internacionales.
+            Por favor, crÃ©ala manualmente en su sistema usando los siguientes datos.
         </div>
         
         <div class='section'>
-            <h2>📦 INFORMACIÓN DEL DESTINATARIO</h2>
+            <h2>ðŸ“¦ INFORMACIÃ“N DEL DESTINATARIO</h2>
             <div class='value'><span class='label'>Nombre:</span> " . htmlspecialchars(($formData['firstName'] ?? '') . ' ' . ($formData['lastName'] ?? '')) . "</div>
-            <div class='value'><span class='label'>Teléfono:</span> " . htmlspecialchars($formData['phone'] ?? '') . "</div>
+            <div class='value'><span class='label'>TelÃ©fono:</span> " . htmlspecialchars($formData['phone'] ?? '') . "</div>
             <div class='value'><span class='label'>Email:</span> " . htmlspecialchars($formData['email'] ?? '') . "</div>
-            <div class='value'><span class='label'>Dirección:</span> " . htmlspecialchars($direccionCompleta) . "</div>
-            <div class='value'><span class='label'>Código Postal:</span> <strong>" . htmlspecialchars($formData['zipCode'] ?? '') . "</strong></div>
+            <div class='value'><span class='label'>DirecciÃ³n:</span> " . htmlspecialchars($direccionCompleta) . "</div>
+            <div class='value'><span class='label'>CÃ³digo Postal:</span> <strong>" . htmlspecialchars($formData['zipCode'] ?? '') . "</strong></div>
             <div class='value'><span class='label'>Colonia:</span> <strong>" . htmlspecialchars($formData['colonia'] ?? 'N/A') . "</strong></div>
         </div>
         
         <div class='section'>
-            <h2>📦 PRODUCTOS A ENVIAR</h2>
+            <h2>ðŸ“¦ PRODUCTOS A ENVIAR</h2>
             <div class='products'>
                 <pre>" . htmlspecialchars($productosTexto) . "</pre>
             </div>
         </div>
         
         <div class='section'>
-            <h2>💰 INFORMACIÓN DEL PAGO</h2>
-            <div class='value'><span class='label'>Método de pago:</span> " . htmlspecialchars($paymentMethod) . "</div>
+            <h2>ðŸ’° INFORMACIÃ“N DEL PAGO</h2>
+            <div class='value'><span class='label'>MÃ©todo de pago:</span> " . htmlspecialchars($paymentMethod) . "</div>
             <div class='value'><span class='label'>Total productos:</span> $" . number_format($total - $shippingCost, 2) . " MXN</div>
-            <div class='value'><span class='label'>Costo de envío:</span> $" . number_format($shippingCost, 2) . " MXN</div>
+            <div class='value'><span class='label'>Costo de envÃ­o:</span> $" . number_format($shippingCost, 2) . " MXN</div>
             <div class='value'><span class='label'>Total pagado:</span> <strong>$" . number_format($total, 2) . " MXN</strong></div>
-            <div class='value'><span class='label'>Estado:</span> <span style='color: green; font-weight: bold;'>✅ PAGADO</span></div>
+            <div class='value'><span class='label'>Estado:</span> <span style='color: green; font-weight: bold;'>âœ… PAGADO</span></div>
         </div>
         
         <div class='section'>
-            <h2>📝 NOTAS ADICIONALES</h2>
+            <h2>ðŸ“ NOTAS ADICIONALES</h2>
             <p>" . htmlspecialchars($formData['notes'] ?? 'Sin notas') . "</p>
         </div>
         
         <div class='footer'>
-            <p>Este email fue generado automáticamente por el sistema de LITFIT</p>
-            <p><strong>Por favor, crea el envío manualmente en su sistema</strong></p>
-            <p>Número de referencia: " . htmlspecialchars($orderId) . "</p>
+            <p>Este email fue generado automÃ¡ticamente por el sistema de LITFIT</p>
+            <p><strong>Por favor, crea el envÃ­o manualmente en su sistema</strong></p>
+            <p>NÃºmero de referencia: " . htmlspecialchars($orderId) . "</p>
         </div>
     </div>
 </body>
@@ -496,9 +496,9 @@ function enviarEmailFallback($orderId, $formData, $productosTexto, $total, $ship
     $emailEnviado = mail($emailDestino, $asunto, $mensaje, implode("\r\n", $headers));
     
     if ($emailEnviado) {
-        error_log("✅ Email de fallback enviado correctamente");
+        error_log("âœ… Email de fallback enviado correctamente");
     } else {
-        error_log("❌ Error enviando email de fallback");
+        error_log("âŒ Error enviando email de fallback");
     }
 }
 
@@ -506,7 +506,7 @@ function guardarLog($orderId, $formData, $total, $paymentMethod, $metodo, $apiRe
     $logFile = __DIR__ . '/ordenes-log.txt';
     
     $logEntry = sprintf(
-        "[%s] Orden: %s | Cliente: %s | Total: $%s | Método Pago: %s | Método Envío: %s | Tracking: %s\n",
+        "[%s] Orden: %s | Cliente: %s | Total: $%s | MÃ©todo Pago: %s | MÃ©todo EnvÃ­o: %s | Tracking: %s\n",
         date('Y-m-d H:i:s'),
         $orderId,
         ($formData['firstName'] ?? '') . ' ' . ($formData['lastName'] ?? ''),
@@ -517,6 +517,8 @@ function guardarLog($orderId, $formData, $total, $paymentMethod, $metodo, $apiRe
     );
     
     file_put_contents($logFile, $logEntry, FILE_APPEND);
-    error_log("✅ Log guardado localmente");
+    error_log("âœ… Log guardado localmente");
 }
 ?>
+
+

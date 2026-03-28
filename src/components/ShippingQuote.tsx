@@ -120,10 +120,10 @@ export function ShippingQuote({
           order_id: `LITFIT-${Date.now()}`,
           address_from: {
             country_code: "MX",
-            postal_code: "66477", // O el CP de tu almacén real (64000)
-            area_level1: "Nuevo León",
-            area_level2: "San Pedro Garza García",
-            area_level3: "Centro"
+            postal_code: "20020", 
+            area_level1: "Aguascalientes",
+            area_level2: "Aguascalientes",
+            area_level3: "Circunvalación Nte"
           },
           address_to: {
             country_code: "MX",

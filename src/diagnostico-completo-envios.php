@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 /**
- * DIAGNÓSTICO COMPLETO - AUTENTICACIÓN + CREACIÓN DE ENVÍO
+ * DIAGNÃ“STICO COMPLETO - AUTENTICACIÃ“N + CREACIÃ“N DE ENVÃO
  * 
  * Este archivo prueba TODO EL FLUJO:
- * 1. Obtener token de autenticación
- * 2. Crear un envío de prueba con ese token
+ * 1. Obtener token de autenticaciÃ³n
+ * 2. Crear un envÃ­o de prueba con ese token
  * 
  * INSTRUCCIONES:
  * 1. Sube este archivo a: /public_html/cdn.inedito.digital/envios/
@@ -26,7 +26,7 @@ define('CREATE_ORDER_URL', 'https://app.enviosinternacionales.com/api/v1/orders'
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Diagnóstico Completo - Envíos Internacionales</title>
+    <title>DiagnÃ³stico Completo - EnvÃ­os Internacionales</title>
     <style>
         body {
             font-family: 'Courier New', monospace;
@@ -94,7 +94,7 @@ define('CREATE_ORDER_URL', 'https://app.enviosinternacionales.com/api/v1/orders'
 </head>
 <body>
     <div class="container">
-        <h1>🔍 Diagnóstico Completo - Autenticación + Creación</h1>
+        <h1>ðŸ” DiagnÃ³stico Completo - AutenticaciÃ³n + CreaciÃ³n</h1>
 
 <?php
 
@@ -102,7 +102,7 @@ define('CREATE_ORDER_URL', 'https://app.enviosinternacionales.com/api/v1/orders'
 // PASO 1: OBTENER TOKEN
 // ============================================
 echo '<div class="test-section">';
-echo '<div class="test-title">🔐 PASO 1: Obtener Token de Autenticación</div>';
+echo '<div class="test-title">ðŸ” PASO 1: Obtener Token de AutenticaciÃ³n</div>';
 
 $postData = http_build_query([
     'grant_type' => 'client_credentials',
@@ -126,13 +126,13 @@ $httpCode1 = curl_getinfo($ch1, CURLINFO_HTTP_CODE);
 $curlError1 = curl_error($ch1);
 curl_close($ch1);
 
-echo '<p><span class="info">📥 HTTP Status Code:</span> <span class="' . ($httpCode1 == 200 ? 'success' : 'error') . '">' . $httpCode1 . '</span></p>';
+echo '<p><span class="info">ðŸ“¥ HTTP Status Code:</span> <span class="' . ($httpCode1 == 200 ? 'success' : 'error') . '">' . $httpCode1 . '</span></p>';
 
 if ($curlError1) {
-    echo '<p class="error">❌ CURL Error: ' . htmlspecialchars($curlError1) . '</p>';
+    echo '<p class="error">âŒ CURL Error: ' . htmlspecialchars($curlError1) . '</p>';
 }
 
-echo '<p><span class="info">📥 Response:</span></p>';
+echo '<p><span class="info">ðŸ“¥ Response:</span></p>';
 echo '<pre>' . htmlspecialchars($response1) . '</pre>';
 
 $json1 = json_decode($response1, true);
@@ -140,14 +140,14 @@ $token = null;
 
 if ($httpCode1 == 200 && isset($json1['access_token'])) {
     $token = $json1['access_token'];
-    echo '<p class="success">✅ Token obtenido exitosamente!</p>';
-    echo '<p><span class="info">🎟️ Token (primeros 50 caracteres):</span> <code>' . substr($token, 0, 50) . '...</code></p>';
+    echo '<p class="success">âœ… Token obtenido exitosamente!</p>';
+    echo '<p><span class="info">ðŸŽŸï¸ Token (primeros 50 caracteres):</span> <code>' . substr($token, 0, 50) . '...</code></p>';
     
     if (isset($json1['expires_in'])) {
-        echo '<p><span class="info">⏰ Expira en:</span> ' . $json1['expires_in'] . ' segundos</p>';
+        echo '<p><span class="info">â° Expira en:</span> ' . $json1['expires_in'] . ' segundos</p>';
     }
 } else {
-    echo '<p class="error">❌ NO se pudo obtener el token. Proceso detenido.</p>';
+    echo '<p class="error">âŒ NO se pudo obtener el token. Proceso detenido.</p>';
     echo '</div></div></body></html>';
     exit;
 }
@@ -155,10 +155,10 @@ if ($httpCode1 == 200 && isset($json1['access_token'])) {
 echo '</div>';
 
 // ============================================
-// PASO 2: CREAR ENVÍO DE PRUEBA
+// PASO 2: CREAR ENVÃO DE PRUEBA
 // ============================================
 echo '<div class="test-section">';
-echo '<div class="test-title">📦 PASO 2: Crear Envío de Prueba con el Token</div>';
+echo '<div class="test-title">ðŸ“¦ PASO 2: Crear EnvÃ­o de Prueba con el Token</div>';
 
 // Datos de prueba simplificados
 $shipmentData = [
@@ -180,13 +180,13 @@ $shipmentData = [
                 'dimension_unit' => 'cm',
                 'mass_unit' => 'kg',
                 'package_type' => 'box',
-                'consignment_note' => 'Prueba de diagnóstico - Suplementos alimenticios'
+                'consignment_note' => 'Prueba de diagnÃ³stico - Suplementos alimenticios'
             ]
         ],
         
         'products' => [
             [
-                'name' => 'Proteína ISO - Prueba',
+                'name' => 'ProteÃ­na ISO - Prueba',
                 'sku' => 'TEST-SKU-123',
                 'price' => '899.00',
                 'quantity' => 1,
@@ -199,24 +199,24 @@ $shipmentData = [
         ],
         
         'shipper_address' => [
-            'address' => 'Av. Constitución 123, Col. Centro',
+            'address' => 'Av. ConstituciÃ³n 123, Col. Centro',
             'internal_number' => '',
-            'reference' => 'Almacén LITFIT',
+            'reference' => 'AlmacÃ©n LITFIT',
             'sector' => 'Centro',
-            'city' => 'Monterrey',
-            'state' => 'Nuevo León',
+            'city' => 'Aguascalientes',
+            'state' => 'Nuevo LeÃ³n',
             'postal_code' => '64000',
             'country' => 'MX',
-            'person_name' => 'LITFIT - Almacén Principal',
+            'person_name' => 'LITFIT - AlmacÃ©n Principal',
             'company' => 'LITFIT',
-            'phone' => '8112345678',
+            'phone' => '4491952361',
             'email' => 'ricoro845@gmail.com'
         ],
         
         'recipient_address' => [
             'address' => 'Vallarta 216 #8',
             'internal_number' => '',
-            'reference' => 'Prueba de diagnóstico',
+            'reference' => 'Prueba de diagnÃ³stico',
             'sector' => 'Vistas de Oriente',
             'city' => 'Aguascalientes',
             'state' => 'Aguascalientes',
@@ -230,7 +230,7 @@ $shipmentData = [
     ]
 ];
 
-echo '<p><span class="info">📤 Datos del envío:</span></p>';
+echo '<p><span class="info">ðŸ“¤ Datos del envÃ­o:</span></p>';
 echo '<pre>' . htmlspecialchars(json_encode($shipmentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) . '</pre>';
 
 // PROBANDO 3 FORMAS DIFERENTES DE ENVIAR EL AUTHORIZATION HEADER
@@ -239,7 +239,7 @@ echo '<pre>' . htmlspecialchars(json_encode($shipmentData, JSON_PRETTY_PRINT | J
 // INTENTO 1: Authorization: Bearer {token}
 // ============================================
 echo '<div style="background: #2a2a2a; padding: 15px; margin: 20px 0; border-radius: 5px;">';
-echo '<h3 style="color: #FFD700;">🧪 INTENTO 1: Authorization: Bearer {token}</h3>';
+echo '<h3 style="color: #FFD700;">ðŸ§ª INTENTO 1: Authorization: Bearer {token}</h3>';
 
 $ch2 = curl_init(CREATE_ORDER_URL);
 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
@@ -253,7 +253,7 @@ curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode($shipmentData));
 curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, true);
 curl_setopt($ch2, CURLOPT_TIMEOUT, 30);
 
-echo '<p><span class="info">📤 Headers:</span></p>';
+echo '<p><span class="info">ðŸ“¤ Headers:</span></p>';
 echo '<pre>Content-Type: application/json
 Accept: application/json
 Authorization: Bearer ' . substr($token, 0, 30) . '...</pre>';
@@ -263,26 +263,26 @@ $httpCode2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
 $curlError2 = curl_error($ch2);
 curl_close($ch2);
 
-echo '<p><span class="info">📥 HTTP Status Code:</span> <span class="' . ($httpCode2 == 200 || $httpCode2 == 201 ? 'success' : 'error') . '">' . $httpCode2 . '</span></p>';
+echo '<p><span class="info">ðŸ“¥ HTTP Status Code:</span> <span class="' . ($httpCode2 == 200 || $httpCode2 == 201 ? 'success' : 'error') . '">' . $httpCode2 . '</span></p>';
 
 if ($curlError2) {
-    echo '<p class="error">❌ CURL Error: ' . htmlspecialchars($curlError2) . '</p>';
+    echo '<p class="error">âŒ CURL Error: ' . htmlspecialchars($curlError2) . '</p>';
 }
 
-echo '<p><span class="info">📥 Response:</span></p>';
+echo '<p><span class="info">ðŸ“¥ Response:</span></p>';
 echo '<pre>' . htmlspecialchars(substr($response2, 0, 1000)) . '</pre>';
 
 if ($httpCode2 == 200 || $httpCode2 == 201) {
-    echo '<p class="success">✅ ¡ÉXITO! Este método funcionó.</p>';
+    echo '<p class="success">âœ… Â¡Ã‰XITO! Este mÃ©todo funcionÃ³.</p>';
 } else {
-    echo '<p class="error">❌ Este método NO funcionó (HTTP ' . $httpCode2 . ')</p>';
-    // MOSTRAR ANÁLISIS DETALLADO
+    echo '<p class="error">âŒ Este mÃ©todo NO funcionÃ³ (HTTP ' . $httpCode2 . ')</p>';
+    // MOSTRAR ANÃLISIS DETALLADO
     if (empty($response2)) {
-        echo '<p class="warning">⚠️ La API NO devolvió ningún mensaje de error (respuesta vacía)</p>';
+        echo '<p class="warning">âš ï¸ La API NO devolviÃ³ ningÃºn mensaje de error (respuesta vacÃ­a)</p>';
     }
     $responseJson = json_decode($response2, true);
     if ($responseJson) {
-        echo '<p class="info">📋 Error parseado:</p>';
+        echo '<p class="info">ðŸ“‹ Error parseado:</p>';
         echo '<pre>' . htmlspecialchars(json_encode($responseJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) . '</pre>';
     }
 }
@@ -293,7 +293,7 @@ echo '</div>';
 // INTENTO 2: Usando access_token en query string
 // ============================================
 echo '<div style="background: #2a2a2a; padding: 15px; margin: 20px 0; border-radius: 5px;">';
-echo '<h3 style="color: #FFD700;">🧪 INTENTO 2: Token en URL (?access_token=...)</h3>';
+echo '<h3 style="color: #FFD700;">ðŸ§ª INTENTO 2: Token en URL (?access_token=...)</h3>';
 
 $ch3 = curl_init(CREATE_ORDER_URL . '?access_token=' . urlencode($token));
 curl_setopt($ch3, CURLOPT_RETURNTRANSFER, true);
@@ -306,7 +306,7 @@ curl_setopt($ch3, CURLOPT_POSTFIELDS, json_encode($shipmentData));
 curl_setopt($ch3, CURLOPT_SSL_VERIFYPEER, true);
 curl_setopt($ch3, CURLOPT_TIMEOUT, 30);
 
-echo '<p><span class="info">📤 URL:</span></p>';
+echo '<p><span class="info">ðŸ“¤ URL:</span></p>';
 echo '<pre>' . CREATE_ORDER_URL . '?access_token=...</pre>';
 
 $response3 = curl_exec($ch3);
@@ -314,19 +314,19 @@ $httpCode3 = curl_getinfo($ch3, CURLINFO_HTTP_CODE);
 $curlError3 = curl_error($ch3);
 curl_close($ch3);
 
-echo '<p><span class="info">📥 HTTP Status Code:</span> <span class="' . ($httpCode3 == 200 || $httpCode3 == 201 ? 'success' : 'error') . '">' . $httpCode3 . '</span></p>';
+echo '<p><span class="info">ðŸ“¥ HTTP Status Code:</span> <span class="' . ($httpCode3 == 200 || $httpCode3 == 201 ? 'success' : 'error') . '">' . $httpCode3 . '</span></p>';
 
 if ($curlError3) {
-    echo '<p class="error">❌ CURL Error: ' . htmlspecialchars($curlError3) . '</p>';
+    echo '<p class="error">âŒ CURL Error: ' . htmlspecialchars($curlError3) . '</p>';
 }
 
-echo '<p><span class="info">📥 Response:</span></p>';
+echo '<p><span class="info">ðŸ“¥ Response:</span></p>';
 echo '<pre>' . htmlspecialchars(substr($response3, 0, 1000)) . '</pre>';
 
 if ($httpCode3 == 200 || $httpCode3 == 201) {
-    echo '<p class="success">✅ ¡ÉXITO! Este método funcionó.</p>';
+    echo '<p class="success">âœ… Â¡Ã‰XITO! Este mÃ©todo funcionÃ³.</p>';
 } else {
-    echo '<p class="error">❌ Este método NO funcionó (HTTP ' . $httpCode3 . ')</p>';
+    echo '<p class="error">âŒ Este mÃ©todo NO funcionÃ³ (HTTP ' . $httpCode3 . ')</p>';
 }
 
 echo '</div>';
@@ -335,7 +335,7 @@ echo '</div>';
 // INTENTO 3: Usando X-API-TOKEN header
 // ============================================
 echo '<div style="background: #2a2a2a; padding: 15px; margin: 20px 0; border-radius: 5px;">';
-echo '<h3 style="color: #FFD700;">🧪 INTENTO 3: X-API-TOKEN header</h3>';
+echo '<h3 style="color: #FFD700;">ðŸ§ª INTENTO 3: X-API-TOKEN header</h3>';
 
 $ch4 = curl_init(CREATE_ORDER_URL);
 curl_setopt($ch4, CURLOPT_RETURNTRANSFER, true);
@@ -349,7 +349,7 @@ curl_setopt($ch4, CURLOPT_POSTFIELDS, json_encode($shipmentData));
 curl_setopt($ch4, CURLOPT_SSL_VERIFYPEER, true);
 curl_setopt($ch4, CURLOPT_TIMEOUT, 30);
 
-echo '<p><span class="info">📤 Headers:</span></p>';
+echo '<p><span class="info">ðŸ“¤ Headers:</span></p>';
 echo '<pre>Content-Type: application/json
 Accept: application/json
 X-API-TOKEN: ' . substr($token, 0, 30) . '...</pre>';
@@ -359,19 +359,19 @@ $httpCode4 = curl_getinfo($ch4, CURLINFO_HTTP_CODE);
 $curlError4 = curl_error($ch4);
 curl_close($ch4);
 
-echo '<p><span class="info">📥 HTTP Status Code:</span> <span class="' . ($httpCode4 == 200 || $httpCode4 == 201 ? 'success' : 'error') . '">' . $httpCode4 . '</span></p>';
+echo '<p><span class="info">ðŸ“¥ HTTP Status Code:</span> <span class="' . ($httpCode4 == 200 || $httpCode4 == 201 ? 'success' : 'error') . '">' . $httpCode4 . '</span></p>';
 
 if ($curlError4) {
-    echo '<p class="error">❌ CURL Error: ' . htmlspecialchars($curlError4) . '</p>';
+    echo '<p class="error">âŒ CURL Error: ' . htmlspecialchars($curlError4) . '</p>';
 }
 
-echo '<p><span class="info">📥 Response:</span></p>';
+echo '<p><span class="info">ðŸ“¥ Response:</span></p>';
 echo '<pre>' . htmlspecialchars(substr($response4, 0, 1000)) . '</pre>';
 
 if ($httpCode4 == 200 || $httpCode4 == 201) {
-    echo '<p class="success">✅ ¡ÉXITO! Este método funcionó.</p>';
+    echo '<p class="success">âœ… Â¡Ã‰XITO! Este mÃ©todo funcionÃ³.</p>';
 } else {
-    echo '<p class="error">❌ Este método NO funcionó (HTTP ' . $httpCode4 . ')</p>';
+    echo '<p class="error">âŒ Este mÃ©todo NO funcionÃ³ (HTTP ' . $httpCode4 . ')</p>';
 }
 
 echo '</div>';
@@ -382,34 +382,34 @@ echo '</div>';
 // RESUMEN FINAL
 // ============================================
 echo '<div class="test-section" style="background: #2a2a2a; border: 2px solid #00AAC7;">';
-echo '<div class="test-title" style="color: #00AAC7; font-size: 22px;">📊 RESUMEN FINAL</div>';
+echo '<div class="test-title" style="color: #00AAC7; font-size: 22px;">ðŸ“Š RESUMEN FINAL</div>';
 
 $metodoExitoso = null;
 
 if ($httpCode2 == 200 || $httpCode2 == 201) {
-    $metodoExitoso = '✅ INTENTO 1: Authorization: Bearer {token}';
+    $metodoExitoso = 'âœ… INTENTO 1: Authorization: Bearer {token}';
 }
 if ($httpCode3 == 200 || $httpCode3 == 201) {
-    $metodoExitoso = '✅ INTENTO 2: Token en URL (?access_token=...)';
+    $metodoExitoso = 'âœ… INTENTO 2: Token en URL (?access_token=...)';
 }
 if ($httpCode4 == 200 || $httpCode4 == 201) {
-    $metodoExitoso = '✅ INTENTO 3: X-API-TOKEN header';
+    $metodoExitoso = 'âœ… INTENTO 3: X-API-TOKEN header';
 }
 
 if ($metodoExitoso) {
-    echo '<p class="success" style="font-size: 20px;">🎉 ¡ÉXITO TOTAL!</p>';
-    echo '<p class="info" style="font-size: 18px;">🎯 Método que funcionó: <strong>' . $metodoExitoso . '</strong></p>';
-    echo '<p style="color: #ffaa00;">📋 ACCIÓN: Usa exactamente este método en tu archivo crear-orden.php</p>';
+    echo '<p class="success" style="font-size: 20px;">ðŸŽ‰ Â¡Ã‰XITO TOTAL!</p>';
+    echo '<p class="info" style="font-size: 18px;">ðŸŽ¯ MÃ©todo que funcionÃ³: <strong>' . $metodoExitoso . '</strong></p>';
+    echo '<p style="color: #ffaa00;">ðŸ“‹ ACCIÃ“N: Usa exactamente este mÃ©todo en tu archivo crear-orden.php</p>';
 } else {
-    echo '<p class="error" style="font-size: 20px;">❌ NINGÚN MÉTODO FUNCIONÓ</p>';
-    echo '<p class="warning">⚠️ Posibles causas:</p>';
+    echo '<p class="error" style="font-size: 20px;">âŒ NINGÃšN MÃ‰TODO FUNCIONÃ“</p>';
+    echo '<p class="warning">âš ï¸ Posibles causas:</p>';
     echo '<ul style="color: #ffaa00;">';
     echo '<li>La API requiere permisos adicionales (scopes)</li>';
-    echo '<li>Tu cuenta no tiene acceso para crear envíos</li>';
-    echo '<li>El formato de los datos está incorrecto</li>';
-    echo '<li>Se requiere activación manual de la API</li>';
+    echo '<li>Tu cuenta no tiene acceso para crear envÃ­os</li>';
+    echo '<li>El formato de los datos estÃ¡ incorrecto</li>';
+    echo '<li>Se requiere activaciÃ³n manual de la API</li>';
     echo '</ul>';
-    echo '<p class="info">📞 SIGUIENTE PASO: Contacta al soporte de enviosinternacionales.com</p>';
+    echo '<p class="info">ðŸ“ž SIGUIENTE PASO: Contacta al soporte de enviosinternacionales.com</p>';
 }
 
 echo '</div>';
@@ -417,9 +417,11 @@ echo '</div>';
 ?>
 
         <div style="text-align: center; margin-top: 30px;">
-            <a href="?" style="background: #00AAC7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🔄 Ejecutar Nuevamente</a>
+            <a href="?" style="background: #00AAC7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">ðŸ”„ Ejecutar Nuevamente</a>
         </div>
 
     </div>
 </body>
 </html>
+
+

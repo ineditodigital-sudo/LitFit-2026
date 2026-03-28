@@ -1,5 +1,5 @@
 <?php
-// ✅ HEADERS CORS
+// HEADERS CORS
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
@@ -18,7 +18,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    exit(json_encode(['success' => false, 'error' => 'Método no permitido']));
+    exit(json_encode(['success' => false, 'error' => 'Metodo no permitido']));
 }
 
 $input = file_get_contents('php://input');
@@ -29,27 +29,27 @@ if (!$data || !isset($data['order']) || !isset($data['shipping'])) {
     exit(json_encode(['success' => false, 'error' => 'Faltan datos requeridos']));
 }
 
-// 🔑 Credenciales
+// Credenciales
 $API_KEY = 'brvLtZIWJaJTOZxEWxUlOA6dZksfLOMDfS9ZvEHBLG0';
 $SECRET_KEY = 'Lh5MdoKxgcgn-PfQi7141KTq-Sdkifg8t_pa87QmBog';
 
 $order = $data['order'];
 $shipping = $data['shipping'];
 
-// Preparar datos para crear la guía
+// Preparar datos para crear la guia (ORIGEN: AGUASCALIENTES)
 $shipmentData = [
     'origin' => [
         'name' => 'LITFIT',
         'company' => 'LITFIT',
-        'email' => 'envios@litfit.com',
-        'phone' => '8112345678',
-        'street' => 'Calle Principal',
-        'number' => '123',
-        'district' => 'Centro',
-        'city' => 'San Pedro Garza García',
-        'state' => 'Nuevo León',
+        'email' => 'mmedellin_89@hotmail.com',
+        'phone' => '4491952361',
+        'street' => 'Cedro',
+        'number' => '305',
+        'district' => 'Circunvalaci贸n Nte',
+        'city' => 'Aguascalientes',
+        'state' => 'Aguascalientes',
         'country' => 'MX',
-        'zip_code' => '66477'
+        'zip_code' => '20020'
     ],
     'destination' => [
         'name' => $order['formData']['firstName'] . ' ' . $order['formData']['lastName'],
@@ -97,14 +97,14 @@ curl_close($ch);
 
 if ($curlError) {
     http_response_code(500);
-    exit(json_encode(['success' => false, 'error' => 'Error al crear guía', 'details' => $curlError]));
+    exit(json_encode(['success' => false, 'error' => 'Error al crear guia', 'details' => $curlError]));
 }
 
 $apiResponse = json_decode($response, true);
 
 if ($httpCode !== 200 && $httpCode !== 201) {
     http_response_code($httpCode);
-    exit(json_encode(['success' => false, 'error' => 'Error al crear guía', 'response' => $apiResponse]));
+    exit(json_encode(['success' => false, 'error' => 'Error al crear guia', 'response' => $apiResponse]));
 }
 
 echo json_encode([

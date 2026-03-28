@@ -18,6 +18,15 @@ orders.log
 # PHP Mailer vendor
 /php-mailer/
 
+# Order data (Customer Privacy)
+**/pedidos-json/
+**/*-json/
+
+# Sensitive Configs
+# Sugerencia: Mover estas claves a un archivo .env si es posible
+# backend-hostinger/envios/admin-auth.php
+# public_html/mercadopago/mercadopago-config.php
+
 # DS_Store
 .DS_Store
 Thumbs.db
