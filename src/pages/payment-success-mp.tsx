@@ -117,105 +117,27 @@ export default function PaymentSuccessMercadoPago() {
 
         const shippingAddress = `${formData.street}, Col. ${formData.colonia}, ${formData.city}, ${formData.state}, CP ${formData.zipCode}, ${formData.country}`;
         
-        // 1. Enviar email de notificación a la tienda (Admin)
-        const emailAdmin = fetch('https://litfitmexico.com/envios/send-email.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'order_admin',
-            data: {
-              customer_name: `${formData.firstName} ${formData.lastName}`,
-              customer_email: formData.email,
-              customer_phone: formData.phone,
-              shipping_address: shippingAddress,
-              order_items: orderDetails,
-              subtotal: `$${totalPrice.toLocaleString()}`,
-              shipping: `$${shippingCost}`,
-              total: `$${total.toLocaleString()}`,
-              notes: formData.notes || 'Sin notas'
-            }
-          })
-        });
-
-        // 2. Enviar email de confirmación al cliente
-        const emailCustomer = fetch('https://litfitmexico.com/envios/send-email.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'order_customer',
-            data: {
-              customer_name: formData.firstName,
-              customer_email: formData.email,
-              order_id: orderNum,
-              shipping_address: shippingAddress,
-              payment_method: 'Pago con Tarjeta / Mercado Pago',
-              payment_status: 'PAGADO',
-              order_items_html: orderItemsHtml,
-              total: `$${total.toLocaleString()}`
-            }
-          })
-        });
-
-        const results = await Promise.allSettled([emailAdmin, emailCustomer]);
-        results.forEach((res, i) => {
-          if (res.status === 'rejected') console.error(`Error enviando email ${i}:`, res.reason);
-        });
-
         // ============================================
-        // ENVIAR ORDEN A ENVÍOS INTERNACIONALES
+        // PROCESAR PEDIDO CENTRALIZADO (Correos + Envíos + DB)
         // ============================================
-
-        console.log('📤 Datos que se enviarán:', {
-          orderId: orderNum,
-          items: items,
-          formData: formData,
-          total: total,
-          shippingCost: shippingCost,
-          totalPrice: totalPrice,
-          paymentMethod: 'Mercado Pago',
-          shippingOption: selectedShippingOption
-        });
-        
+        // El endpoint es IDEMPOTENTE: no enviará duplicados si ya fue procesado por el webhook.
         try {
-          const enviosResponse = await fetch('https://litfitmexico.com/envios/crear-orden.php', {
+          const processResponse = await fetch('https://litfitmexico.com/envios/process-order.php', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              orderId: orderNum,
-              items: items,
-              formData: formData,
-              total: total,
-              shippingCost: shippingCost,
-              totalPrice: totalPrice,
-              paymentMethod: 'Mercado Pago',
-              shippingOption: selectedShippingOption
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: orderNum })
           });
-
-
           
-          const enviosData = await enviosResponse.json();
-
-          
-          if (enviosData.success) {
-
-            if (enviosData.trackingNumber) {
-
-            }
+          const processData = await processResponse.json();
+          if (processData.is_duplicate) {
+            console.log('ℹ️ Pedido ya procesado por el servidor (Webhook).');
+          } else if (processData.success) {
+            console.log('✅ Pedido procesado desde el frontend con éxito.');
           } else {
-            console.warn('⚠️ Error creando orden en Envíos Internacionales:', enviosData.message);
-            console.warn('📋 Detalles del error:', enviosData);
-            // No frenamos el flujo, solo registramos el error
+            console.warn('⚠️ El servidor reportó un problema al procesar:', processData.message);
           }
-        } catch (enviosError: any) {
-          console.error('❌ Error enviando a Envíos Internacionales:', enviosError);
-          console.error('📋 Detalles del error:', {
-            message: enviosError.message,
-            stack: enviosError.stack
-          });
-          // No frenamos el flujo, el pedido ya fue confirmado
+        } catch (processError) {
+          console.error('❌ Error llamando al procesador central:', processError);
         }
 
         // Limpiar carrito
