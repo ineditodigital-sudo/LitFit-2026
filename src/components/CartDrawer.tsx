@@ -7,10 +7,7 @@ export function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
   const { navigateTo } = useNavigation();
 
-  const FREE_SHIPPING_THRESHOLD = 1000;
-  const hasFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD;
-  const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - totalPrice;
-  const progressPercentage = Math.min((totalPrice / FREE_SHIPPING_THRESHOLD) * 100, 100);
+
 
   return (
     <AnimatePresence>
@@ -147,51 +144,7 @@ export function CartDrawer() {
             {/* Footer */}
             {items.length > 0 && (
               <div className="border-t border-gray-200 bg-white p-6 space-y-4">
-                {/* Free Shipping Banner - Success */}
-                {hasFreeShipping && (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="bg-gradient-to-r from-[#00AAC7] to-[#00d4ff] p-4 rounded-lg flex items-center gap-3 shadow-lg"
-                  >
-                    <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                      <Truck className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-black text-white text-sm tracking-wide">
-                        ¡ENVÍO GRATIS!
-                      </p>
-                      <p className="text-white/90 text-xs">
-                        Tu pedido califica para envío sin costo
-                      </p>
-                    </div>
-                    <Gift className="w-8 h-8 text-white animate-pulse" />
-                  </motion.div>
-                )}
 
-                {/* Free Shipping Progress - When below threshold */}
-                {!hasFreeShipping && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
-                      <span className="font-medium">Progreso para envío gratis</span>
-                      <span className="font-black text-[#00AAC7]">
-                        ${amountToFreeShipping.toLocaleString()} restantes
-                      </span>
-                    </div>
-                    <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progressPercentage}%` }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#00AAC7] to-[#00d4ff] rounded-full"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Truck className="w-4 h-4 text-gray-400" />
-                      <span>Agrega ${amountToFreeShipping.toLocaleString()} más para obtener envío gratis</span>
-                    </div>
-                  </div>
-                )}
 
                 {/* Subtotal */}
                 <div className="flex items-center justify-between text-lg pt-3 border-t border-gray-200">
@@ -201,12 +154,9 @@ export function CartDrawer() {
                   </span>
                 </div>
 
-                {/* Shipping Note */}
-                {!hasFreeShipping && (
-                  <p className="text-xs text-gray-500 text-center">
-                    El envío se calculará en el checkout
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 text-center">
+                  El envío se calculará en el checkout
+                </p>
 
                 {/* Checkout Button */}
                 <button

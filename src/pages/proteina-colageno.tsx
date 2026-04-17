@@ -21,7 +21,7 @@ const productImages = [
 const features = [
   { icon: Shield, text: "20g Proteína + 10g Colágeno" },
   { icon: Award, text: "Fórmula exclusiva antiedad" },
-  { icon: Truck, text: "Envío gratis en pedidos +$1000" },
+  { icon: Truck, text: "Envío seguro a todo México" },
 ];
 
 export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {

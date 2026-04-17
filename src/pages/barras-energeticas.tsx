@@ -31,7 +31,7 @@ const productImages = [
 
 const features = [
   { icon: Zap, text: "Mas proteína por barra" },
-  { icon: Truck, text: "Envíos gratis en compras de $1000 o más" },
+  { icon: Truck, text: "Envíos seguros a todo México" },
   { icon: Users, text: "Recomendado por atletas" },
 ];
 

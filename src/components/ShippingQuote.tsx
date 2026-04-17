@@ -47,23 +47,9 @@ export function ShippingQuote({
   const [lastQuotedKey, setLastQuotedKey] = useState<string>("");
   const [quotationId, setQuotationId] = useState<string | null>(null);
 
-  const FREE_SHIPPING_THRESHOLD = 1000;
-  const hasFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
-
   const quotationKey = `${formData.zipCode}-${formData.state}-${formData.city}`;
 
   useEffect(() => {
-    if (hasFreeShipping) {
-      const freeShippingOption: ShippingOption = {
-        carrier: "Gratis",
-        service: "Envío gratuito",
-        price: 0,
-        deliveryDays: "N/A",
-      };
-      setShippingOptions([freeShippingOption]);
-      onSelectShipping(freeShippingOption);
-      return;
-    }
 
     const zipCodeValid = formData.zipCode && /^\d{5}$/.test(formData.zipCode);
     const stateValid = formData.state && formData.state.trim().length > 0;
@@ -291,24 +277,7 @@ export function ShippingQuote({
         <h2 className="text-xl font-black text-gray-900">Opciones de Envío</h2>
       </div>
 
-      {hasFreeShipping && (
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="mb-6 p-4 bg-gradient-to-r from-[#00AAC7] to-[#00d4ff] rounded-lg"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-              <CheckCircle className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <p className="font-black text-white text-sm tracking-wide">¡ENVÍO GRATIS!</p>
-              <p className="text-white/90 text-xs">Tu pedido califica para envío sin costo (subtotal ≥ $1,000)</p>
-            </div>
-            <Truck className="w-8 h-8 text-white" />
-          </div>
-        </motion.div>
-      )}
+
 
       {error && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500">

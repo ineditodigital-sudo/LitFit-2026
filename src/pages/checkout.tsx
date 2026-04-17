@@ -268,16 +268,7 @@ export default function Checkout() {
   });
 
   // Calcular costo de envío
-  // GRATIS si: subtotal >= $1000 O si hay un producto de categoría "TEST", o con ID "test-real-payment" o de precio $1.
-  const FREE_SHIPPING_THRESHOLD = 1000;
-  const hasTestProduct = items.some(item => (
-    item.category === 'TEST' || 
-    item.name.toLowerCase().includes('test') || 
-    item.id === 'test-product' ||
-    item.price <= 15
-  ));
-  const hasFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD || hasTestProduct;
-  const shippingCost = hasFreeShipping ? 0 : (selectedShippingOption?.price || 0);
+  const shippingCost = selectedShippingOption?.price || 0;
   const total = totalPrice + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -302,12 +293,10 @@ export default function Checkout() {
   const handleSubmitInfo = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validar que se haya seleccionado una opción de envío si NO es envío gratis
-    if (!hasFreeShipping) {
-      if (!selectedShippingOption || selectedShippingOption.price === 0) {
-        toast.error('Por favor espera a que se calculen las opciones de envío o verifica tu código postal');
-        return;
-      }
+    // Validar que se haya seleccionado una opción de envío
+    if (!selectedShippingOption || selectedShippingOption.price === undefined) {
+      toast.error('Por favor espera a que se calculen las opciones de envío o verifica tu código postal');
+      return;
     }
     
     setStep('payment');
@@ -728,11 +717,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Envío:</span>
-                  {hasFreeShipping ? (
-                    <span className="font-black text-[#00AAC7]">¡GRATIS!</span>
-                  ) : (
-                    <span className="font-black text-gray-900">${shippingCost.toLocaleString()}</span>
-                  )}
+                  <span className="font-black text-gray-900">${shippingCost.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-xl pt-3 border-t-2 border-gray-300">
                   <span className="font-black text-gray-900">Total:</span>

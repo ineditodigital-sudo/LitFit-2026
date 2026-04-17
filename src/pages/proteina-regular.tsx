@@ -21,7 +21,7 @@ const productImages = [
 const features = [
   { icon: Shield, text: "28.5g de proteína por porción" },
   { icon: Award, text: "Rápida absorción" },
-  { icon: Truck, text: "Envío gratis en pedidos +$1000" },
+  { icon: Truck, text: "Envío seguro a todo México" },
 ];
 
 export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
