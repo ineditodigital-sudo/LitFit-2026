@@ -1,0 +1,14 @@
+# Permitir acceso a la API
+<Files "*.php">
+    Require all granted
+</Files>
+
+# Desactivar protección de directorios
+Options -Indexes
+
+# CORS - Permitir que el panel se conecte
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+</IfModule>

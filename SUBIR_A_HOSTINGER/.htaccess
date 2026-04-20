@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Si existe un archivo o carpeta real, usarlo
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # De lo contrario, mandar todo a index.html (Para que React funcione)
+  RewriteRule ^ index.html [L]
+</IfModule>

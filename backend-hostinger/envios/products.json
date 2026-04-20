@@ -1,0 +1,77 @@
+[
+  {
+    "id": "barras-energeticas",
+    "name": "Barras de Proteína",
+    "category": "Barras de Proteína",
+    "description": "30gr. De proteína por porción + 5gr de bcaas que favorecen a una pronta recuperación.",
+    "price": "560",
+    "image": "https://imagenes.inedito.digital/LITFIT/4-sabores.webp",
+    "badge": "BEST SELLER",
+    "flavors": [
+      "Surtido",
+      "Choco-Peanutbutter",
+      "Chocolate Truffle",
+      "Tiramisú",
+      "Almond-Vainilla"
+    ],
+    "sizes": [
+      "16 barras",
+      "24 barras"
+    ],
+    "nutrition": {
+      "Calorías": "210 kcal",
+      "Proteína": "12g",
+      "Carbohidratos": "28g",
+      "Grasas": "6g"
+    }
+  },
+  {
+    "id": "proteina-clasica",
+    "name": "Proteína aislada",
+    "category": "Proteína ISO",
+    "description": "Proteína de suero aislada de máxima pureza (90% proteína). Ideal para recuperación muscular post-entrenamiento. Presentación de 1.5kg.",
+    "price": "780",
+    "image": "https://imagenes.inedito.digital/LITFIT/proteina-standard.webp",
+    "badge": "",
+    "flavors": [
+      "Chocolate",
+      "Vainilla",
+      "Fresa"
+    ],
+    "nutrition": {
+      "Proteína": "28.5g",
+      "Calorías": "120 kcal",
+      "Carbohidratos": "0.5g",
+      "Grasas": "0.5g"
+    }
+  },
+  {
+    "id": "proteina-colageno",
+    "name": "Proteína + colágeno",
+    "category": "Proteína ISO + Colágeno",
+    "description": "Fórmula revolucionaria que combina proteína de suero premium con colágeno hidrolizado tipo I y III. Presentación de 1.5kg.",
+    "price": "890",
+    "image": "https://imagenes.inedito.digital/LITFIT/proteina-colageno.webp",
+    "badge": "PREMIUM",
+    "flavors": [
+      "Coco",
+      "Fresa",
+      "Vainilla"
+    ],
+    "nutrition": {
+      "Proteína": "20g",
+      "Colágeno": "10g",
+      "Carbohidratos": "2g",
+      "Calorías": "130 kcal"
+    }
+  },
+  {
+    "id": "test-product",
+    "name": "TEST $15 - VALIDACIÓN TOTAL",
+    "description": "Producto de prueba ($15 pesos) para verificar envíos y correos.",
+    "price": 15,
+    "image": "https://imagenes.inedito.digital/LITFIT/BARRASPAGINA-13.jpg",
+    "category": "TEST",
+    "order": 99
+  }
+]

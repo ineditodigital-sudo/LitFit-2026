@@ -1,0 +1,26 @@
+🚀 GUÍA DE INSTALACIÓN FINAL - LITFIT MÉXICO
+
+Esta carpeta tiene TODO actualizado (Sabores, Envío Gratis Test, y Automatización).
+
+PASOS CRÍTICOS (Síguelos en este orden):
+1. BORRA todo lo que tengas en 'public_html' de tu Hostinger para evitar conflictos.
+2. SUBE todo lo que hay dentro de la carpeta 'SUBIR_A_HOSTINGER' a tu raíz 'public_html'.
+3. ACTIVA LA BASE DE DATOS entrando a este enlace:
+   👉 https://litfitmexico.com/envios/db-setup.php
+   (Esto asegura que el servidor pueda guardar tus pedidos).
+
+PASO DE PRUEBA:
+1. Ve a https://litfitmexico.com
+2. Baja al Footer (Abajo a la derecha) y dale clic a "PRUEBA SISTEMA".
+3. Paga los $15 (el envío ya sale gratis de forma automática).
+4. Revisa tu panel en: https://litfitmexico.com/envios/
+
+ESTRUCTURA CORRECTA:
+public_html/
+  ├── assets/
+  ├── envios/
+  ├── mercadopago/
+  ├── index.html
+  └── ... (archivos sueltos)
+
+¡Listo para el despegue! ⚡

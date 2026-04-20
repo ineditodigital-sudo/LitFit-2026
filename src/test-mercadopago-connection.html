@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Mercado Pago API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            display: block;
+        }
+        
+        .btn {
+            background: #00AAC7;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,170,199,0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .response.show {
+            display: block;
+        }
+        
+        .response h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .info-box p {
+            color: #856404;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .step {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .step h3 {
+            color: #00AAC7;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #00AAC7;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .credential-info {
+            background: #f8f9fa;
+            border-left: 4px solid #00AAC7;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .credential-info code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Mercado Pago</h1>
+        <p class="subtitle">Prueba la conexión con el backend PHP antes de hacer una compra real</p>
+        
+        <div class="info-box">
+            <h3>⚠️ Importante</h3>
+            <p><strong>1.</strong> Primero sube los archivos PHP a cPanel según las instrucciones</p>
+            <p><strong>2.</strong> Luego usa este botón para verificar que todo funciona</p>
+            <p><strong>3.</strong> Si todo está OK, podrás hacer compras de prueba en el sitio</p>
+        </div>
+
+        <div class="credential-info">
+            <p><strong>Credenciales configuradas:</strong></p>
+            <p>🔑 Public Key: <code>TEST-cec7b3b0-43d7-4e14-bf86-0031029e83d5</code></p>
+            <p>🔐 Access Token: <code>TEST-2656...953</code> (oculto por seguridad)</p>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <button id="testBtn" class="btn">
+            🚀 Probar Conexión con Backend
+        </button>
+        
+        <div id="response" class="response">
+            <h3>📥 Respuesta del servidor:</h3>
+            <pre id="responseData"></pre>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span>Backend debe estar en:</h3>
+            <p><code>https://cdn.inedito.digital/mercadopago/create-preference.php</code></p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">2</span>Respuesta esperada si funciona:</h3>
+            <p>✅ Debería recibir una URL de checkout de Mercado Pago</p>
+            <p>✅ El campo <code>success: true</code> debe estar presente</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span>Si hay error:</h3>
+            <p>❌ Verifica que los archivos PHP estén en las ubicaciones correctas</p>
+            <p>❌ Revisa los logs de error en cPanel</p>
+            <p>❌ Confirma que las credenciales en el archivo de configuración son correctas</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://cdn.inedito.digital/mercadopago/create-preference.php';
+        
+        const testBtn = document.getElementById('testBtn');
+        const statusDiv = document.getElementById('status');
+        const responseDiv = document.getElementById('response');
+        const responseData = document.getElementById('responseData');
+        
+        testBtn.addEventListener('click', async () => {
+            // Deshabilitar botón
+            testBtn.disabled = true;
+            testBtn.textContent = '⏳ Probando conexión...';
+            
+            // Limpiar estados anteriores
+            statusDiv.className = 'status';
+            statusDiv.style.display = 'none';
+            responseDiv.classList.remove('show');
+            
+            // Datos de prueba
+            const testData = {
+                items: [
+                    {
+                        name: 'Proteína ISO LITFIT',
+                        variant: 'Chocolate',
+                        size: '1kg',
+                        price: 500,
+                        quantity: 1
+                    }
+                ],
+                formData: {
+                    firstName: 'Test',
+                    lastName: 'Usuario',
+                    email: 'test@litfit.com',
+                    phone: '5555555555',
+                    street: 'Calle Test 123',
+                    colonia: 'Centro',
+                    city: 'Monterrey',
+                    state: 'Nuevo León',
+                    zipCode: '64000',
+                    country: 'México'
+                },
+                totalPrice: 500,
+                shippingCost: 0,
+                total: 500,
+                orderId: 'TEST-' + Date.now()
+            };
+            
+            try {
+                console.log('🚀 Enviando petición a:', API_URL);
+                console.log('📦 Datos:', testData);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                console.log('📥 Respuesta HTTP:', response.status);
+                
+                const data = await response.json();
+                console.log('📄 Datos recibidos:', data);
+                
+                // Mostrar respuesta
+                responseData.textContent = JSON.stringify(data, null, 2);
+                responseDiv.classList.add('show');
+                
+                // Verificar resultado
+                if (data.success && data.checkoutUrl) {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `
+                        <strong>✅ ¡Conexión exitosa!</strong><br>
+                        El backend está funcionando correctamente.<br>
+                        Se generó una preferencia de pago válida.<br>
+                        <br>
+                        <strong>Preference ID:</strong> ${data.preferenceId || 'N/A'}<br>
+                        <strong>Order ID:</strong> ${data.orderId || 'N/A'}<br>
+                        <br>
+                        🎉 Ya puedes hacer compras de prueba en tu sitio!
+                    `;
+                } else if (response.status === 405) {
+                    statusDiv.className = 'status info';
+                    statusDiv.innerHTML = `
+                        <strong>ℹ️ Método no permitido</strong><br>
+                        Esto es normal si accedes directamente al archivo.<br>
+                        El archivo está accesible y funcionando correctamente.
+                    `;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `
+                        <strong>❌ Error en la respuesta</strong><br>
+                        ${data.message || 'Error desconocido'}<br>
+                        <br>
+                        Revisa la respuesta completa abajo para más detalles.
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <strong>❌ Error de conexión</strong><br>
+                    No se pudo conectar con el backend.<br>
+                    <br>
+                    <strong>Posibles causas:</strong><br>
+                    • Los archivos PHP no están subidos aún<br>
+                    • La URL del backend es incorrecta<br>
+                    • Hay un problema de CORS<br>
+                    • El servidor está caído<br>
+                    <br>
+                    <strong>Error técnico:</strong> ${error.message}
+                `;
+                
+                responseData.textContent = JSON.stringify({
+                    error: error.message,
+                    stack: error.stack
+                }, null, 2);
+                responseDiv.classList.add('show');
+            } finally {
+                // Rehabilitar botón
+                testBtn.disabled = false;
+                testBtn.textContent = '🔄 Probar de nuevo';
+            }
+        });
+        
+        // Info al cargar
+        console.log('%c🧪 Test de Mercado Pago - LITFIT', 'font-size: 20px; font-weight: bold; color: #00AAC7');
+        console.log('Backend URL:', API_URL);
+        console.log('Haz clic en el botón para probar la conexión');
+    </script>
+</body>
+</html>

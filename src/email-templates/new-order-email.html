@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LITFIT – Nuevo Pedido</title>
+</head>
+
+<body style="margin:0; padding:0; background:#0D0D0D; font-family:-apple-system, BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+  <!-- TOP BLUE BAR -->
+  <div style="width:100%; height:6px; background:#00AAC7;"></div>
+
+  <table width="100%" role="presentation" style="padding:35px 0; background:#0D0D0D;">
+    <tr>
+      <td align="center">
+
+        <!-- CARD -->
+        <table width="100%" role="presentation" style="
+          max-width:650px;
+          background:#151515;
+          border-radius:18px;
+          padding:32px;
+          box-shadow:0 0 30px rgba(0,170,199,0.25);
+          border:1px solid rgba(0,170,199,0.15);
+        ">
+
+          <!-- LOGO -->
+          <tr>
+            <td align="center" style="padding-bottom:25px;">
+              <img src="https://imagenes.inedito.digital/LITFIT/LOGO%20LITFIT%20BLANCO%20Y%20AZUL.webp"
+                   alt="LITFIT México"
+                   width="150" style="display:block;" />
+            </td>
+          </tr>
+
+          <!-- TITLE -->
+          <tr>
+            <td>
+              <h2 style="
+                color:#FFFFFF;
+                font-size:28px;
+                margin:0 0 10px;
+                text-align:center;
+                font-weight:900;
+              ">
+                🛒 Nuevo pedido recibido
+              </h2>
+
+              <p style="color:#9A9A9A; font-size:14px; text-align:center; margin:0 0 25px; font-weight:500;">
+                El sistema ha registrado un nuevo pedido de tu sitio LITFIT.
+              </p>
+            </td>
+          </tr>
+
+          <!-- GLOW DIVIDER -->
+          <tr>
+            <td>
+              <div style="height:2px; width:100%; background:linear-gradient(to right, transparent, #00AAC7, transparent); margin-bottom:25px;"></div>
+            </td>
+          </tr>
+
+          <!-- INFORMATION BLOCKS -->
+
+          <!-- CLIENT INFO -->
+          <tr>
+            <td>
+              <h3 style="color:#00AAC7; font-size:18px; margin:0 0 10px; font-weight:800;">
+                👤 Información del cliente
+              </h3>
+
+              <table width="100%" style="background:#101010; padding:20px; border-radius:12px; border:1px solid #222;">
+                <tr><td style="color:#EAEAEA; padding-bottom:12px; border-bottom:1px solid #222; font-size:14px;">
+                  <strong style="font-weight:700; color:#00AAC7;">Nombre:</strong> {{customer_name}}
+                </td></tr>
+                <tr><td style="color:#EAEAEA; padding:12px 0; border-bottom:1px solid #222; font-size:14px;">
+                  <strong style="font-weight:700; color:#00AAC7;">Email:</strong> {{customer_email}}
+                </td></tr>
+                <tr><td style="color:#EAEAEA; padding:12px 0; font-size:14px;">
+                  <strong style="font-weight:700; color:#00AAC7;">Teléfono:</strong> {{customer_phone}}
+                </td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- SHIPPING -->
+          <tr>
+            <td>
+              <h3 style="color:#00AAC7; font-size:18px; margin:28px 0 10px 0; font-weight:800;">
+                📍 Dirección de envío
+              </h3>
+              <div style="background:#101010; padding:20px; border-radius:12px; border:1px solid #222;">
+                <p style="color:#EAEAEA; font-size:14px; margin:0; line-height:1.6;">
+                  {{shipping_address}}
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- PRODUCTS -->
+          <tr>
+            <td>
+              <h3 style="color:#00AAC7; font-size:18px; margin:28px 0 10px 0; font-weight:800;">
+                📦 Productos adquiridos
+              </h3>
+              <div style="background:#101010; padding:20px; border-radius:12px; border:1px solid #222;">
+                <pre style="color:#EAEAEA; font-size:14px; margin:0; line-height:1.8; font-family:'Courier New', monospace; white-space:pre-wrap;">{{order_items}}</pre>
+              </div>
+            </td>
+          </tr>
+
+          <!-- SUMMARY -->
+          <tr>
+            <td>
+              <h3 style="color:#00AAC7; font-size:18px; margin:28px 0 10px 0; font-weight:800;">
+                💰 Resumen del pedido
+              </h3>
+
+              <table width="100%" style="background:#101010; padding:20px; border-radius:12px; border:1px solid #222;">
+                <tr>
+                  <td style="color:#EAEAEA; padding:8px 0; font-weight:600; font-size:14px;">Subtotal:</td>
+                  <td style="color:#EAEAEA; padding:8px 0; text-align:right; font-weight:600; font-size:14px;">{{subtotal}}</td>
+                </tr>
+                <tr>
+                  <td style="color:#EAEAEA; padding:8px 0; font-weight:600; font-size:14px;">Envío:</td>
+                  <td style="color:#EAEAEA; padding:8px 0; text-align:right; font-weight:600; font-size:14px;">{{shipping}}</td>
+                </tr>
+                <tr>
+                  <td style="color:#00AAC7; padding-top:12px; font-size:18px; font-weight:900; border-top:2px solid #00AAC7;">
+                    Total:
+                  </td>
+                  <td style="color:#00AAC7; padding-top:12px; font-size:18px; font-weight:900; text-align:right; border-top:2px solid #00AAC7;">
+                    {{total}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- NOTES -->
+          <tr>
+            <td>
+              <h3 style="color:#00AAC7; font-size:18px; margin:28px 0 10px 0; font-weight:800;">
+                📝 Notas del cliente
+              </h3>
+              <div style="background:#101010; padding:20px; border-radius:12px; border:1px solid #222;">
+                <p style="color:#EAEAEA; font-size:14px; margin:0; line-height:1.6; font-style:italic;">
+                  {{notes}}
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- BUTTON -->
+          <tr>
+            <td align="center" style="padding-top:30px;">
+              <a href="https://litfitmexico.com/admin" style="
+                display:inline-block;
+                background:#00AAC7;
+                color:#000;
+                padding:16px 32px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:15px;
+                font-weight:800;
+                box-shadow:0 4px 15px rgba(0,170,199,0.4);
+              ">
+                🔍 Ver Panel de Administración
+              </a>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="padding-top:35px; border-top:1px solid #222; margin-top:25px;">
+              <p style="margin:0; text-align:center; font-size:12px; color:#666; line-height:1.6;">
+                © 2026 LITFIT México – Elite Performance Nutrition<br>
+                <span style="color:#555;">Pedido generado automáticamente desde tu sitio web</span>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+================================================================================
+CONFIGURACIÓN MERCADO PAGO - BACKEND PHP
+================================================================================
+
+📁 UBICACIÓN EN CPANEL:
+/home/inedito/private/config/mercadopago-config.php
+
+================================================================================
+📄 CONTENIDO DEL ARCHIVO:
+================================================================================
+
+<?php
+/**
+ * Configuración de Mercado Pago
+ * Backend en: inedito.digital
+ * Frontend en: litfit.inedito.digital (Figma Make)
+ */
+
+// Validar que este archivo solo sea incluido desde archivos autorizados
+if (!defined('MP_CONFIG_LOADED')) {
+    die('Acceso directo no permitido');
+}
+
+// ⚠️ CREDENCIALES DE TEST (Para pruebas)
+define('MP_ACCESS_TOKEN', 'APP_USR-6788390943904147-121612-2582a096f11f65f5bfe8d4f1fd025255-3071467736');
+define('MP_PUBLIC_KEY', 'APP_USR-a4b1fce5-c13e-42ca-ae12-cb1ab17d34b3');
+
+// URLs de retorno (Frontend en Figma Make)
+define('MP_SUCCESS_URL', 'https://litfit.inedito.digital/payment-success-mp');
+define('MP_FAILURE_URL', 'https://litfit.inedito.digital/payment-failure-mp');
+define('MP_PENDING_URL', 'https://litfit.inedito.digital/payment-pending-mp');
+
+// URL del webhook (Notificaciones IPN)
+define('MP_WEBHOOK_URL', 'https://inedito.digital/api/mercadopago/webhook.php');
+
+================================================================================
+✅ PASOS PARA ACTUALIZAR:
+================================================================================
+
+1. Ve a cPanel → File Manager
+2. Navega a: /home/inedito/private/config/
+3. Abre el archivo: mercadopago-config.php
+4. ACTUALIZA las líneas:
+
+   define('MP_SUCCESS_URL', 'https://litfit.inedito.digital/payment-success-mp');
+   define('MP_FAILURE_URL', 'https://litfit.inedito.digital/payment-failure-mp');
+   define('MP_PENDING_URL', 'https://litfit.inedito.digital/payment-pending-mp');
+
+5. GUARDA el archivo
+
+================================================================================
+🔍 VERIFICACIÓN:
+================================================================================
+
+El archivo debería verse así:
+
+<?php
+if (!defined('MP_CONFIG_LOADED')) {
+    die('Acceso directo no permitido');
+}
+
+define('MP_ACCESS_TOKEN', 'APP_USR-6788390943904147-121612-2582a096f11f65f5bfe8d4f1fd025255-3071467736');
+define('MP_PUBLIC_KEY', 'APP_USR-a4b1fce5-c13e-42ca-ae12-cb1ab17d34b3');
+define('MP_SUCCESS_URL', 'https://litfit.inedito.digital/payment-success-mp');
+define('MP_FAILURE_URL', 'https://litfit.inedito.digital/payment-failure-mp');
+define('MP_PENDING_URL', 'https://litfit.inedito.digital/payment-pending-mp');
+define('MP_WEBHOOK_URL', 'https://inedito.digital/api/mercadopago/webhook.php');
+
+================================================================================
+🧪 CÓMO PROBAR:
+================================================================================
+
+1. Haz una compra de prueba en: https://litfit.inedito.digital
+2. Paga con Mercado Pago usando tarjeta de prueba:
+   - Número: 4075 5957 1648 3764
+   - Nombre: APRO
+   - Fecha: 12/26
+   - CVV: 123
+   - DNI: 12345678
+
+3. Después de pagar, Mercado Pago te redirigirá a:
+   https://litfit.inedito.digital/payment-success-mp
+
+4. Deberías ver:
+   ✅ Pantalla de "¡Pago Exitoso!"
+   ✅ Email enviado con los datos del pedido
+   ✅ Carrito limpiado
+
+================================================================================

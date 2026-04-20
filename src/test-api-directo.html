@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API de Envíos - LITFIT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #00AAC7;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00AAC7;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #00AAC7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #0088a3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,170,199,0.3);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .results h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .log-entry {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .log-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .log-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .log-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .shipping-option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 2px solid #00AAC7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shipping-option .info h4 {
+            color: #00AAC7;
+            margin-bottom: 5px;
+        }
+        
+        .shipping-option .info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .shipping-option .price {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00AAC7;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 Test API de Envíos</h1>
+            <p>Prueba la conexión con enviosinternacionales.com</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-group">
+                <label>URL del Backend PHP</label>
+                <input type="text" id="apiUrl" value="https://inedito.digital/api/envios/cotizar.php">
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Código Postal</label>
+                    <input type="text" id="zipCode" value="06600" placeholder="Ej: 06600">
+                </div>
+                
+                <div class="form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="city" value="CDMX" placeholder="Ej: CDMX">
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" id="state" value="Ciudad de México" placeholder="Ej: Ciudad de México">
+                </div>
+                
+                <div class="form-group">
+                    <label>País</label>
+                    <input type="text" id="country" value="México" placeholder="Ej: México">
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" id="weight" value="1.5" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label>Dimensiones (cm)</label>
+                    <input type="text" id="dimensions" value="30x20x10" placeholder="LxAxH">
+                </div>
+            </div>
+            
+            <button onclick="testAPI()" id="testBtn">🚀 Probar Conexión</button>
+            
+            <div class="results" id="results">
+                <h3>📊 Resultados:</h3>
+                <div id="logs"></div>
+                <div id="options"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = message;
+            logs.appendChild(entry);
+            console.log(message);
+        }
+        
+        async function testAPI() {
+            const results = document.getElementById('results');
+            const logs = document.getElementById('logs');
+            const options = document.getElementById('options');
+            const btn = document.getElementById('testBtn');
+            
+            // Limpiar resultados previos
+            logs.innerHTML = '';
+            options.innerHTML = '';
+            results.classList.add('show');
+            btn.disabled = true;
+            btn.textContent = '⏳ Probando...';
+            
+            try {
+                // Obtener valores del formulario
+                const apiUrl = document.getElementById('apiUrl').value;
+                const zipCode = document.getElementById('zipCode').value;
+                const city = document.getElementById('city').value;
+                const state = document.getElementById('state').value;
+                const country = document.getElementById('country').value;
+                const weight = parseFloat(document.getElementById('weight').value);
+                const dims = document.getElementById('dimensions').value.split('x').map(Number);
+                
+                addLog('🚀 Iniciando prueba de conexión...', 'info');
+                addLog(`📦 URL: ${apiUrl}`, 'info');
+                addLog(`📍 Destino: CP ${zipCode}, ${city}, ${state}`, 'info');
+                
+                const requestBody = {
+                    destination: {
+                        zipCode: zipCode,
+                        city: city,
+                        state: state,
+                        country: country
+                    },
+                    weight: weight,
+                    dimensions: {
+                        length: dims[0] || 30,
+                        width: dims[1] || 20,
+                        height: dims[2] || 10
+                    }
+                };
+                
+                addLog('📤 Request:', 'info');
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(requestBody, null, 2);
+                logs.appendChild(pre);
+                
+                const startTime = Date.now();
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const duration = Date.now() - startTime;
+                addLog(`⏱️ Tiempo de respuesta: ${duration}ms`, 'info');
+                addLog(`📥 HTTP Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                
+                addLog('📥 Response:', 'info');
+                const responsePre = document.createElement('pre');
+                responsePre.textContent = JSON.stringify(data, null, 2);
+                logs.appendChild(responsePre);
+                
+                if (data.success && data.options && data.options.length > 0) {
+                    addLog(`✅ ¡Éxito! Se encontraron ${data.options.length} opciones de envío`, 'success');
+                    
+                    const optionsTitle = document.createElement('h3');
+                    optionsTitle.textContent = '📦 Opciones de Envío:';
+                    optionsTitle.style.marginTop = '20px';
+                    options.appendChild(optionsTitle);
+                    
+                    data.options.forEach(option => {
+                        const div = document.createElement('div');
+                        div.className = 'shipping-option';
+                        div.innerHTML = `
+                            <div class="info">
+                                <h4>${option.carrier}</h4>
+                                <p>${option.service}</p>
+                                <p style="font-size: 12px; color: #999;">⏱️ ${option.deliveryDays}</p>
+                            </div>
+                            <div class="price">$${option.price.toLocaleString()}</div>
+                        `;
+                        options.appendChild(div);
+                    });
+                } else if (data.success === false) {
+                    addLog(`❌ Error: ${data.message || 'Error desconocido'}`, 'error');
+                    
+                    if (data.debug) {
+                        addLog('🔍 Información de debug:', 'warning');
+                        const debugPre = document.createElement('pre');
+                        debugPre.textContent = JSON.stringify(data.debug, null, 2);
+                        logs.appendChild(debugPre);
+                    }
+                } else {
+                    addLog('⚠️ Respuesta exitosa pero sin opciones de envío', 'warning');
+                }
+                
+            } catch (error) {
+                addLog(`❌ Error de conexión: ${error.message}`, 'error');
+                addLog('🔴 Posibles causas:', 'error');
+                addLog('  1. El archivo PHP no existe en la ruta especificada', 'error');
+                addLog('  2. Problema de CORS', 'error');
+                addLog('  3. El servidor está caído', 'error');
+                addLog('  4. La URL es incorrecta', 'error');
+                
+                console.error('Error completo:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Probar Conexión';
+            }
+        }
+        
+        // Permitir presionar Enter para probar
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                testAPI();
+            }
+        });
+    </script>
+</body>
+</html>
