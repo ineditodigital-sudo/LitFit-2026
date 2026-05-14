@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Sparkles, ArrowRight } from "lucide-react";
 
@@ -13,6 +14,34 @@ const flavors = [
 ];
 
 export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
+  const [price16, setPrice16] = useState<number>(560);
+  const [price24, setPrice24] = useState<number>(790);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
+        const products = await response.json();
+        
+        const p16 = products.find((p: any) => p.name.includes("16 pzs"));
+        const p24 = products.find((p: any) => p.name.includes("24 pzs"));
+        const base = products.find((p: any) => p.id === "barras-energeticas");
+
+        if (p16 && p24) {
+          setPrice16(Number(p16.price));
+          setPrice24(Number(p24.price));
+        } else if (base) {
+          const basePrice = Number(base.price);
+          setPrice16(basePrice);
+          setPrice24(Math.round(basePrice * (790/560)));
+        }
+      } catch (error) {
+        console.error("Error fetching prices for BarsPromotion:", error);
+      }
+    };
+    fetchPrices();
+  }, []);
+
   return (
     <section className="relative py-8 md:py-12 lg:py-20 bg-gradient-to-br from-[#00AAC7] via-[#00d4ff] to-[#00AAC7] overflow-hidden">
       {/* Subtle Grid Pattern Texture */}
@@ -63,8 +92,8 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-8">
               <div>
-                <div className="text-3xl md:text-4xl lg:text-5xl font-black mb-1">Desde $560</div>
-                <div className="text-[13px] md:text-xs lg:text-sm font-bold text-black/60">16 barras: $560 | 24 barras: $790</div>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-black mb-1">Desde ${price16}</div>
+                <div className="text-[13px] md:text-xs lg:text-sm font-bold text-black/60">16 barras: ${price16} | 24 barras: ${price24}</div>
               </div>
               <button
                 className="group relative overflow-hidden"
@@ -131,3 +160,4 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
     </section>
   );
 }
+

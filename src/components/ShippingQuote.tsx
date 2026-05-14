@@ -110,7 +110,7 @@ export function ShippingQuote({
           order_id: `LITFIT-${Date.now()}`,
           address_from: {
             country_code: "MX",
-            postal_code: "20020", 
+            postal_code: "20020",
             area_level1: "Aguascalientes",
             area_level2: "Aguascalientes",
             area_level3: "Circunvalación Nte"
@@ -137,7 +137,7 @@ export function ShippingQuote({
       };
 
 
-      
+
       let response;
       try {
         response = await fetch(
@@ -174,7 +174,7 @@ export function ShippingQuote({
 
       if (data.api_response) {
         if (data.api_http_code !== 200 && data.api_http_code !== 201 && data.api_http_code !== 202) {
-          const errorMsg = data.api_response?.errors 
+          const errorMsg = data.api_response?.errors
             ? JSON.stringify(data.api_response.errors)
             : data.api_response?.message || "Error desconocido";
           setError(`Error de cotización: ${errorMsg}`);
@@ -311,12 +311,11 @@ export function ShippingQuote({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`p-4 border-2 cursor-pointer transition-all ${
-                  selectedOption?.carrier === option.carrier &&
+                className={`p-4 border-2 cursor-pointer transition-all ${selectedOption?.carrier === option.carrier &&
                   selectedOption?.service === option.service
-                    ? "border-[#00AAC7] bg-[#00AAC7]/5"
-                    : "border-gray-200 hover:border-[#00AAC7]/50"
-                }`}
+                  ? "border-[#00AAC7] bg-[#00AAC7]/5"
+                  : "border-gray-200 hover:border-[#00AAC7]/50"
+                  }`}
                 onClick={() => onSelectShipping(option)}
               >
                 <div className="flex items-start justify-between">

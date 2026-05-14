@@ -114,12 +114,6 @@ export function Footer() {
                   {item}
                 </a>
               ))}
-              <button 
-                onClick={() => navigateTo('test-pago-real')}
-                className="text-white/10 hover:text-[#00AAC7] transition-colors font-medium text-[10px] uppercase tracking-tighter"
-              >
-                Prueba Sistema
-              </button>
             </div>
           </div>
         </div>

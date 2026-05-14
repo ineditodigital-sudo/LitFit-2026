@@ -26,6 +26,16 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+    // 1.1 Crear TABLA SETTINGS
+    $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(50) PRIMARY KEY,
+        setting_value TEXT,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Insertar valor inicial de mantenimiento si no existe
+    $pdo->exec("INSERT IGNORE INTO settings (setting_key, setting_value) VALUES ('maintenance_mode', '0');");
+
     // 2. Crear TABLA PEDIDOS
     $pdo->exec("CREATE TABLE IF NOT EXISTS orders (
         id INT AUTO_INCREMENT PRIMARY KEY,

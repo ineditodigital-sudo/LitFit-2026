@@ -178,15 +178,21 @@ function shipping_create_externally($orderId) {
     $formData = $orderData['formData'];
     $shippingOption = $orderData['shippingOption'] ?? ($orderData['selectedShippingOption'] ?? null);
     
-    // 🚀 LÓGICA DE AUTENTICACIÓN OAUTH (Igual que cotizar.php)
+    // 🚀 LÓGICA DE AUTENTICACIÓN OAUTH CORRECTA (Como en crear-orden-FINAL.php)
+    $postAuthData = http_build_query([
+        'grant_type' => 'client_credentials',
+        'client_id' => ENVIOS_CLIENT_ID,
+        'client_secret' => ENVIOS_CLIENT_SECRET
+    ]);
+
     $chAuth = curl_init(ENVIOS_API_BASE . '/oauth/token');
     curl_setopt($chAuth, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($chAuth, CURLOPT_POST, true);
-    curl_setopt($chAuth, CURLOPT_POSTFIELDS, http_build_query([
-        'client_id'     => ENVIOS_CLIENT_ID,
-        'client_secret' => ENVIOS_CLIENT_SECRET,
-        'grant_type'    => 'client_credentials'
-    ]));
+    curl_setopt($chAuth, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/x-www-form-urlencoded',
+        'Accept: application/json'
+    ]);
+    curl_setopt($chAuth, CURLOPT_POSTFIELDS, $postAuthData);
     $authResp = curl_exec($chAuth);
     $authData = json_decode($authResp, true);
     curl_close($chAuth);
@@ -198,118 +204,108 @@ function shipping_create_externally($orderId) {
         return false;
     }
 
-    $peso = 1.0;
-    foreach ($items as $it) {
-        if (strpos(strtolower($it['name']), 'prote') !== false) $peso += 1.0;
-    }
+    $pesoTotal = 0;
+    $productosTexto = '';
+    $apiProducts = [];
 
-    // --- NUEVO FLUJO DE 2 PASOS (Cotizar -> Crear) ---
-    error_log("🔍 Iniciando flujo de 2 pasos para orderId: $orderId");
-
-    // PASO 1: COTIZAR PARA OBTENER UN RATE_ID
-    $quotePayload = [
-        'quotation' => [
-            'address_from' => [
-                'country_code' => 'MX', 'postal_code' => '20020',
-                'area_level1' => 'Aguascalientes', 'area_level2' => 'Aguascalientes',
-                'area_level3' => 'Centro', // Colonia obligatoria
-                'address_line_1' => 'Cedro 305'
-            ],
-            'address_to' => [
-                'country_code' => 'MX', 'postal_code' => ($formData['zipCode'] ?? '20000'),
-                'area_level1' => ($formData['state'] ?? 'Aguascalientes'),
-                'area_level2' => ($formData['city'] ?? 'Aguascalientes'),
-                'area_level3' => ($formData['colonia'] ?? 'Centro'), // Colonia obligatoria
-                'address_line_1' => ($formData['street'] ?? 'Conocido 1')
-            ],
-            'parcels' => [[
-                'weight' => 1.0, 'length' => 15.0, 'width' => 15.0, 'height' => 15.0
-            ]]
-        ]
-    ];
-
-    $chQ = curl_init(ENVIOS_API_BASE . '/quotations');
-    curl_setopt($chQ, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($chQ, CURLOPT_POST, true);
-    curl_setopt($chQ, CURLOPT_POSTFIELDS, json_encode($quotePayload));
-    curl_setopt($chQ, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Authorization: Bearer ' . $token]);
-    // PASO 1: COTIZAR
-    $quoteRespRaw = curl_exec($chQ);
-    $quoteResp = json_decode($quoteRespRaw, true);
-    curl_close($chQ);
-
-    // Buscar la primera tarifa exitosa
-    $rateId = null;
-    if (isset($quoteResp['rates']) && is_array($quoteResp['rates'])) {
-        foreach ($quoteResp['rates'] as $rate) {
-            if (isset($rate['success']) && $rate['success'] === true && !empty($rate['id'])) {
-                $rateId = $rate['id'];
-                break;
-            }
+    foreach ($items as $item) {
+        $nombreLower = strtolower($item['name']);
+        $cantidad = intval($item['quantity'] ?? 1);
+        if (strpos($nombreLower, 'proteína') !== false || strpos($nombreLower, 'protein') !== false) {
+            $pesoTotal += 1.2 * $cantidad;
+        } elseif (strpos($nombreLower, 'barra') !== false || strpos($nombreLower, 'bar') !== false) {
+            $pesoTotal += 0.1 * $cantidad;
+        } else {
+            $pesoTotal += 0.5 * $cantidad;
         }
-    }
+        
+        $descripcion = $item['name'];
+        if (!empty($item['variant'])) $descripcion .= " - " . $item['variant'];
+        if (!empty($item['size'])) $descripcion .= " (" . $item['size'] . ")";
+        $productosTexto .= "• " . $descripcion . " x" . $cantidad . " ";
 
-    $packagesFromQuote = $quoteResp['packages'] ?? []; 
-
-    if (!$rateId || empty($packagesFromQuote)) {
-        $errorMsg = "❌ ERROR EN COTIZACIÓN: No se encontró tarifa válida o paquetes. " . ($quoteResp['message'] ?? '');
-        file_put_contents(__DIR__ . '/debug-envios.log', "[" . date('Y-m-d H:i:s') . "] $errorMsg" . PHP_EOL, FILE_APPEND);
-        return false;
-    }
-
-    // PASO 2: CREAR ENVÍO COPIANDO LOS PAQUETES
-    $packagesForShipment = [];
-    foreach ($packagesFromQuote as $p) {
-        $packagesForShipment[] = [
-            'package_number'    => $p['package_number'] ?? 1,
-            'package_type'      => '4G', // SAT CODE: Caja de cartón (Requerido por Carta Porte)
-            'content'           => 'Suplementos alimenticios',
-            'consignment_note'  => '51191900', // SAT CODE: Suplementos alimenticios
-            'weight' => floatval($p['weight']), 'length' => floatval($p['length']), 
-            'width' => floatval($p['width']), 'height' => floatval($p['height'])
+        $apiProducts[] = [
+            'name' => $item['name'],
+            'sku' => $item['sku'] ?? 'LITFIT-' . substr(md5($descripcion), 0, 8),
+            'price' => strval($item['price'] ?? 0),
+            'quantity' => $cantidad,
+            'weight' => 1.0,
+            'length' => 10, 'width' => 10, 'height' => 15,
+            'hs_code' => '2106909900'
         ];
     }
+    
+    $pesoTotal = max(0.5, min($pesoTotal, 30));
 
-    $shipmentPayload = [
-        'shipment' => [
-            'rate_id' => $rateId,
-            'address_from' => [
-                'name' => 'LITFIT MEXICO', 'email' => 'mmedellin_89@hotmail.com', 'phone' => '4491952361',
-                'street1' => 'Cedro 305', 'postal_code' => '20020', 'reference' => 'Frente a parque'
+    $selectedCarrier = $shippingOption['carrier'] ?? 'ESTÁNDAR';
+    $selectedService = $shippingOption['service'] ?? 'NACIONAL';
+    $selectedRateId = $shippingOption['id'] ?? $shippingOption['quoteId'] ?? null;
+    $paymentMethod = $orderData['paymentMethod'] ?? 'Mercado Pago';
+
+    $shipmentData = [
+        'order' => [
+            'reference' => $orderId,
+            'reference_number' => $orderId,
+            'payment_status' => 'paid',
+            'total_price' => strval($orderData['total']),
+            'platform' => 'custom',
+            'package_type' => 'box',
+            'carrier' => $selectedCarrier,
+            'service' => $selectedService,
+            'rate_id' => $selectedRateId,
+            'payment_method' => $paymentMethod,
+            'parcels' => [
+                [
+                    'weight' => floatval($pesoTotal),
+                    'length' => 30, 'width' => 20, 'height' => 15,
+                    'quantity' => 1,
+                    'dimension_unit' => 'cm', 'mass_unit' => 'kg',
+                    'package_type' => 'box',
+                    'consignment_note' => 'Suplementos alimenticios - ' . substr($productosTexto, 0, 80)
+                ]
             ],
-            'address_to' => [
-                'name' => ($formData['firstName'] ?? 'Cliente') . ' ' . ($formData['lastName'] ?? 'Final'),
-                'email' => $formData['email'] ?? 'compra@litfit.com',
-                'phone' => substr(preg_replace('/[^0-9]/', '', $formData['phone'] ?? '4491000000'), 0, 10),
-                'street1' => ($formData['street'] ?? 'Dirección Conocida') . ' ' . ($formData['number'] ?? 'SN'),
-                'postal_code' => ($formData['zipCode'] ?? '20000'), 'reference' => 'Entrega LITFIT'
+            'products' => $apiProducts,
+            'shipper_address' => [
+                'address' => 'Av. Constitución 123, Col. Centro',
+                'internal_number' => '', 'reference' => 'Almacén LITFIT',
+                'sector' => 'Centro', 'city' => 'Aguascalientes', 'state' => 'Nuevo León',
+                'postal_code' => '20020', 'country' => 'MX',
+                'person_name' => 'LITFIT - Almacén Principal', 'company' => 'LITFIT',
+                'phone' => '4491952361', 'email' => 'mmedellin_89@hotmail.com'
             ],
-            'packages' => $packagesForShipment
+            'recipient_address' => [
+                'address' => $formData['street'] ?? '',
+                'internal_number' => '', 'reference' => $formData['notes'] ?? '',
+                'sector' => $formData['colonia'] ?? '',
+                'city' => $formData['city'] ?? '', 'state' => $formData['state'] ?? '',
+                'postal_code' => $formData['zipCode'] ?? '', 'country' => 'MX',
+                'person_name' => trim(($formData['firstName'] ?? '') . ' ' . ($formData['lastName'] ?? '')),
+                'company' => '',
+                'phone' => $formData['phone'] ?? '', 'email' => $formData['email'] ?? ''
+            ]
         ]
     ];
 
-    $chS = curl_init(ENVIOS_API_BASE . '/shipments/');
+    $chS = curl_init(ENVIOS_API_BASE . '/orders');
     curl_setopt($chS, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($chS, CURLOPT_POST, true);
-    curl_setopt($chS, CURLOPT_POSTFIELDS, json_encode($shipmentPayload));
-    curl_setopt($chS, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Authorization: Bearer ' . $token]);
+    curl_setopt($chS, CURLOPT_POSTFIELDS, json_encode($shipmentData));
+    curl_setopt($chS, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Accept: application/json', 'Authorization: Bearer ' . $token]);
     $response = curl_exec($chS);
     $httpCode = curl_getinfo($chS, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($chS);
     curl_close($chS);
     
     $apiResponse = json_decode($response, true);
 
-    // LOG DE SEGURIDAD (Para que la usuaria vea qué pasó si algo falla)
     $logMsg = "[" . date('Y-m-d H:i:s') . "] Pedido: $orderId | HTTP: $httpCode | Resp: $response";
     if ($curlError) $logMsg .= " | cURL Error: $curlError";
     file_put_contents(__DIR__ . '/debug-envios.log', $logMsg . PHP_EOL, FILE_APPEND);
 
     if ($httpCode === 200 || $httpCode === 201) {
-        // Éxito: Guardamos el tracking y marcamos como procesado
         $tracking = $apiResponse['tracking_number'] ?? 'N/A';
         $label = $apiResponse['label_url'] ?? null;
         
-        // Actualizar la data local con la info de la guía
         $orderData['trackingNumber'] = $tracking;
         $orderData['label_url'] = $label;
 
@@ -317,16 +313,14 @@ function shipping_create_externally($orderId) {
         if (!is_dir($jsonDir)) mkdir($jsonDir, 0777, true);
         file_put_contents($jsonPath, json_encode($orderData));
         
-        // Actualizar en DB
         db_update_order_status($orderId, 'PAID', [
             'trackingNumber' => $tracking,
-            'carrier' => $shippingOption['carrier'] ?? 'N/A'
+            'carrier' => $selectedCarrier
         ]);
-
         return true;
     }
     
-    error_log("Error API Envíos ($httpCode): " . $response);
+    error_log("Error API Envíos /orders ($httpCode): " . $response);
     return false;
 }
 

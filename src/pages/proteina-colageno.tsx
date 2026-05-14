@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, ShoppingCart, Check, Star, Shield, Truck, Award, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
@@ -30,6 +30,23 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
   const [selectedFlavor, setSelectedFlavor] = useState("coco");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState<number>(890);
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
+        const products = await response.json();
+        const product = products.find((p: any) => p.id === "proteina-colageno");
+        if (product) {
+          setPrice(Number(product.price));
+        }
+      } catch (error) {
+        console.error("Error fetching price for ProteinaColageno:", error);
+      }
+    };
+    fetchPrice();
+  }, []);
 
   const selectedFlavorData = flavors.find((f) => f.id === selectedFlavor);
 
@@ -38,7 +55,7 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
       addItem({
         id: `proteina-colageno-${selectedFlavor}-${Date.now()}-${i}`,
         name: "Proteína ISO + Colágeno",
-        price: 890,
+        price: price,
         image: productImages[0],
         variant: selectedFlavorData?.name,
       });
@@ -177,7 +194,7 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-black text-black tracking-tight">$890</span>
+                <span className="text-4xl font-black text-black tracking-tight">${price}</span>
               </div>
             </div>
 
@@ -238,7 +255,7 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
               className="w-full bg-black hover:bg-[#00AAC7] text-white py-4 font-black text-xs tracking-widest transition-all duration-300 shadow-lg hover:shadow-2xl mb-3 flex items-center justify-center gap-2 group"
             >
               <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              AGREGAR AL CARRITO - ${(890 * quantity).toLocaleString()}
+              AGREGAR AL CARRITO - ${(price * quantity).toLocaleString()}
             </button>
 
             <button

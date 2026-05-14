@@ -19,6 +19,7 @@ import PaymentFailureMercadoPago from "./pages/payment-failure-mp";
 import PaymentPendingMercadoPago from "./pages/payment-pending-mp";
 import { AdminLogin } from "./pages/admin-login";
 import { AdminDashboard } from "./pages/admin-dashboard";
+import { MaintenancePage } from "./pages/maintenance";
 import { CartProvider } from "./contexts/CartContext";
 import { CartDrawer } from "./components/CartDrawer";
 import { NavigationProvider } from "./contexts/NavigationContext";
@@ -44,6 +45,8 @@ function clearAdminSession() {
 export default function App() {
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [adminToken, setAdminToken]   = useState<string | null>(null);
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState<boolean>(false);
+  const [isLoadingMaintenance, setIsLoadingMaintenance] = useState<boolean>(true);
 
   // Recuperar sesión admin al cargar la página (persiste entre refreshes)
   useEffect(() => {
@@ -56,6 +59,26 @@ export default function App() {
     // Restaurar sesión si sigue vigente (no ha expirado)
     const storedToken = getStoredAdminSession();
     if (storedToken) setAdminToken(storedToken);
+  }, []);
+
+  // Verificar modo mantenimiento
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
+        const settings = await response.json();
+        if (settings && settings.maintenance_mode === '1') {
+          setIsMaintenanceMode(true);
+        } else {
+          setIsMaintenanceMode(false);
+        }
+      } catch (error) {
+        console.error("Error checking maintenance mode:", error);
+      } finally {
+        setIsLoadingMaintenance(false);
+      }
+    };
+    checkMaintenance();
   }, []);
 
   // Verificar expiración de sesión cada minuto
@@ -95,6 +118,15 @@ export default function App() {
     setAdminToken(null);
     setCurrentPage("home");
   };
+
+  if (isLoadingMaintenance) {
+    return <div className="min-h-screen bg-black" />; // Splash simple mientras carga
+  }
+
+  // Si estamos en mantenimiento y NO somos admin ni estamos en el dashboard admin, mostrar MaintenancePage
+  if (isMaintenanceMode && currentPage !== "admin" && !adminToken) {
+    return <MaintenancePage />;
+  }
 
   return (
     <NavigationProvider navigateTo={navigateTo}>
@@ -163,3 +195,4 @@ export default function App() {
     </NavigationProvider>
   );
 }
+

@@ -5,11 +5,13 @@ import {
   LayoutDashboard, 
   ShoppingBag, 
   Tags,
-  Menu
+  Menu,
+  Settings
 } from "lucide-react";
 import { AdminShipping } from "./admin-shipping";
 import { AdminProducts } from "./admin-products";
 import { AdminOrders } from "./admin-orders";
+import { AdminSettings } from "./admin-settings";
 import { 
   Sheet, 
   SheetContent, 
@@ -23,7 +25,7 @@ interface AdminDashboardProps {
   adminToken: string;
 }
 
-type AdminTab = "shipping" | "orders" | "products";
+type AdminTab = "shipping" | "orders" | "products" | "settings";
 
 export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
   const [currentTab, setCurrentTab] = useState<AdminTab>("orders");
@@ -33,6 +35,7 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
     { id: "orders", label: "Pedidos", icon: ShoppingBag },
     { id: "shipping", label: "Envíos (EI)", icon: Package },
     { id: "products", label: "Productos", icon: Tags },
+    { id: "settings", label: "Configuración", icon: Settings },
   ];
 
   const NavButton = ({ id, label, icon: Icon, mobile = false }: { id: AdminTab, label: string, icon: any, mobile?: boolean, key?: any }) => (
@@ -130,9 +133,11 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
               {currentTab === "shipping" && <AdminShipping adminToken={adminToken} />}
               {currentTab === "orders" && <AdminOrders adminToken={adminToken} />}
               {currentTab === "products" && <AdminProducts adminToken={adminToken} />}
+              {currentTab === "settings" && <AdminSettings adminToken={adminToken} />}
            </div>
         </div>
       </main>
     </div>
   );
 }
+

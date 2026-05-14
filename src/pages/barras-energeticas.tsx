@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, ShoppingCart, Check, Star, Zap, Truck, Users } from "lucide-react";
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
@@ -14,11 +14,6 @@ const flavors = [
   { id: "chocolate-truffle", name: "Chocolate Truffle", color: "#8B5A3C", image: "https://imagenes.inedito.digital/LITFIT/trufa.webp" },
   { id: "tiramisu", name: "Tiramisú", color: "#DC2626", image: "https://imagenes.inedito.digital/LITFIT/tiramisu.webp" },
   { id: "vainilla", name: "Almond-Vainilla", color: "#EAB308", image: "https://imagenes.inedito.digital/LITFIT/vainilla.webp" },
-];
-
-const packageSizes = [
-  { id: "16", name: "16 barras", price: 560, pricePerBar: "35.00" },
-  { id: "24", name: "24 barras", price: 790, pricePerBar: "32.92" },
 ];
 
 const productImages = [
@@ -42,6 +37,34 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
   const [selectedPackage, setSelectedPackage] = useState("24");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [prices, setPrices] = useState({ 16: 560, 24: 790 });
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
+        const products = await response.json();
+        
+        // Intentar encontrar los productos específicos creados en el admin
+        const p24Data = products.find((p: any) => p.name.includes("24 pzs") || p.id === "barras-energeticas");
+        const p16Data = products.find((p: any) => p.name.includes("16 pzs"));
+        
+        if (p24Data || p16Data) {
+          const p16 = p16Data ? Number(p16Data.price) : (p24Data ? Math.round(Number(p24Data.price) * (560/790)) : 560);
+          const p24 = p24Data ? Number(p24Data.price) : Math.round(p16 * (790/560));
+          setPrices({ 16: p16, 24: p24 });
+        }
+      } catch (error) {
+        console.error("Error fetching prices for BarrasEnergeticas:", error);
+      }
+    };
+    fetchPrices();
+  }, []);
+
+  const packageSizes = [
+    { id: "16", name: "16 barras", price: prices[16], pricePerBar: (prices[16] / 16).toFixed(2) },
+    { id: "24", name: "24 barras", price: prices[24], pricePerBar: (prices[24] / 24).toFixed(2) },
+  ];
 
   const selectedFlavorData = flavors.find((f) => f.id === selectedFlavor);
   const selectedPackageData = packageSizes.find((p) => p.id === selectedPackage);

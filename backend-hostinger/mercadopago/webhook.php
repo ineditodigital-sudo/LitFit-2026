@@ -194,6 +194,32 @@ function processPaymentNotification($paymentId) {
                     $stmt->execute([$orderId]);
                     $orderRow = $stmt->fetch();
 
+                    // Intentar recuperar de backup en disco si no está en MySQL
+                    if (!$orderRow) {
+                        $backupPath = __DIR__ . '/../envios/backups-pedidos/' . $orderId . '.json';
+                        if (file_exists($backupPath)) {
+                            $backupData = file_get_contents($backupPath);
+                            $orderRow = [
+                                'status' => 'PENDING',
+                                'order_data' => $backupData
+                            ];
+                            // Insertarlo en BD para que siga fluyendo
+                            $insStmt = $pdo->prepare("INSERT INTO orders (order_id, customer_name, customer_email, total, status, order_data) VALUES (?, ?, ?, ?, ?, ?)");
+                            $bData = json_decode($backupData, true);
+                            $insStmt->execute([
+                                $orderId,
+                                ($bData['formData']['firstName'] ?? '') . ' ' . ($bData['formData']['lastName'] ?? ''),
+                                $bData['formData']['email'] ?? '',
+                                floatval($bData['total'] ?? 0),
+                                'PENDING',
+                                $backupData
+                            ]);
+                            error_log("♻️ Orden recuperada desde backup en disco: $orderId");
+                        } else {
+                            error_log("❌ Orden no existe ni en DB ni en backups: $orderId");
+                        }
+                    }
+
                     if ($orderRow && $orderRow['status'] !== 'PAID') {
                         // Importar el helper para procesar todo el flujo (DB, Correos, Guía)
                         require_once __DIR__ . '/../envios/order-helper.php';
