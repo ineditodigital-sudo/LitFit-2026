@@ -3,6 +3,7 @@ import { ArrowLeft, ShoppingCart, Check, Star, Shield, Truck, Award, Sparkles } 
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
+import { ShareButton } from "../components/ShareButton";
 
 interface ProteinaColagenoProps {
   onBack: () => void;
@@ -179,10 +180,16 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:sticky lg:top-24"
           >
-            {/* Title */}
-            <h1 className="text-3xl lg:text-4xl font-black text-black mb-3 tracking-tight">
-              Proteína ISO + Collagen
-            </h1>
+            {/* Title & Share */}
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <h1 className="text-3xl lg:text-4xl font-black text-black tracking-tight">
+                Proteína ISO + Collagen
+              </h1>
+              <ShareButton 
+                title="LITFIT - Proteína ISO + Collagen" 
+                text="Fórmula revolucionaria que combina proteína de suero premium con colágeno hidrolizado tipo I y III." 
+              />
+            </div>
 
             {/* Description */}
             <p className="text-gray-600 mb-4 leading-relaxed text-sm">

@@ -1,0 +1,38 @@
+{
+    "items": [
+        {
+            "id": "prod-1776257735981-default-1779594806258-0",
+            "name": "BARRAS DE PROTE\u00cdNA (24 pzs)",
+            "price": 810,
+            "image": "https:\/\/litfitmexico.com\/uploads\/prod_69df8ae85e3e4.webp",
+            "quantity": 2
+        }
+    ],
+    "formData": {
+        "firstName": "Lorena ",
+        "lastName": "Cisneros",
+        "email": "lopicy24@gmail.com",
+        "phone": "4921075763",
+        "street": "Camino viejo al aguaje 251, interior 83",
+        "colonia": "Imperia Residencial ",
+        "city": "San Luis Potosi",
+        "state": "San Luis Potosi",
+        "zipCode": "78398",
+        "country": "M\u00e9xico",
+        "notes": "Por la FENAPO, a un lado de la empresa Espartec. En Imperia Residencial. "
+    },
+    "totalPrice": 1620,
+    "shippingCost": 106,
+    "total": 1726,
+    "selectedShippingOption": {
+        "id": "360fe825-ee60-4080-a212-989cec05655d",
+        "carrier": "FedEx",
+        "service": "Express Saver",
+        "price": 106,
+        "deliveryDays": "5 d\u00edas"
+    },
+    "timestamp": "2026-05-31T03:50:18.580Z",
+    "orderId": "LITFIT-1780199418579-802A8V3I8",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}

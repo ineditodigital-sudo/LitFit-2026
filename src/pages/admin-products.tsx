@@ -4,6 +4,11 @@ import { toast } from "sonner";
 // Importar datos locales como fallback
 import localProducts from "../data/products.json";
 
+export interface Variant {
+  name: string;
+  image?: string;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -14,6 +19,8 @@ interface Product {
   badge?: string;
   description: string;
   flavors?: string[];
+  variants?: (string | Variant)[];
+  sizes?: string[];
   nutrition?: Record<string, string>;
 }
 
@@ -32,6 +39,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
     badge: "",
     description: "",
     flavors: [],
+    variants: [],
+    sizes: [],
     nutrition: {}
   });
 
@@ -89,7 +98,9 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
     setFormData({
       ...product,
       images: product.images || [],
-      flavors: product.flavors || [],
+      flavors: product.flavors || product.variants || [],
+      variants: (product.variants || product.flavors || []).map(v => typeof v === 'string' ? { name: v } : v),
+      sizes: product.sizes || [],
       nutrition: product.nutrition || {}
     });
     setIsAdding(false);
@@ -108,6 +119,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       badge: "",
       description: "",
       flavors: [],
+      variants: [],
+      sizes: [],
       nutrition: {}
     });
   };
@@ -123,13 +136,13 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
     e.preventDefault();
     let newList;
     if (isAdding) {
-      const newProduct = { ...formData };
+      const newProduct = { ...formData, variants: formData.variants };
       if (!newProduct.id) {
         newProduct.id = newProduct.name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now();
       }
       newList = [...products, newProduct];
     } else {
-      newList = products.map((p) => (p.id === editingId ? formData : p));
+      newList = products.map((p) => (p.id === editingId ? { ...formData, variants: formData.variants } : p));
     }
     handleSave(newList);
   };
@@ -167,6 +180,50 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
         }
         toast.dismiss(loadToast);
         toast.success("Imagen subida correctamente");
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (err: any) {
+      toast.dismiss(loadToast);
+      toast.error(err.message || "Error al subir la imagen");
+    }
+  };
+
+  const handleVariantImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, variantIndex: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast.error("Formato no permitido. Solo JPG, PNG y WEBP.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("La imagen es muy pesada. Máximo 2MB.");
+      return;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("image", file);
+
+    const loadToast = toast.loading("Subiendo imagen de variante...");
+    try {
+      const response = await fetch("https://litfitmexico.com/envios/upload-image.php", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${adminToken}` },
+        body: formDataUpload
+      });
+      const data = await response.json();
+      if (data.success) {
+        setFormData(prev => {
+          const newVars = [...(prev.variants as Variant[] || [])];
+          if (newVars[variantIndex]) {
+            newVars[variantIndex] = { ...newVars[variantIndex], image: data.url };
+          }
+          return { ...prev, variants: newVars };
+        });
+        toast.dismiss(loadToast);
+        toast.success("Imagen de variante subida");
       } else {
         throw new Error(data.message);
       }
@@ -217,13 +274,16 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                 <h3 className="text-lg font-black text-black uppercase mb-1">{product.name}</h3>
                 <p className="text-[11px] text-gray-500 font-medium mb-6 flex-1 line-clamp-3 leading-relaxed">{product.description}</p>
                 
-                {product.flavors && product.flavors.length > 0 && (
+                {(product.flavors || product.variants) && (product.flavors || product.variants)!.length > 0 && (
                   <div className="mb-6 flex flex-wrap gap-1">
-                    {product.flavors.map(f => (
-                      <span key={f} className="text-[8px] font-bold text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded-md uppercase">
-                        {f}
-                      </span>
-                    ))}
+                    {(product.flavors || product.variants)!.map((f, idx) => {
+                      const vName = typeof f === 'string' ? f : (f as Variant).name;
+                      return (
+                        <span key={idx} className="text-[8px] font-bold text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded-md uppercase">
+                          {vName}
+                        </span>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -379,17 +439,89 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-4 border-t border-gray-100">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                    <Activity className="w-3 h-3" /> Sabores (Separados por coma)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Vainilla, Chocolate, Fresa"
-                    value={formData.flavors?.join(", ")}
-                    onChange={(e) => setFormData({ ...formData, flavors: e.target.value.split(",").map(f => f.trim()).filter(f => f !== "") })}
-                    className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-sm transition-all"
-                  />
+                <div className="grid grid-cols-1 gap-4 pt-4 border-t border-gray-100">
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                      <Activity className="w-3 h-3" /> Sabores y Variantes (Opcional)
+                    </label>
+                    <div className="space-y-3">
+                      {formData.variants?.map((v, idx) => {
+                        const variant = typeof v === 'string' ? { name: v } : v;
+                        return (
+                          <div key={idx} className="flex flex-col sm:flex-row gap-2 items-start border border-gray-200 p-3 rounded-xl bg-gray-50/50">
+                            <div className="flex-1 w-full space-y-2">
+                              <input
+                                type="text"
+                                placeholder="Nombre (ej. Fresa)"
+                                value={variant.name}
+                                onChange={(e) => {
+                                  const newVars = [...(formData.variants as Variant[] || [])];
+                                  newVars[idx] = { ...variant, name: e.target.value };
+                                  setFormData({ ...formData, variants: newVars });
+                                }}
+                                className="w-full h-10 px-3 bg-white border-2 border-transparent rounded-lg focus:border-[#00AAC7] outline-none font-bold text-xs"
+                              />
+                              <div className="flex gap-2 items-center">
+                                <input
+                                  type="file"
+                                  accept="image/png, image/jpeg, image/webp"
+                                  onChange={(e) => handleVariantImageUpload(e, idx)}
+                                  className="flex-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-[10px] text-gray-400 cursor-pointer"
+                                />
+                                <span className="text-[10px] font-bold text-gray-300">Ó URL:</span>
+                                <input
+                                  type="text"
+                                  placeholder="URL (Opcional)"
+                                  value={variant.image || ""}
+                                  onChange={(e) => {
+                                    const newVars = [...(formData.variants as Variant[] || [])];
+                                    newVars[idx] = { ...variant, image: e.target.value };
+                                    setFormData({ ...formData, variants: newVars });
+                                  }}
+                                  className="w-full h-8 px-2 bg-white border-2 border-transparent rounded-lg focus:border-[#00AAC7] outline-none font-medium text-[10px] text-gray-600"
+                                />
+                              </div>
+                            </div>
+                            {variant.image && (
+                              <div className="w-20 h-20 bg-white border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src={variant.image} alt="Sabor" className="w-full h-full object-contain p-1" />
+                              </div>
+                            )}
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                const newVars = formData.variants?.filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: newVars });
+                              }} 
+                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg shrink-0 mt-1 sm:mt-0"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        );
+                      })}
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, variants: [...(formData.variants || []), { name: "" }] })}
+                        className="w-full h-10 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Plus className="w-3 h-3" /> Añadir sabor
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 mt-4 pt-4 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                      <Package className="w-3 h-3" /> Tallas / Tamaños (Opcional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej: 16 barras, 24 barras (Separados por coma)"
+                      value={formData.sizes?.join(", ") || ""}
+                      onChange={(e) => setFormData({ ...formData, sizes: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") })}
+                      className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-sm transition-all"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">

@@ -3,6 +3,7 @@ import { ArrowLeft, ShoppingCart, Check, Star, Zap, Truck, Users } from "lucide-
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
+import { ShareButton } from "../components/ShareButton";
 
 interface BarrasEnergeticasProps {
   onBack: () => void;
@@ -14,6 +15,7 @@ const flavors = [
   { id: "chocolate-truffle", name: "Chocolate Truffle", color: "#8B5A3C", image: "https://imagenes.inedito.digital/LITFIT/trufa.webp" },
   { id: "tiramisu", name: "Tiramisú", color: "#DC2626", image: "https://imagenes.inedito.digital/LITFIT/tiramisu.webp" },
   { id: "vainilla", name: "Almond-Vainilla", color: "#EAB308", image: "https://imagenes.inedito.digital/LITFIT/vainilla.webp" },
+  { id: "fresa", name: "Strawberry Milkshake", color: "#FFB6C1", image: "https://imagenes.inedito.digital/LITFIT/fresa.webp" },
 ];
 
 const productImages = [
@@ -22,6 +24,7 @@ const productImages = [
   "https://imagenes.inedito.digital/LITFIT/trufa.webp",
   "https://imagenes.inedito.digital/LITFIT/tiramisu.webp",
   "https://imagenes.inedito.digital/LITFIT/vainilla.webp",
+  "https://imagenes.inedito.digital/LITFIT/fresa.webp",
 ];
 
 const features = [
@@ -59,6 +62,22 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
       }
     };
     fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const flavorParam = params.get('flavor');
+    if (flavorParam && flavors.some(f => f.id === flavorParam)) {
+      // Need to use the same logic as handleFlavorChange to update image too
+      setSelectedFlavor(flavorParam);
+      const flavorData = flavors.find((f) => f.id === flavorParam);
+      if (flavorData) {
+        const imageIndex = productImages.findIndex(img => img === flavorData.image);
+        if (imageIndex !== -1) {
+          setSelectedImageIndex(imageIndex);
+        }
+      }
+    }
   }, []);
 
   const packageSizes = [
@@ -212,10 +231,16 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:sticky lg:top-24"
           >
-            {/* Title */}
-            <h1 className="text-3xl lg:text-4xl font-black text-black mb-3 tracking-tight">
-              Barras de Proteína
-            </h1>
+            {/* Title & Share */}
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <h1 className="text-3xl lg:text-4xl font-black text-black tracking-tight">
+                Barras de Proteína
+              </h1>
+              <ShareButton 
+                title="LITFIT - Barras de Proteína" 
+                text="30gr. De proteína por porción + 5gr de bcaas que favorecen a una pronta recuperación." 
+              />
+            </div>
 
             {/* Description */}
             <p className="text-gray-600 mb-4 leading-relaxed text-sm">

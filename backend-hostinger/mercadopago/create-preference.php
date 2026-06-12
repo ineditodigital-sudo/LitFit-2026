@@ -63,11 +63,12 @@ if (!$input || !isset($input['items']) || !isset($input['formData']) || !isset($
     exit;
 }
 
-$items        = $input['items'];
-$formData     = $input['formData'];
-$total        = floatval($input['total']);
-$shippingCost = floatval($input['shippingCost'] ?? 0);
-$orderId      = $input['orderId'] ?? 'LITFIT-' . time();
+$items          = $input['items'];
+$formData       = $input['formData'];
+$total          = floatval($input['total']);
+$shippingCost   = floatval($input['shippingCost'] ?? 0);
+$discountAmount = floatval($input['discountAmount'] ?? 0);
+$orderId        = $input['orderId'] ?? 'LITFIT-' . time();
 
 // Preparar items para Mercado Pago
 $mpItems = [];
@@ -91,6 +92,16 @@ if ($shippingCost > 0) {
         'description'=> 'Costo de envío',
         'quantity'   => 1,
         'unit_price' => $shippingCost,
+        'currency_id'=> 'MXN'
+    ];
+}
+
+if ($discountAmount > 0) {
+    $mpItems[] = [
+        'title'      => 'Descuento aplicado',
+        'description'=> 'Cupón de descuento',
+        'quantity'   => 1,
+        'unit_price' => -$discountAmount,
         'currency_id'=> 'MXN'
     ];
 }

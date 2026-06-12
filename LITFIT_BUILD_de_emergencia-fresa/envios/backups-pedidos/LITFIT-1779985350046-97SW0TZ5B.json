@@ -1,0 +1,39 @@
+{
+    "items": [
+        {
+            "id": "prod-1776257735981-Choco-Peanutbutter-1779985190013-0",
+            "name": "BARRAS DE PROTE\u00cdNA (24 pzs)",
+            "price": 810,
+            "image": "https:\/\/litfitmexico.com\/uploads\/prod_69df8ae85e3e4.webp",
+            "variant": "Choco-Peanutbutter",
+            "quantity": 1
+        }
+    ],
+    "formData": {
+        "firstName": "Ivan Alejandro",
+        "lastName": "Gonzalez Pi\u00f1a",
+        "email": "ivangp1@hotmail.com",
+        "phone": "9981170098",
+        "street": "Circuito Amura #308",
+        "colonia": "Rancho Santa Monica",
+        "city": "Aguascalientes",
+        "state": "Aguascalientes",
+        "zipCode": "20286",
+        "country": "M\u00e9xico",
+        "notes": "Fraccionamiento AMURA"
+    },
+    "totalPrice": 810,
+    "shippingCost": 164,
+    "total": 974,
+    "selectedShippingOption": {
+        "id": "064554db-3272-4729-b118-0d6f910118b9",
+        "carrier": "DHL",
+        "service": "Express",
+        "price": 164,
+        "deliveryDays": "1 d\u00edas"
+    },
+    "timestamp": "2026-05-28T16:22:30.046Z",
+    "orderId": "LITFIT-1779985350046-97SW0TZ5B",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}

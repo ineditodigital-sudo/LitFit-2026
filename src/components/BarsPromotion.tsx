@@ -3,19 +3,32 @@ import { motion } from "motion/react";
 import { Sparkles, ArrowRight } from "lucide-react";
 
 interface BarsPromotionProps {
-  onShopClick?: () => void;
+  onShopClick?: (flavorId?: string | React.MouseEvent) => void;
 }
 
-const flavors = [
+const DEFAULT_FLAVORS = [
   { name: "CHOCO PEANUT BUTTER", color: "#8B4513", weight: "75g", image: "https://imagenes.inedito.digital/LITFIT/barras-litfit-choco%20peanut.webp" },
   { name: "TRUFA DE CHOCOLATE", color: "#4A2511", weight: "58g", image: "https://imagenes.inedito.digital/LITFIT/barras-litfit-chocolate-truffle.webp" },
   { name: "CAFÉ TIRAMISU", color: "#C9A86A", weight: "65g", image: "https://imagenes.inedito.digital/LITFIT/barras-litfit-tiramisú.webp" },
-  { name: "FRESA", color: "#FF6B9D", weight: "70g", image: "https://imagenes.inedito.digital/LITFIT/barras-litfit-almond.webp" },
+  { name: "ALMENDRA VAINILLA", color: "#D4B08C", weight: "60g", image: "https://imagenes.inedito.digital/LITFIT/barras-litfit-almond.webp" },
+  { name: "FRESA", color: "#FF6B9D", weight: "70g", image: "/assets/barras_fresa.png" },
 ];
 
 export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
   const [price16, setPrice16] = useState<number>(560);
   const [price24, setPrice24] = useState<number>(790);
+  const [flavors, setFlavors] = useState<any[]>(DEFAULT_FLAVORS);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const getFlavorId = (name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes("peanut")) return "choco-peanutbutter";
+    if (n.includes("trufa") || n.includes("truffle")) return "chocolate-truffle";
+    if (n.includes("tiramisu")) return "tiramisu";
+    if (n.includes("vainilla") || n.includes("almond")) return "vainilla";
+    if (n.includes("fresa") || n.includes("strawberry")) return "fresa";
+    return "surtido";
+  };
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -34,6 +47,17 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
           const basePrice = Number(base.price);
           setPrice16(basePrice);
           setPrice24(Math.round(basePrice * (790/560)));
+        }
+
+        // Fetch promo flavors
+        try {
+          const settingsRes = await fetch("https://litfitmexico.com/envios/api-settings.php");
+          const settings = await settingsRes.json();
+          if (settings.bars_promotion_flavors) {
+            setFlavors(JSON.parse(settings.bars_promotion_flavors));
+          }
+        } catch (e) {
+          console.error("Error fetching promo flavors:", e);
         }
       } catch (error) {
         console.error("Error fetching prices for BarsPromotion:", error);
@@ -87,7 +111,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
             </h2>
 
             <p className="text-[13px] md:text-lg lg:text-xl font-bold mb-4 md:mb-6 lg:mb-8 text-black/80">
-              16 o 24 barras | 4 sabores premium
+              16 o 24 barras | {flavors.length} sabores premium
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-8">
@@ -111,7 +135,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
 
             {/* Features */}
             <div className="grid grid-cols-3 gap-2 md:gap-3 lg:gap-4">
-              {["30g de proteína por barra", "5g. de BCAA's", "4 ricos sabores"].map((feature, i) => (
+              {["30g de proteína por barra", "5g. de BCAA's", `${flavors.length} ricos sabores`].map((feature, i) => (
                 <div key={i} className="bg-black/10 backdrop-blur-sm p-2 md:p-2.5 lg:p-3 text-center">
                   <p className="text-[9px] md:text-[10px] lg:text-xs font-black uppercase tracking-wide">{feature}</p>
                 </div>
@@ -120,41 +144,103 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
           </motion.div>
 
           {/* Right - Flavors */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 gap-2 md:gap-3 lg:gap-4"
-          >
-            {flavors.map((flavor, index) => (
-              <motion.div
-                key={flavor.name}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="relative aspect-square group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-black/20 group-hover:border-black/40 transition-colors duration-300"
-              >
-                {/* Flavor Image */}
-                <div className="absolute inset-0 flex items-center justify-center p-3 md:p-4">
-                  <img
-                    src={flavor.image}
-                    alt={flavor.name}
-                    className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
+          <div className="relative w-full">
+            {/* Mobile & Tablet - Flex Grid */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="flex lg:hidden flex-wrap justify-center gap-2 md:gap-3 w-full"
+            >
+              {flavors.map((flavor, index) => (
+                  <motion.div
+                    key={flavor.name + index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    onClick={() => onShopClick && onShopClick(getFlavorId(flavor.name))}
+                    className="relative aspect-square group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-black/20 group-hover:border-black/40 transition-colors duration-300 w-[calc(50%-0.25rem)] md:w-[calc(33.333%-0.5rem)] flex-shrink-0"
+                  >
+                  {/* Flavor Image */}
+                  <div className="absolute inset-0 flex items-center justify-center p-3 md:p-4">
+                    <img
+                      src={flavor.image}
+                      alt={flavor.name}
+                      className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  
+                  {/* Flavor Name Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm p-2 md:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-white text-xs md:text-sm font-black tracking-tight text-center">
+                      {flavor.name}
+                    </h3>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Desktop - Fan Layout */}
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="hidden lg:flex relative w-full h-[450px] xl:h-[550px] items-center justify-center"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {flavors.map((flavor, index) => {
+                const offset = index - Math.floor(flavors.length / 2);
                 
-                {/* Flavor Name Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm p-2 md:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-white text-xs md:text-sm font-black tracking-tight text-center">
-                    {flavor.name}
-                  </h3>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                // If there's an even number, offset math gets slightly different but works fine visually
+                const spreadX = flavors.length > 4 ? 120 : 150;
+                const xPos = isHovered ? offset * spreadX : offset * 20;
+                const rotate = isHovered ? offset * 12 : offset * 3;
+                const yPos = isHovered ? Math.abs(offset) * 20 : Math.abs(offset) * 8;
+
+                return (
+                  <motion.div
+                    key={flavor.name + index + 'desk'}
+                    onClick={() => onShopClick && onShopClick(getFlavorId(flavor.name))}
+                    animate={{
+                      x: xPos,
+                      rotate: rotate,
+                      y: yPos,
+                      scale: 1,
+                      zIndex: index
+                    }}
+                    whileHover={{
+                      scale: 1.15,
+                      y: yPos - 30,
+                      rotate: rotate,
+                      zIndex: 50,
+                      transition: { duration: 0.2 }
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    className="absolute w-[220px] xl:w-[260px] aspect-square cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-4 border-white shadow-2xl rounded-sm group"
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center p-4">
+                      <img
+                        src={flavor.image}
+                        alt={flavor.name}
+                        className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <h3 className="text-white text-sm xl:text-base font-black tracking-tight text-center uppercase italic">
+                        {flavor.name}
+                      </h3>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

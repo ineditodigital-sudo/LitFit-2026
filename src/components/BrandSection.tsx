@@ -4,7 +4,11 @@ import { Activity, Zap, TrendingUp, Sparkles } from "lucide-react";
 const productHighlights = [
   {
     title: "BARRAS DE PROTEÍNA",
-    subtitle: "4 diferentes sabores",
+    subtitle: "5 sabores diferentes",
+  },
+  {
+    title: "BARRA DE PROTEÍNA LOW CALORIE",
+    subtitle: "con solo 120 calorías",
   },
   {
     title: "PROTEÍNA CON COLÁGENO",
@@ -13,6 +17,10 @@ const productHighlights = [
   {
     title: "PROTEÍNA AISLADA",
     subtitle: "De suero de leche",
+  },
+  {
+    title: "GALLETAS DE PROTEÍNA",
+    subtitle: "26.6gr. de proteína",
   },
 ];
 
@@ -125,65 +133,42 @@ export function BrandSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
               
-              {/* Floating Product Highlights - Top 2 - Hidden on mobile, shown on md+ */}
-              <div className="hidden md:grid absolute bottom-6 left-6 right-6 grid-cols-2 gap-4">
-                {productHighlights.slice(0, 2).map((product, index) => (
+              {/* Floating Product Highlights - Top 2 removed from here */}
+            </div>
+
+            {/* Product Highlights Grid - 5 Items */}
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-3 lg:gap-4 mt-2 md:mt-3 lg:mt-4">
+              {productHighlights.map((product, index) => {
+                // Determine column span based on index
+                // Mobile: index 0,1,2,3 are col-span-1. index 4 is col-span-2
+                // Desktop: index 0,1 are col-span-3. index 2,3,4 are col-span-2
+                let colSpanClass = "";
+                if (index < 2) {
+                  colSpanClass = "col-span-1 md:col-span-3";
+                } else if (index < 4) {
+                  colSpanClass = "col-span-1 md:col-span-2";
+                } else {
+                  colSpanClass = "col-span-2 md:col-span-2";
+                }
+
+                return (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
                     viewport={{ once: true }}
-                    className="bg-black/80 backdrop-blur-sm border border-white/10 p-4 text-center"
+                    className={`bg-black/80 backdrop-blur-sm border border-white/10 p-2.5 md:p-4 text-center flex flex-col justify-center h-full ${colSpanClass}`}
                   >
-                    <div className="font-black mb-1 text-xl text-[#00AAC7]">
+                    <div className={`font-black mb-0.5 md:mb-1 text-[#00AAC7] ${index < 2 ? 'text-xs md:text-base lg:text-lg' : 'text-[11px] md:text-[10px] lg:text-sm'}`}>
                       {product.title}
                     </div>
-                    <div className="text-xs text-white/60 font-bold tracking-wide">
+                    <div className={`text-white/60 font-bold tracking-wide ${index < 2 ? 'text-[10px] md:text-xs' : 'text-[9px] md:text-[8px] lg:text-[10px]'}`}>
                       {product.subtitle}
                     </div>
                   </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile: Product Highlights - Top 2 - Shown below image on mobile only */}
-            <div className="grid md:hidden grid-cols-2 gap-2 md:gap-3 mt-2 md:mt-3">
-              {productHighlights.slice(0, 2).map((product, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-black/80 backdrop-blur-sm border border-white/10 p-2.5 md:p-3 text-center"
-                >
-                  <div className="font-black mb-0.5 text-sm md:text-base lg:text-xl text-[#00AAC7]">
-                    {product.title}
-                  </div>
-                  <div className="text-[11px] md:text-[10px] lg:text-xs text-white/60 font-bold tracking-wide">
-                    {product.subtitle}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Additional Product Highlight - Bottom 1 */}
-            <div className="grid grid-cols-2 gap-2 md:gap-3 lg:gap-4 mt-2 md:mt-3 lg:mt-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                viewport={{ once: true }}
-                className="bg-black/80 backdrop-blur-sm border border-white/10 p-2.5 md:p-3 lg:p-4 text-center col-span-2"
-              >
-                <div className="font-black mb-0.5 text-sm md:text-base lg:text-xl text-[#00AAC7]">
-                  {productHighlights[2].title}
-                </div>
-                <div className="text-[11px] md:text-[10px] lg:text-xs text-white/60 font-bold tracking-wide">
-                  {productHighlights[2].subtitle}
-                </div>
-              </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>

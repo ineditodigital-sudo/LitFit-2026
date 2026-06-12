@@ -1,13 +1,51 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Minus, Plus, ShoppingCart, Trash2, ArrowRight, Truck, Gift } from 'lucide-react';
+import { X, Minus, Plus, ShoppingCart, Trash2, ArrowRight, Truck, Gift, Ticket, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useCart } from '../contexts/CartContext';
 import { useNavigation } from '../contexts/NavigationContext';
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
+  const { items, isOpen, closeCart, updateQuantity, removeItem, addItem, subtotal, discountAmount, finalTotal, totalItems, appliedCoupon, applyCoupon, removeCoupon, promoGift } = useCart();
   const { navigateTo } = useNavigation();
 
+  const [couponCode, setCouponCode] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
+  const hasGift = promoGift?.enabled ? items.some(item => item.isGift) : false;
+  const progress = promoGift?.enabled ? Math.min((subtotal / promoGift.threshold) * 100, 100) : 0;
+  const remainingForGift = promoGift?.enabled ? promoGift.threshold - subtotal : 0;
+
+  const handleAddGift = () => {
+    if (promoGift?.enabled && promoGift.product && !hasGift && subtotal >= promoGift.threshold) {
+      if (appliedCoupon && !appliedCoupon.allow_shaker) {
+        toast.error("Tu cupón actual no permite combinar con artículos de regalo.");
+        return;
+      }
+      addItem(promoGift.product);
+      toast.success(`¡${promoGift.product.name} añadido!`);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setIsApplyingCoupon(true);
+    try {
+      const res = await fetch(`https://litfitmexico.com/envios/api-coupons.php?code=${encodeURIComponent(couponCode)}&cart_total=${subtotal}`);
+      const data = await res.json();
+      if (data.success) {
+        applyCoupon(data.data);
+        setCouponCode('');
+        toast.success(`Cupón ${data.data.code} aplicado con éxito`);
+      } else {
+        toast.error(data.message || "Cupón inválido");
+      }
+    } catch (err) {
+      toast.error("Error al validar cupón");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -54,8 +92,53 @@ export function CartDrawer() {
               </div>
             </div>
 
+            {/* Sticky Gift Box */}
+            <div className="p-4 border-b border-gray-100 shrink-0">
+              {items.length > 0 && promoGift?.enabled && promoGift.product && (
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="relative w-12 h-12 bg-white rounded-lg border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
+                      <img src={promoGift.product.image} alt={promoGift.product.name} className="w-full h-full object-cover" />
+                      <div className="absolute -top-1 -right-1 bg-[#00AAC7] text-white p-0.5 rounded-full shadow-sm">
+                        <Gift className="w-3 h-3" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-sm text-gray-800 leading-tight">
+                        {progress >= 100 
+                          ? `¡Felicidades! Ganaste tu ${promoGift.product.name} Gratis` 
+                          : `Estás a $${remainingForGift.toLocaleString()} de tu ${promoGift.product.name} Gratis`}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-3">
+                    <motion.div 
+                      className="bg-[#00AAC7] h-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  {progress >= 100 && !hasGift && (
+                    <button
+                      onClick={handleAddGift}
+                      className="w-full bg-[#00AAC7] text-white py-2 rounded-lg text-sm font-bold shadow hover:bg-[#0092ab] transition-colors flex items-center justify-center gap-2"
+                    >
+                      Añadir Regalo Gratis aquí
+                    </button>
+                  )}
+                  {hasGift && (
+                    <div className="text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-2 rounded-lg border border-emerald-100">
+                      ¡Regalo Añadido!
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <div className="bg-gray-100 p-8 rounded-full mb-4">
@@ -84,57 +167,65 @@ export function CartDrawer() {
                     exit={{ opacity: 0, x: 100 }}
                     className="bg-gray-50 p-4 border border-gray-200 hover:border-[#00AAC7] transition-colors"
                   >
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-20 h-20 object-cover bg-white"
+                        className="w-20 h-20 object-cover bg-white rounded border border-gray-100 shrink-0"
                       />
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-black text-sm text-gray-900 mb-1 truncate">
-                          {item.name}
-                        </h3>
-                        {item.variant && (
-                          <p className="text-xs text-gray-600 mb-1">
-                            Sabor: {item.variant}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-black text-sm text-gray-900 mb-0.5 truncate">
+                            {item.name}
+                          </h3>
+                          {item.variant && (
+                            <p className="text-xs text-gray-600 mb-0.5">
+                              Sabor: {item.variant}
+                            </p>
+                          )}
+                          {item.size && (
+                            <p className="text-xs text-gray-600 mb-0.5">
+                              Tamaño: {item.size}
+                            </p>
+                          )}
+                          <p className="text-base font-black text-[#00AAC7]">
+                            ${item.price.toLocaleString()}
                           </p>
-                        )}
-                        {item.size && (
-                          <p className="text-xs text-gray-600 mb-1">
-                            Tamaño: {item.size}
-                          </p>
-                        )}
-                        <p className="text-lg font-black text-[#00AAC7]">
-                          ${item.price.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
+                        </div>
 
-                    {/* Quantity Controls */}
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2 bg-white border border-gray-300">
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="p-2 hover:bg-gray-100 transition-colors"
-                        >
-                          <Minus className="w-4 h-4 text-gray-700" />
-                        </button>
-                        <span className="w-12 text-center font-black text-gray-900">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="p-2 hover:bg-gray-100 transition-colors"
-                        >
-                          <Plus className="w-4 h-4 text-gray-700" />
-                        </button>
+                        {/* Quantity Controls */}
+                        <div className="mt-2 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {item.isGift ? (
+                              <div className="text-xs font-bold text-[#00AAC7]">Gratis</div>
+                            ) : (
+                              <div className="flex items-center border border-gray-200 bg-white rounded">
+                                <button
+                                  onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                                  className="p-1 hover:bg-gray-100 transition-colors text-gray-600"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="w-6 text-center font-bold text-xs">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                  className="p-1 hover:bg-gray-100 transition-colors text-gray-600"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="p-2 hover:bg-red-50 text-red-600 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
                     </div>
                   </motion.div>
                 ))
@@ -143,15 +234,27 @@ export function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="border-t border-gray-200 bg-white p-6 space-y-4">
+              <div className="border-t border-gray-200 bg-white p-6 space-y-4 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] z-10 relative">
+                {/* Totals */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>Subtotal:</span>
+                    <span className="font-medium">${subtotal.toLocaleString()}</span>
+                  </div>
+                  
+                  {appliedCoupon && (
+                    <div className="flex items-center justify-between text-sm text-emerald-600 font-medium">
+                      <span>Descuento ({appliedCoupon.code}):</span>
+                      <span>-${discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
 
-
-                {/* Subtotal */}
-                <div className="flex items-center justify-between text-lg pt-3 border-t border-gray-200">
-                  <span className="font-medium text-gray-700">Subtotal:</span>
-                  <span className="font-black text-gray-900">
-                    ${totalPrice.toLocaleString()}
-                  </span>
+                  <div className="flex items-center justify-between text-lg pt-3 border-t border-gray-200">
+                    <span className="font-bold text-gray-900">Total:</span>
+                    <span className="font-black text-[#00AAC7]">
+                      ${finalTotal.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
 
                 <p className="text-xs text-gray-500 text-center">

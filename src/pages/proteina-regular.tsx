@@ -3,6 +3,7 @@ import { ArrowLeft, ShoppingCart, Check, Star, Shield, Truck, Award } from "luci
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
+import { ShareButton } from "../components/ShareButton";
 
 interface ProteinaRegularProps {
   onBack: () => void;
@@ -176,10 +177,16 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
               ISOLATE PROTEIN
             </p>
             
-            {/* Title */}
-            <h1 className="text-3xl lg:text-4xl font-black text-black mb-3 tracking-tight">
-              Proteína aislada
-            </h1>
+            {/* Title & Share */}
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <h1 className="text-3xl lg:text-4xl font-black text-black tracking-tight">
+                Proteína aislada
+              </h1>
+              <ShareButton 
+                title="LITFIT - Proteína aislada" 
+                text="Proteína de suero aislada de máxima pureza (90% proteína). Ideal para recuperación muscular post-entrenamiento." 
+              />
+            </div>
 
             {/* Description */}
             <p className="text-gray-600 mb-4 leading-relaxed text-sm">

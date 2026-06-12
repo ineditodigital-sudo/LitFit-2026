@@ -1,0 +1,40 @@
+{
+    "items": [
+        {
+            "id": "barras-tiramisu-24-1779934224857-0",
+            "name": "Barras de Prote\u00edna",
+            "price": 810,
+            "image": "https:\/\/imagenes.inedito.digital\/LITFIT\/tiramisu.webp",
+            "variant": "Tiramis\u00fa",
+            "size": "24 barras",
+            "quantity": 1
+        }
+    ],
+    "formData": {
+        "firstName": "Santiago",
+        "lastName": "\u00c1lvarez ",
+        "email": "salvarezpartida@gmail.com",
+        "phone": "3310115768",
+        "street": "Fray junipero Serra 3000",
+        "colonia": "Misi\u00f3n Conca ",
+        "city": "Queretaro",
+        "state": "Queretaro",
+        "zipCode": "76159",
+        "country": "M\u00e9xico",
+        "notes": ""
+    },
+    "totalPrice": 810,
+    "shippingCost": 164,
+    "total": 974,
+    "selectedShippingOption": {
+        "id": "697a1f5d-538f-4265-8807-b5b313dbe912",
+        "carrier": "DHL",
+        "service": "Express",
+        "price": 164,
+        "deliveryDays": "1 d\u00edas"
+    },
+    "timestamp": "2026-05-28T02:11:14.433Z",
+    "orderId": "LITFIT-1779934274433-8PGRDW7E4",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}

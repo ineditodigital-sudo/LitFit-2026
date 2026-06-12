@@ -1,6 +1,7 @@
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 import { motion } from "motion/react";
+import { ShareButton } from "../components/ShareButton";
 
 interface TestProductProps {
   onBack: () => void;
@@ -27,7 +28,13 @@ export function TestProduct({ onBack }: TestProductProps) {
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-md w-full bg-white p-8 rounded-[30px] border border-gray-100 shadow-xl"
       >
-         <h1 className="text-3xl font-black uppercase text-black mb-4">Producto de Prueba</h1>
+         <div className="flex items-center justify-between gap-4 mb-4">
+           <h1 className="text-3xl font-black uppercase text-black">Producto de Prueba</h1>
+           <ShareButton 
+             title="LITFIT - Producto de Prueba" 
+             text="Agrega este producto de $0 MXN a tu carrito para probar todo el flujo de checkout." 
+           />
+         </div>
          <p className="text-sm font-medium text-gray-500 mb-8">
            Agrega este producto de $0 MXN a tu carrito para probar todo el flujo de checkout, correos (notificaciones) y sincronización con Envíos Internacionales sin hacer un pago real en MercadoPago.
          </p>

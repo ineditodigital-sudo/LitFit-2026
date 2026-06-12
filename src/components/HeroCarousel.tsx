@@ -8,42 +8,79 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState<any[]>([]);
 
-  const slides = [
+  const defaultSlides = [
     {
       image: "/BANNER-CREATINA.png",
       imageMobile: "/responsivecreatine-1.png",
+      productId: "creatina",
     },
     {
       image: "https://imagenes.inedito.digital/LITFIT/Mesa_de_trabajo_1.png",
       imageMobile: "https://imagenes.inedito.digital/LITFIT/banner-1-2.webp",
+      productId: "barras-energeticas",
     },
     {
       image: "https://imagenes.inedito.digital/LITFIT/Mesa_de_trabajo_2.png",
       imageMobile: "https://imagenes.inedito.digital/LITFIT/banner-2-2.webp",
+      productId: "proteina-clasica",
     },
     {
       image: "https://imagenes.inedito.digital/LITFIT/Mesa_de_trabajo_2_copia.png",
       imageMobile: "https://imagenes.inedito.digital/LITFIT/banner-3-2.webp",
+      productId: "proteina-colageno",
     },
     {
       image: "https://imagenes.inedito.digital/LITFIT/Mesa_de_trabajo_2_copia_2.png",
       imageMobile: "https://imagenes.inedito.digital/LITFIT/BANNER-4-2.webp",
+      productId: "shaker",
     },
   ];
 
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
+        if (response.ok) {
+          const settings = await response.json();
+          if (settings.hero_slides) {
+            const parsedSlides = JSON.parse(settings.hero_slides);
+            if (parsedSlides.length > 0) {
+              setSlides(parsedSlides);
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching hero slides:", error);
+      }
+      // Fallback
+      setSlides(defaultSlides);
+    };
+
+    fetchSlides();
+  }, []);
+
   const nextSlide = () => {
+    if (slides.length === 0) return;
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
+    if (slides.length === 0) return;
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
+
+  if (slides.length === 0) {
+    return <div className="w-full h-screen bg-black" />; // Splash / placeholder
+  }
 
   return (
     <div id="hero" className="relative w-full h-auto overflow-hidden bg-black">
@@ -67,7 +104,12 @@ export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative w-full flex items-center justify-center"
+          className="relative w-full flex items-center justify-center cursor-pointer"
+          onClick={() => {
+            if (onSlideClick && slides[currentSlide].productId) {
+              onSlideClick(slides[currentSlide].productId);
+            }
+          }}
         >
           <img
             src={slides[currentSlide].image}

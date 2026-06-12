@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 
 export function AmazonBanner() {
   const scrollToContact = () => {
-    const contactSection = document.getElementById('contact-section');
+    const contactSection = document.getElementById('contacto');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

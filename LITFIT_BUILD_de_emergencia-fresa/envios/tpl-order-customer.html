@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LITFIT – Confirmación de Pedido</title>
+</head>
+<body style="margin:0; padding:0; background:#0D0D0D; font-family:-apple-system, BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <div style="width:100%; height:8px; background:#00AAC7;"></div>
+  <table width="100%" role="presentation" style="padding:40px 0; background:#0D0D0D;">
+    <tr>
+      <td align="center">
+        <table width="100%" role="presentation" style="max-width:650px; background:#151515; border-radius:24px; padding:40px; box-shadow:0 0 40px rgba(0,170,199,0.30); border:1px solid rgba(0,170,199,0.20);">
+          <tr><td align="center" style="padding-bottom:30px;"><img src="cid:logo_litfit" alt="LITFIT México" width="200" style="display:block; border:0;" /></td></tr>
+          <tr><td align="center" style="padding-bottom:15px;"><div style="font-size:48px; line-height:1;">✨</div></td></tr>
+          <tr><td><h1 style="color:#FFFFFF; font-size:32px; margin:0 0 12px; text-align:center; font-weight:900; letter-spacing:-0.5px; text-transform: uppercase;">¡Gracias por tu compra!</h1><p style="color:#00AAC7; font-size:16px; text-align:center; margin:0 0 30px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Hola {{customer_name}}, tu pedido ha sido recibido.</p></td></tr>
+          <tr><td><div style="height:2px; width:100%; background:linear-gradient(to right, transparent, #00AAC7, transparent); margin-bottom:35px;"></div></td></tr>
+          <tr><td align="center" style="padding-bottom:35px;"><div style="background:#111; padding:20px 30px; border-radius:16px; border:1px solid #222; display:inline-block;"><p style="color:#888; font-size:12px; margin:0 0 5px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Número de pedido</p><p style="color:#FFFFFF; font-size:24px; margin:0; font-weight:900; letter-spacing:1px;">#{{order_id}}</p></div></td></tr>
+          <tr><td><table width="100%" style="margin-bottom:30px;"><tr><td width="50%" valign="top" style="padding-right:15px;"><h3 style="color:#00AAC7; font-size:13px; margin:0 0 10px; font-weight:800; text-transform:uppercase; letter-spacing:2px;">📍 ENVÍO</h3><p style="color:#EAEAEA; font-size:13px; margin:0; line-height:1.6; font-weight:500;">{{customer_name}}<br>{{shipping_address}}</p></td><td width="50%" valign="top" style="padding-left:15px;"><h3 style="color:#00AAC7; font-size:13px; margin:0 0 10px; font-weight:800; text-transform:uppercase; letter-spacing:2px;">💳 PAGO</h3><p style="color:#EAEAEA; font-size:13px; margin:0; line-height:1.6; font-weight:500;">{{payment_method}}<br>{{payment_status}}</p></td></tr></table></td></tr>
+          <tr><td><h3 style="color:#00AAC7; font-size:13px; margin:0 0 15px; font-weight:800; text-transform:uppercase; letter-spacing:2px; border-bottom:1px solid #222; padding-bottom:10px;">📦 RESUMEN DEL PEDIDO</h3>{{order_items_html}}</td></tr>
+          <tr><td style="padding-top:20px;"><table width="100%" style="border-top:2px solid #00AAC7; padding-top:20px;"><tr><td style="color:#FFFFFF; font-size:20px; font-weight:900; text-transform:uppercase;">TOTAL</td><td style="color:#00AAC7; font-size:24px; font-weight:900; text-align:right;">{{total}}</td></tr></table></td></tr>
+          <tr><td style="padding-top:40px;"><div style="background:rgba(0,170,199,0.05); padding:25px; border-radius:16px; border:1px dashed #00AAC7; text-align:center;"><p style="color:#FFFFFF; font-size:14px; margin:0 0 10px; font-weight:700;">¿Qué sigue?</p><p style="color:#888; font-size:13px; margin:0; line-height:1.6; font-weight:500;">Estamos preparando tu envío. En cuanto sea recolectado por la paquetería, recibirás otro correo con tu número de rastreo.</p></div></td></tr>
+          <tr><td style="padding-top:45px; text-align:center;"><p style="color:#555; font-size:11px; margin:0 0 15px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Sigue en contacto</p><div style="padding-bottom:20px;"><a href="https://litfitmexico.com" style="display:inline-block; width:35px; height:35px; background:#222; border-radius:50%; line-height:35px; text-decoration:none; color:#00AAC7; font-weight:900; margin:0 8px;">W</a><a href="https://instagram.com/litfitmexico" style="display:inline-block; width:35px; height:35px; background:#222; border-radius:50%; line-height:35px; text-decoration:none; color:#00AAC7; font-weight:900; margin:0 8px;">I</a></div><p style="margin:0; font-size:10px; color:#444; line-height:1.6; font-weight:500; text-transform:uppercase; letter-spacing:0.5px;">© 2026 LITFIT México – Elite Performance Nutrition<br>Guadalajara, Jalisco</p></td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

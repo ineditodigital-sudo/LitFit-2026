@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, ShoppingCart, Star, Zap, Truck, Users } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Star, Zap, Truck, Users, MessageSquare, X } from "lucide-react";
+import { toast } from "sonner";
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
+
+export interface Variant {
+  name: string;
+  image?: string;
+}
 
 interface Product {
   id: string;
@@ -14,6 +20,8 @@ interface Product {
   badge?: string;
   description: string;
   flavors?: string[];
+  variants?: (string | Variant)[];
+  sizes?: string[];
   nutrition?: Record<string, string>;
 }
 
@@ -26,6 +34,13 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
   const { addItem } = useCart();
   const { navigateTo } = useNavigation();
   const [product, setProduct] = useState<Product | null>(null);
+  
+  // Reviews state
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, comment: '' });
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   
   const [selectedFlavor, setSelectedFlavor] = useState<string>("");
@@ -36,12 +51,10 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
     const fetchProduct = async () => {
       try {
         const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
-        const data: Product[] = await response.json();
+        const data: any = await response.json();
         
-        // Búsqueda del producto
-        let found = data.find(p => p.id === productId);
+        let found = Array.isArray(data) ? data.find(p => p.id === productId) : (data.id === productId ? data : null);
 
-        // FORZADO PARA PRUEBAS LOCALES: Si es el producto de prueba y no está en la API aún
         if (!found && productId === 'test-pago-real') {
           found = {
             id: "test-pago-real",
@@ -54,9 +67,15 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
         }
 
         if (found) {
-          setProduct(found);
-          if (found.flavors && found.flavors.length > 0) {
-            setSelectedFlavor(found.flavors[0]);
+          setProduct({
+            ...found,
+            price: Number(found.price),
+            variants: found.flavors || found.variants || []
+          });
+          const vars = found.variants || found.flavors || [];
+          if (vars.length > 0) {
+            const first = vars[0];
+            setSelectedFlavor(typeof first === 'string' ? first : first.name);
           }
         }
       } catch (error) {
@@ -65,8 +84,51 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
         setLoading(false);
       }
     };
+
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`https://litfitmexico.com/envios/api-reviews.php?product_id=${productId}`);
+        const data = await res.json();
+        if (data.success) {
+          setReviews(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    };
+
     fetchProduct();
+    fetchReviews();
   }, [productId]);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingReview(true);
+    try {
+      const res = await fetch("https://litfitmexico.com/envios/api-reviews.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          product_id: productId,
+          ...reviewForm
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message);
+        setShowReviewModal(false);
+        setReviewForm({ author: '', rating: 5, comment: '' });
+      } else {
+        toast.error(data.message || "Error al enviar reseña");
+      }
+    } catch (err) {
+      toast.error("Error de conexión");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const avgRating = reviews.length > 0 ? (reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviews.length).toFixed(1) : 0;
 
   if (loading) {
     return (
@@ -85,7 +147,38 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
     );
   }
 
-  const allImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const barrasImages = [
+    "https://imagenes.inedito.digital/LITFIT/4-sabores.webp",
+    "https://imagenes.inedito.digital/LITFIT/peanut-butter.webp",
+    "https://imagenes.inedito.digital/LITFIT/trufa.webp",
+    "https://imagenes.inedito.digital/LITFIT/tiramisu.webp",
+    "https://imagenes.inedito.digital/LITFIT/vainilla.webp",
+    "https://imagenes.inedito.digital/LITFIT/fresa.webp",
+  ];
+
+  let baseImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  if (product.name.toLowerCase().includes('barras')) {
+    baseImages = barrasImages;
+  }
+
+  const normalizedVariants: Variant[] = (product.variants || product.flavors || []).map(v => 
+    typeof v === 'string' ? { name: v } : v
+  );
+
+  const allImages = [...baseImages];
+  const variantImageIndices: Record<string, number> = {};
+
+  normalizedVariants.forEach(v => {
+    if (v.image) {
+      const existingIdx = allImages.indexOf(v.image);
+      if (existingIdx !== -1) {
+        variantImageIndices[v.name] = existingIdx;
+      } else {
+        variantImageIndices[v.name] = allImages.length;
+        allImages.push(v.image);
+      }
+    }
+  });
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -162,10 +255,18 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
             <div className="flex items-center gap-3 mt-4 px-2">
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#00AAC7] text-[#00AAC7]" />
+                  <Star key={i} className={`w-4 h-4 ${i < Math.round(Number(avgRating)) ? 'fill-[#00AAC7] text-[#00AAC7]' : 'text-gray-300'}`} />
                 ))}
               </div>
-              <span className="text-sm text-gray-600 font-medium">Nuevo producto</span>
+              <span className="text-sm text-gray-600 font-medium">
+                {reviews.length > 0 ? `${avgRating} (${reviews.length} reseñas)` : 'Nuevo producto'}
+              </span>
+              <button 
+                onClick={() => setShowReviewModal(true)}
+                className="text-xs font-bold text-[#00AAC7] hover:underline ml-2"
+              >
+                Escribir reseña
+              </button>
             </div>
 
             {/* TABLA NUTRICIONAL (SI EXISTE) */}
@@ -204,17 +305,9 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
             {(() => {
               let flavorList: string[] = [];
               
-              // Si es un producto de Barras de Proteína, forzamos la lista exacta de tu captura
-              if (product.name.toLowerCase().includes('barras')) {
-                flavorList = ["Surtido", "Choco-Peanutbutter", "Chocolate Truffle", "Tiramisú", "Almond-Vainilla"];
-              }
-              // Para otros productos, intentamos los métodos dinámicos
-              else if (Array.isArray(product.flavors) && product.flavors.length > 0) {
-                flavorList = product.flavors;
+              if (normalizedVariants.length > 0) {
+                flavorList = normalizedVariants.map(v => v.name);
               } 
-              else if (typeof product.flavors === 'string' && (product.flavors as string).length > 0) {
-                flavorList = (product.flavors as string).split(',').map(f => f.trim()).filter(f => f !== "");
-              }
 
               if (flavorList.length === 0) return null;
 
@@ -228,7 +321,19 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
                     {flavorList.map((flavor) => (
                       <button
                         key={flavor}
-                        onClick={() => setSelectedFlavor(flavor)}
+                        onClick={() => {
+                          setSelectedFlavor(flavor);
+                          if (variantImageIndices[flavor] !== undefined) {
+                            // Cambia a la imagen de la variante si tiene una asignada desde el admin
+                            setSelectedImageIndex(variantImageIndices[flavor]);
+                          } else if (product.name.toLowerCase().includes('barras')) {
+                            // Fallback para barras basado en el indice
+                            const idx = flavorList.indexOf(flavor);
+                            if (idx !== -1 && idx < allImages.length) {
+                              setSelectedImageIndex(idx);
+                            }
+                          }
+                        }}
                         className={`relative p-3 rounded-none border-2 transition-all flex flex-col items-center justify-center gap-2 group ${
                           (selectedFlavor || flavorList[0]) === flavor
                             ? 'border-[#00AAC7] bg-[#00AAC7]/5'
@@ -312,7 +417,114 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
 
           </motion.div>
         </div>
+        {/* RESEÑAS */}
+        <div className="mt-16 pt-12 border-t border-gray-100">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+              <h2 className="text-2xl font-black text-black tracking-tighter uppercase italic">Reseñas del Producto</h2>
+              <p className="text-gray-500 font-medium">Lo que dicen nuestros clientes</p>
+            </div>
+            <button 
+              onClick={() => setShowReviewModal(true)}
+              className="bg-[#0F172A] text-white px-6 py-3 font-bold text-xs tracking-widest uppercase hover:bg-black transition-colors"
+            >
+              Escribir una reseña
+            </button>
+          </div>
+
+          {reviews.length === 0 ? (
+            <div className="bg-gray-50 p-8 text-center border-2 border-dashed border-gray-200">
+              <MessageSquare className="w-8 h-8 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium">Aún no hay reseñas. ¡Sé el primero en opinar!</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {reviews.map(review => (
+                <div key={review.id} className="bg-gray-50 p-6 border border-gray-100">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 className="font-black text-black uppercase">{review.author}</h4>
+                      <p className="text-xs text-gray-500 font-medium">{new Date(review.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div className="flex text-[#00AAC7]">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? 'fill-current text-[#00AAC7]' : 'text-gray-300'}`} />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed italic">"{review.comment}"</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Modal Escribir Reseña */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white p-6 md:p-8 max-w-md w-full relative"
+          >
+            <button 
+              onClick={() => setShowReviewModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-black"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="text-2xl font-black uppercase italic mb-6">Escribir Reseña</h3>
+            
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <label className="block text-xs font-black uppercase text-gray-500 mb-2">Tu Calificación</label>
+                <div className="flex gap-2">
+                  {[1,2,3,4,5].map(star => (
+                    <button 
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewForm(p => ({ ...p, rating: star }))}
+                      className={`transition-colors ${star <= reviewForm.rating ? 'text-[#00AAC7]' : 'text-gray-300'}`}
+                    >
+                      <Star className="w-8 h-8 fill-current" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase text-gray-500 mb-2">Tu Nombre</label>
+                <input 
+                  type="text" 
+                  required
+                  value={reviewForm.author}
+                  onChange={e => setReviewForm(p => ({ ...p, author: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 px-4 py-3 outline-none focus:border-[#00AAC7] transition-colors font-medium text-sm"
+                  placeholder="Ej. Juan Pérez"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase text-gray-500 mb-2">Comentario (Opcional)</label>
+                <textarea 
+                  rows={4}
+                  value={reviewForm.comment}
+                  onChange={e => setReviewForm(p => ({ ...p, comment: e.target.value }))}
+                  className="w-full bg-gray-50 border border-gray-200 px-4 py-3 outline-none focus:border-[#00AAC7] transition-colors font-medium text-sm resize-none"
+                  placeholder="¿Qué te pareció el producto?"
+                />
+              </div>
+              <button 
+                type="submit"
+                disabled={isSubmittingReview}
+                className="w-full bg-[#00AAC7] text-black font-black uppercase tracking-widest text-sm py-4 hover:bg-[#00d4ff] transition-colors flex items-center justify-center gap-2"
+              >
+                {isSubmittingReview ? "Enviando..." : "Enviar Reseña"}
+              </button>
+              <p className="text-center text-[10px] text-gray-400 mt-4">Tu reseña será revisada antes de ser publicada.</p>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

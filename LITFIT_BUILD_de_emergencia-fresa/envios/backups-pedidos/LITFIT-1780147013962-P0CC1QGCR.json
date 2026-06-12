@@ -1,0 +1,38 @@
+{
+    "items": [
+        {
+            "id": "prod-1776257735981-default-1780146669010-0",
+            "name": "BARRAS DE PROTE\u00cdNA (24 pzs)",
+            "price": 810,
+            "image": "https:\/\/litfitmexico.com\/uploads\/prod_69df8ae85e3e4.webp",
+            "quantity": 1
+        }
+    ],
+    "formData": {
+        "firstName": "Fernanda",
+        "lastName": "Vega",
+        "email": "herediacampos13@gmail.com",
+        "phone": "3125500848",
+        "street": "Calle Ignacio Manuel Altamirano #3120 Departamento E3",
+        "colonia": "Pueblo Nuevo",
+        "city": "La Paz",
+        "state": "Baja California Sur",
+        "zipCode": "23060",
+        "country": "M\u00e9xico",
+        "notes": "Nombre del edificio: Departamentos San Carlos (Departamento E3)"
+    },
+    "totalPrice": 810,
+    "shippingCost": 230,
+    "total": 1040,
+    "selectedShippingOption": {
+        "id": "8adec474-f1aa-4b54-8bbe-6301510b6d6c",
+        "carrier": "Estafeta",
+        "service": "Servicio Express",
+        "price": 230,
+        "deliveryDays": "2 d\u00edas"
+    },
+    "timestamp": "2026-05-30T13:16:53.962Z",
+    "orderId": "LITFIT-1780147013962-P0CC1QGCR",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}

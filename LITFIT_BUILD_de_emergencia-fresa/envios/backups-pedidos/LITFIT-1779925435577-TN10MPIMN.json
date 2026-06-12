@@ -1,0 +1,39 @@
+{
+    "items": [
+        {
+            "id": "proteina-regular-vainilla-1776820886871-0",
+            "name": "Prote\u00edna ISO",
+            "price": 780,
+            "image": "https:\/\/imagenes.inedito.digital\/LITFIT\/proteina-standard.webp",
+            "variant": "Vainilla",
+            "quantity": 1
+        }
+    ],
+    "formData": {
+        "firstName": "Alain",
+        "lastName": "Escobedo",
+        "email": "alain180@gmail.com",
+        "phone": "6691504394",
+        "street": "Felipe Ruvalcaba 6040 Int. 5",
+        "colonia": "El Colli Urbano",
+        "city": "Zapopan",
+        "state": "Jalisco",
+        "zipCode": "45070",
+        "country": "M\u00e9xico",
+        "notes": "Coto cerrado, frente a ferreteria."
+    },
+    "totalPrice": 780,
+    "shippingCost": 127,
+    "total": 907,
+    "selectedShippingOption": {
+        "id": "ed6936a4-3027-4e09-8a3c-b303aaa8af5a",
+        "carrier": "Estafeta",
+        "service": "Servicio Express",
+        "price": 127,
+        "deliveryDays": "1 d\u00edas"
+    },
+    "timestamp": "2026-05-27T23:43:55.578Z",
+    "orderId": "LITFIT-1779925435577-TN10MPIMN",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}

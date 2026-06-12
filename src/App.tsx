@@ -51,10 +51,14 @@ export default function App() {
   // Recuperar sesión admin al cargar la página (persiste entre refreshes)
   useEffect(() => {
     const path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const productParam = urlParams.get('p');
+
     if (path.includes("payment-success-mp"))  setCurrentPage("payment-success-mp");
     else if (path.includes("payment-failure-mp")) setCurrentPage("payment-failure-mp");
     else if (path.includes("payment-pending-mp")) setCurrentPage("payment-pending-mp");
     else if (path.includes("admin"))              setCurrentPage("admin");
+    else if (productParam)                        setCurrentPage(productParam);
 
     // Restaurar sesión si sigue vigente (no ha expirado)
     const storedToken = getStoredAdminSession();
@@ -95,17 +99,26 @@ export default function App() {
   }, [adminToken]);
 
   const navigateToProduct = (productId: string) => {
+    if (productId.startsWith("http")) {
+      window.location.href = productId;
+      return;
+    }
     setCurrentPage(productId);
+    window.history.pushState({}, '', `?p=${productId}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateHome = () => {
     setCurrentPage("home");
+    window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const navigateTo = (page: string) => {
     setCurrentPage(page);
+    if (page === "home") {
+      window.history.pushState({}, '', window.location.pathname);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -166,7 +179,15 @@ export default function App() {
                 </div>
                 <ProductsSection onProductClick={navigateToProduct} />
                 <BrandSection />
-                <BarsPromotion onShopClick={() => navigateToProduct("barras-energeticas")} />
+                <BarsPromotion onShopClick={(flavorId?: string | React.MouseEvent) => {
+                  if (typeof flavorId === 'string') {
+                    setCurrentPage("barras-energeticas");
+                    window.history.pushState({}, '', `?p=barras-energeticas&flavor=${flavorId}`);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  } else {
+                    navigateToProduct("barras-energeticas");
+                  }
+                }} />
                 <AmazonBanner />
                 <FAQ />
                 <Contact />

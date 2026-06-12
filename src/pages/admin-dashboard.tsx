@@ -6,12 +6,21 @@ import {
   ShoppingBag, 
   Tags,
   Menu,
-  Settings
+  Settings,
+  Image as ImageIcon,
+  MessageSquare,
+  Sparkles,
+  Gift
 } from "lucide-react";
 import { AdminShipping } from "./admin-shipping";
 import { AdminProducts } from "./admin-products";
 import { AdminOrders } from "./admin-orders";
 import { AdminSettings } from "./admin-settings";
+import { AdminReviews } from "./admin-reviews";
+import { AdminCoupons } from "./admin-coupons";
+import { HeroManager } from "../components/admin/HeroManager";
+import { BarsPromoManager } from "../components/admin/BarsPromoManager";
+import { PromoGiftManager } from "../components/admin/PromoGiftManager";
 import { 
   Sheet, 
   SheetContent, 
@@ -25,7 +34,7 @@ interface AdminDashboardProps {
   adminToken: string;
 }
 
-type AdminTab = "shipping" | "orders" | "products" | "settings";
+type AdminTab = "shipping" | "orders" | "products" | "settings" | "banners" | "promos" | "reviews" | "coupons" | "gift";
 
 export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
   const [currentTab, setCurrentTab] = useState<AdminTab>("orders");
@@ -35,6 +44,11 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
     { id: "orders", label: "Pedidos", icon: ShoppingBag },
     { id: "shipping", label: "Envíos (EI)", icon: Package },
     { id: "products", label: "Productos", icon: Tags },
+    { id: "coupons", label: "Cupones", icon: Sparkles },
+    { id: "reviews", label: "Reseñas", icon: MessageSquare },
+    { id: "banners", label: "Banners (Hero)", icon: ImageIcon },
+    { id: "promos", label: "Promoción Barras", icon: Sparkles },
+    { id: "gift", label: "Promoción Regalo", icon: Gift },
     { id: "settings", label: "Configuración", icon: Settings },
   ];
 
@@ -133,6 +147,11 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
               {currentTab === "shipping" && <AdminShipping adminToken={adminToken} />}
               {currentTab === "orders" && <AdminOrders adminToken={adminToken} />}
               {currentTab === "products" && <AdminProducts adminToken={adminToken} />}
+              {currentTab === "coupons" && <AdminCoupons adminToken={adminToken} />}
+              {currentTab === "reviews" && <AdminReviews adminToken={adminToken} />}
+              {currentTab === "banners" && <HeroManager adminToken={adminToken} />}
+              {currentTab === "promos" && <BarsPromoManager adminToken={adminToken} />}
+              {currentTab === "gift" && <PromoGiftManager adminToken={adminToken} />}
               {currentTab === "settings" && <AdminSettings adminToken={adminToken} />}
            </div>
         </div>

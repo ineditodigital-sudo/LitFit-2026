@@ -48,9 +48,7 @@ export function FAQ() {
           viewport={{ once: true }}
           className="mb-6 md:mb-8 lg:mb-12"
         >
-          <p className="text-[#00AAC7] font-black text-xs md:text-sm tracking-widest uppercase mb-1.5 md:mb-2">
-            Soporte
-          </p>
+
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter mb-2 md:mb-3 lg:mb-4 italic">
             FAQ
           </h2>
@@ -121,16 +119,16 @@ export function FAQ() {
             ¿Necesitas más ayuda?
           </h3>
           <p className="text-sm md:text-base text-black/70 mb-4 md:mb-5 lg:mb-6 font-medium">
-            Nuestro equipo está disponible 24/7
+            Escríbenos por WhatsApp
           </p>
-          <button className="group relative overflow-hidden">
+          <a href="https://wa.me/5214492605796" target="_blank" rel="noopener noreferrer" className="inline-block group relative overflow-hidden">
             <div className="absolute inset-0 bg-black transition-transform duration-300 group-hover:scale-105" />
             <div className="relative px-6 md:px-8 py-3 md:py-4">
               <span className="text-white font-black tracking-wide text-xs md:text-sm uppercase">
-                Contactar Soporte
+                Enviar WhatsApp
               </span>
             </div>
-          </button>
+          </a>
         </motion.div>
       </div>
     </section>

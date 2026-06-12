@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, Lock, CreditCard, Truck, MapPin, User, Mail, Phone, CheckCircle, Zap } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import emailjs from '@emailjs/browser';
+import { Ticket, Loader2, Gift, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { ShippingQuote } from '../components/ShippingQuote';
 
@@ -69,7 +70,9 @@ function MercadoPagoButton({
   shippingCost, 
   total, 
   formData,
-  selectedShippingOption
+  selectedShippingOption,
+  discountAmount,
+  appliedCoupon
 }: {
   items: any[];
   totalPrice: number;
@@ -77,6 +80,8 @@ function MercadoPagoButton({
   total: number;
   formData: any;
   selectedShippingOption: ShippingOption | null;
+  discountAmount: number;
+  appliedCoupon: any;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -118,9 +123,9 @@ function MercadoPagoButton({
       // También guardar el último ID para referencia
       localStorage.setItem('litfit_last_order_id', orderId);
       
-      // 🚀 BYPASS PARA PRUEBAS: Si el carrito tiene productos de prueba (totalPrice 0)
-      if (total === 0 || totalPrice === 0 || items.some(i => i.price === 0)) {
-        toast.success("Pedido de prueba gratuito válido. Procesando sin pago...", { duration: 1500 });
+      // 🚀 BYPASS: Si el total a pagar es 0 (por descuento 100% o producto de prueba gratis)
+      if (total <= 0) {
+        toast.success("Pedido procesado sin costo. Completando...", { duration: 1500 });
         setTimeout(() => {
           window.location.href = '/payment-success-mp';
         }, 1500);
@@ -140,8 +145,10 @@ function MercadoPagoButton({
           shippingCost,
           totalPrice,
           total,
+          discountAmount,
           orderId, // Enviar el ID al backend
-          shippingOption: selectedShippingOption
+          shippingOption: selectedShippingOption,
+          appliedCoupon
         }),
       });
       
@@ -253,10 +260,12 @@ function MercadoPagoButton({
 }
 
 export default function Checkout() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, subtotal, discountAmount, finalTotal, appliedCoupon, applyCoupon, removeCoupon, clearCart, promoGift, addItem } = useCart();
   const [step, setStep] = useState<'info' | 'payment' | 'success'>('info');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'mercadopago' | null>(null);
   const [selectedShippingOption, setSelectedShippingOption] = useState<ShippingOption | null>(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [formData, setFormData] = useState({
     // Información personal
     firstName: '',
@@ -274,10 +283,32 @@ export default function Checkout() {
     notes: '',
   });
 
+  const totalPrice = subtotal;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setIsApplyingCoupon(true);
+    try {
+      const res = await fetch(`https://litfitmexico.com/envios/api-coupons.php?code=${encodeURIComponent(couponCode)}&cart_total=${subtotal}`);
+      const data = await res.json();
+      if (data.success) {
+        applyCoupon(data.data);
+        setCouponCode('');
+        toast.success(`Cupón ${data.data.code} aplicado con éxito`);
+      } else {
+        toast.error(data.message || "Cupón inválido");
+      }
+    } catch (err) {
+      toast.error("Error al validar cupón");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
   // Calcular costo de envío
   const isFreeTestOrder = items.some(item => item.id === 'test-pago-real') || totalPrice < 30;
   const shippingCost = isFreeTestOrder ? 0 : (selectedShippingOption?.price || 0);
-  const total = totalPrice + shippingCost;
+  const total = finalTotal + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -667,6 +698,8 @@ export default function Checkout() {
                             total={total}
                             formData={formData}
                             selectedShippingOption={selectedShippingOption}
+                            discountAmount={discountAmount}
+                            appliedCoupon={appliedCoupon}
                           />
                         </div>
                       )}
@@ -685,6 +718,57 @@ export default function Checkout() {
                 <CreditCard className="w-5 h-5 text-[#00AAC7]" />
                 RESUMEN DEL PEDIDO
               </h2>
+
+              {/* Progreso Regalo (Checkout) */}
+              {items.length > 0 && promoGift?.enabled && promoGift.product && (
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200 mb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="relative w-12 h-12 bg-white rounded-lg border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center">
+                      <img src={promoGift.product.image} alt={promoGift.product.name} className="w-full h-full object-cover" />
+                      <div className="absolute -top-1 -right-1 bg-[#00AAC7] text-white p-0.5 rounded-full shadow-sm">
+                        <Gift className="w-3 h-3" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-sm text-gray-800">
+                        {Math.min((subtotal / promoGift.threshold) * 100, 100) >= 100 
+                          ? `¡Felicidades! Ganaste tu ${promoGift.product.name} Gratis` 
+                          : `Estás a $${Math.max(promoGift.threshold - subtotal, 0).toLocaleString()} de tu ${promoGift.product.name} Gratis`}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden mb-3">
+                    <motion.div 
+                      className="bg-[#00AAC7] h-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min((subtotal / promoGift.threshold) * 100, 100)}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  {Math.min((subtotal / promoGift.threshold) * 100, 100) >= 100 && !items.some(i => i.isGift) && (
+                    <button
+                      onClick={() => {
+                        if (appliedCoupon && !appliedCoupon.allow_shaker) {
+                          toast.error("Tu cupón actual no permite combinar con artículos de regalo.");
+                          return;
+                        }
+                        if (promoGift.product) {
+                          addItem(promoGift.product);
+                          toast.success(`¡${promoGift.product.name} añadido!`);
+                        }
+                      }}
+                      className="w-full bg-[#00AAC7] text-white py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-[#0092ab] transition-colors flex items-center justify-center gap-2"
+                    >
+                      Añadir Regalo Gratis al pedido
+                    </button>
+                  )}
+                  {items.some(i => i.isGift) && (
+                    <div className="text-center text-xs font-bold text-emerald-600 bg-emerald-50 py-1.5 rounded-md border border-emerald-100">
+                      ¡Regalo Añadido a tu Pedido!
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Items */}
               <div className="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
@@ -718,12 +802,61 @@ export default function Checkout() {
                 ))}
               </div>
 
+              {/* Cupones */}
+              <div className="mb-6">
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-emerald-700">
+                      <Ticket className="w-4 h-4" />
+                      <div>
+                        <p className="font-bold text-sm">{appliedCoupon.code}</p>
+                        <p className="text-xs opacity-80">
+                          {appliedCoupon.type === 'percent' ? `-${appliedCoupon.value}%` : `-$${appliedCoupon.value}`} de descuento
+                        </p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={removeCoupon}
+                      className="p-1 text-emerald-600 hover:text-emerald-800 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Código de descuento"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#00AAC7] focus:border-[#00AAC7] outline-none uppercase"
+                      />
+                    </div>
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode.trim() || isApplyingCoupon}
+                      className="px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isApplyingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* Totals */}
               <div className="space-y-3 border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal:</span>
                   <span className="font-black text-gray-900">${totalPrice.toLocaleString()}</span>
                 </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm text-emerald-600 font-medium">
+                    <span>Descuento ({appliedCoupon.code}):</span>
+                    <span>-${discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Envío:</span>
                   <span className="font-black text-gray-900">${shippingCost.toLocaleString()}</span>

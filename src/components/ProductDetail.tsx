@@ -1,8 +1,9 @@
-import { ShoppingCart, Heart, Share2, Check, Truck, Shield, Award } from "lucide-react";
+import { ShoppingCart, Heart, Check, Truck, Shield, Award } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { ShareButton } from "./ShareButton";
 
 interface ProductDetailProps {
   name: string;
@@ -173,9 +174,12 @@ export function ProductDetail({
                   <ShoppingCart className="w-6 h-6" />
                   Agregar al Carrito
                 </button>
-                <button className="w-14 h-14 border-2 border-gray-300 rounded-lg hover:border-[#00AAC7] hover:text-[#00AAC7] transition-all duration-300 flex items-center justify-center">
-                  <Share2 className="w-6 h-6" />
-                </button>
+                <div className="w-14 h-14 border-2 border-gray-300 rounded-lg hover:border-[#00AAC7] transition-all duration-300 flex items-center justify-center">
+                  <ShareButton 
+                    title={`LITFIT - ${name}`}
+                    text={description}
+                  />
+                </div>
               </div>
 
               {/* Trust Badges */}

@@ -1,0 +1,39 @@
+{
+    "items": [
+        {
+            "id": "prod-1776257817029-Almond-Vainilla-1780176062787-0",
+            "name": "BARRAS DE PROTE\u00cdNA (16 pzs)",
+            "price": 580,
+            "image": "https:\/\/litfitmexico.com\/uploads\/prod_69df8b2e838ef.webp",
+            "variant": "Almond-Vainilla",
+            "quantity": 1
+        }
+    ],
+    "formData": {
+        "firstName": "Karla ",
+        "lastName": "V\u00e1zquez ",
+        "email": "karlakgvr90@gmail.com",
+        "phone": "5523394106",
+        "street": "Av. Jose Marti 220, Apto 102A",
+        "colonia": "Escandon II",
+        "city": "Cdmx",
+        "state": "Cdmx",
+        "zipCode": "11800",
+        "country": "M\u00e9xico",
+        "notes": "Dejar en porter\u00eda "
+    },
+    "totalPrice": 580,
+    "shippingCost": 112,
+    "total": 692,
+    "selectedShippingOption": {
+        "id": "f0c6407d-d8a0-45ac-aba2-466c735f3fa0",
+        "carrier": "FedEx",
+        "service": "Express Saver",
+        "price": 112,
+        "deliveryDays": "5 d\u00edas"
+    },
+    "timestamp": "2026-05-30T21:22:44.669Z",
+    "orderId": "LITFIT-1780176164669-GFFVEUIFI",
+    "status": "PAID",
+    "paymentMethod": "MERCADOPAGO"
+}
