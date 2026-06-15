@@ -143,96 +143,50 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
             </div>
           </motion.div>
 
-          {/* Right - Flavors */}
+          {/* Right - Flavors Bento Box */}
           <div className="relative w-full">
-            {/* Mobile & Tablet - Flex Grid */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="flex lg:hidden flex-wrap justify-center gap-2 md:gap-3 w-full"
-            >
-              {flavors.map((flavor, index) => (
-                  <motion.div
-                    key={flavor.name + index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    onClick={() => onShopClick && onShopClick(getFlavorId(flavor.name))}
-                    className="relative aspect-square group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-black/20 group-hover:border-black/40 transition-colors duration-300 w-[calc(50%-0.25rem)] md:w-[calc(33.333%-0.5rem)] flex-shrink-0"
-                  >
-                  {/* Flavor Image */}
-                  <div className="absolute inset-0 flex items-center justify-center p-3 md:p-4">
-                    <img
-                      src={flavor.image}
-                      alt={flavor.name}
-                      className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  
-                  {/* Flavor Name Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm p-2 md:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <h3 className="text-white text-xs md:text-sm font-black tracking-tight text-center">
-                      {flavor.name}
-                    </h3>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Desktop - Fan Layout */}
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="hidden lg:flex relative w-full h-[450px] xl:h-[550px] items-center justify-center"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              className="grid grid-cols-2 grid-rows-4 md:grid-cols-3 md:grid-rows-3 gap-2 md:gap-4 w-full h-[450px] md:h-[500px] lg:h-[600px]"
             >
               {flavors.map((flavor, index) => {
-                const offset = index - Math.floor(flavors.length / 2);
-                
-                // If there's an even number, offset math gets slightly different but works fine visually
-                const spreadX = flavors.length > 4 ? 120 : 150;
-                const xPos = isHovered ? offset * spreadX : offset * 20;
-                const rotate = isHovered ? offset * 12 : offset * 3;
-                const yPos = isHovered ? Math.abs(offset) * 20 : Math.abs(offset) * 8;
+                const getBentoClass = (i: number) => {
+                  switch (i) {
+                    case 0: return "col-span-2 row-span-2";
+                    case 1: return "col-span-1 row-span-1";
+                    case 2: return "col-span-1 row-span-1";
+                    case 3: return "col-span-1 md:col-span-2 row-span-1";
+                    case 4: return "col-span-1 row-span-1";
+                    default: return "col-span-1 row-span-1";
+                  }
+                };
 
                 return (
                   <motion.div
-                    key={flavor.name + index + 'desk'}
+                    key={flavor.name + index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ scale: 1.03 }}
                     onClick={() => onShopClick && onShopClick(getFlavorId(flavor.name))}
-                    animate={{
-                      x: xPos,
-                      rotate: rotate,
-                      y: yPos,
-                      scale: 1,
-                      zIndex: index
-                    }}
-                    whileHover={{
-                      scale: 1.15,
-                      y: yPos - 30,
-                      rotate: rotate,
-                      zIndex: 50,
-                      transition: { duration: 0.2 }
-                    }}
-                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                    className="absolute w-[220px] xl:w-[260px] aspect-square cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-4 border-white shadow-2xl rounded-sm group"
+                    className={`relative group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-white shadow-lg rounded-xl flex flex-col items-center justify-center ${getBentoClass(index)}`}
                   >
+                    {/* Flavor Image */}
                     <div className="absolute inset-0 flex items-center justify-center p-4">
                       <img
                         src={flavor.image}
                         alt={flavor.name}
-                        className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
                     
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h3 className="text-white text-sm xl:text-base font-black tracking-tight text-center uppercase italic">
+                    {/* Flavor Name Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md p-2 md:p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 className="text-white text-xs md:text-sm lg:text-base font-black tracking-tight text-center uppercase">
                         {flavor.name}
                       </h3>
                     </div>
