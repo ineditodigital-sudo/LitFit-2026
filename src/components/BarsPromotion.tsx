@@ -176,11 +176,11 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
                     className={`relative group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-white shadow-lg rounded-xl flex flex-col items-center justify-center ${getBentoClass(index)}`}
                   >
                     {/* Flavor Image */}
-                    <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <img
                         src={flavor.image}
                         alt={flavor.name}
-                        className="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
                     
