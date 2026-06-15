@@ -150,21 +150,9 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="grid grid-cols-2 grid-rows-4 md:grid-cols-3 md:grid-rows-3 gap-2 md:gap-4 w-full h-[450px] md:h-[500px] lg:h-[600px]"
+              className="flex flex-wrap justify-center gap-2 md:gap-4 w-full"
             >
-              {flavors.map((flavor, index) => {
-                const getBentoClass = (i: number) => {
-                  switch (i) {
-                    case 0: return "col-span-2 row-span-2";
-                    case 1: return "col-span-1 row-span-1";
-                    case 2: return "col-span-1 row-span-1";
-                    case 3: return "col-span-1 md:col-span-2 row-span-1";
-                    case 4: return "col-span-1 row-span-1";
-                    default: return "col-span-1 row-span-1";
-                  }
-                };
-
-                return (
+              {flavors.map((flavor, index) => (
                   <motion.div
                     key={flavor.name + index}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -173,7 +161,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
                     viewport={{ once: true }}
                     whileHover={{ scale: 1.03 }}
                     onClick={() => onShopClick && onShopClick(getFlavorId(flavor.name))}
-                    className={`relative group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-white shadow-lg rounded-xl flex flex-col items-center justify-center ${getBentoClass(index)}`}
+                    className="relative aspect-square w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] group cursor-pointer overflow-hidden bg-white/90 backdrop-blur-sm border-2 border-white shadow-lg rounded-xl flex-shrink-0"
                   >
                     {/* Flavor Image */}
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -191,8 +179,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
                       </h3>
                     </div>
                   </motion.div>
-                );
-              })}
+              ))}
             </motion.div>
           </div>
         </div>
