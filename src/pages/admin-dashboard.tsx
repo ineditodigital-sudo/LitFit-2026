@@ -21,6 +21,7 @@ import { AdminCoupons } from "./admin-coupons";
 import { HeroManager } from "../components/admin/HeroManager";
 import { BarsPromoManager } from "../components/admin/BarsPromoManager";
 import { PromoGiftManager } from "../components/admin/PromoGiftManager";
+import { PromoBannerManager } from "../components/admin/PromoBannerManager";
 import { 
   Sheet, 
   SheetContent, 
@@ -34,7 +35,7 @@ interface AdminDashboardProps {
   adminToken: string;
 }
 
-type AdminTab = "shipping" | "orders" | "products" | "settings" | "banners" | "promos" | "reviews" | "coupons" | "gift";
+type AdminTab = "shipping" | "orders" | "products" | "settings" | "banners" | "promobanner" | "promos" | "reviews" | "coupons" | "gift";
 
 export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
   const [currentTab, setCurrentTab] = useState<AdminTab>("orders");
@@ -46,6 +47,7 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
     { id: "products", label: "Productos", icon: Tags },
     { id: "coupons", label: "Cupones", icon: Sparkles },
     { id: "reviews", label: "Reseñas", icon: MessageSquare },
+    { id: "promobanner", label: "Cintillo Sup.", icon: Sparkles },
     { id: "banners", label: "Banners (Hero)", icon: ImageIcon },
     { id: "promos", label: "Promoción Barras", icon: Sparkles },
     { id: "gift", label: "Promoción Regalo", icon: Gift },
@@ -149,6 +151,7 @@ export function AdminDashboard({ onLogout, adminToken }: AdminDashboardProps) {
               {currentTab === "products" && <AdminProducts adminToken={adminToken} />}
               {currentTab === "coupons" && <AdminCoupons adminToken={adminToken} />}
               {currentTab === "reviews" && <AdminReviews adminToken={adminToken} />}
+              {currentTab === "promobanner" && <PromoBannerManager adminToken={adminToken} />}
               {currentTab === "banners" && <HeroManager adminToken={adminToken} />}
               {currentTab === "promos" && <BarsPromoManager adminToken={adminToken} />}
               {currentTab === "gift" && <PromoGiftManager adminToken={adminToken} />}
