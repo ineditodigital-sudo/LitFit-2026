@@ -15,7 +15,8 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
     text: "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
     speed: 20,
     link: "",
-    repetitions: 3
+    repetitions: 3,
+    isStatic: false
   });
 
   useEffect(() => {
@@ -29,7 +30,8 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
             text: data.promo_banner_text || "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
             speed: data.promo_banner_speed ? parseInt(data.promo_banner_speed) : 20,
             link: data.promo_banner_link || "",
-            repetitions: data.promo_banner_repetitions ? parseInt(data.promo_banner_repetitions) : 3
+            repetitions: data.promo_banner_repetitions ? parseInt(data.promo_banner_repetitions) : 3,
+            isStatic: data.promo_banner_is_static === '1'
           });
         }
       } catch (error) {
@@ -140,33 +142,47 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
         <div className="w-full bg-gradient-to-r from-[#0088A3] via-[#00AAC7] to-[#0088A3] text-white shadow-md border-t border-white/10 overflow-hidden relative group">
           {promoSettings.link ? (
             <a href={promoSettings.link} className="block w-full overflow-hidden" target={promoSettings.link.startsWith('http') ? '_blank' : '_self'} rel="noreferrer">
-              <motion.div
-                className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{
-                  repeat: Infinity,
-                  ease: "linear",
-                  duration: promoSettings.speed
-                }}
-              >
-                <RepeatedText />
-                <RepeatedText />
-              </motion.div>
+              {promoSettings.isStatic ? (
+                <div className="py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider text-center w-full">
+                  {promoSettings.text}
+                </div>
+              ) : (
+                <motion.div
+                  key={`${promoSettings.speed}-${promoSettings.repetitions}-${promoSettings.isStatic}`}
+                  className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{
+                    repeat: Infinity,
+                    ease: "linear",
+                    duration: promoSettings.speed
+                  }}
+                >
+                  <RepeatedText />
+                  <RepeatedText />
+                </motion.div>
+              )}
             </a>
           ) : (
             <div className="w-full overflow-hidden">
-              <motion.div
-                className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{
-                  repeat: Infinity,
-                  ease: "linear",
-                  duration: promoSettings.speed
-                }}
-              >
-                <RepeatedText />
-                <RepeatedText />
-              </motion.div>
+              {promoSettings.isStatic ? (
+                <div className="py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider text-center w-full">
+                  {promoSettings.text}
+                </div>
+              ) : (
+                <motion.div
+                  key={`${promoSettings.speed}-${promoSettings.repetitions}-${promoSettings.isStatic}`}
+                  className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{
+                    repeat: Infinity,
+                    ease: "linear",
+                    duration: promoSettings.speed
+                  }}
+                >
+                  <RepeatedText />
+                  <RepeatedText />
+                </motion.div>
+              )}
             </div>
           )}
         </div>

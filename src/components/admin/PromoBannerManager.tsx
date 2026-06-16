@@ -11,6 +11,7 @@ export function PromoBannerManager({ adminToken }: PromoBannerManagerProps) {
   const [promoBannerSpeed, setPromoBannerSpeed] = useState("20");
   const [promoBannerLink, setPromoBannerLink] = useState("");
   const [promoBannerRepetitions, setPromoBannerRepetitions] = useState("3");
+  const [promoBannerIsStatic, setPromoBannerIsStatic] = useState(false);
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -29,6 +30,7 @@ export function PromoBannerManager({ adminToken }: PromoBannerManagerProps) {
       if (data.promo_banner_speed) setPromoBannerSpeed(data.promo_banner_speed);
       if (data.promo_banner_link) setPromoBannerLink(data.promo_banner_link);
       if (data.promo_banner_repetitions) setPromoBannerRepetitions(data.promo_banner_repetitions);
+      setPromoBannerIsStatic(data.promo_banner_is_static === '1');
     } catch (error) {
       console.error("Error fetching settings:", error);
     } finally {
@@ -51,7 +53,8 @@ export function PromoBannerManager({ adminToken }: PromoBannerManagerProps) {
           promo_banner_text: promoBannerText,
           promo_banner_speed: promoBannerSpeed,
           promo_banner_link: promoBannerLink,
-          promo_banner_repetitions: promoBannerRepetitions
+          promo_banner_repetitions: promoBannerRepetitions,
+          promo_banner_is_static: promoBannerIsStatic ? '1' : '0'
         })
       });
       const data = await response.json();
@@ -97,6 +100,22 @@ export function PromoBannerManager({ adminToken }: PromoBannerManagerProps) {
           </div>
 
           <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end mr-6">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${promoBannerIsStatic ? 'text-[#EA580C]' : 'text-[#64748B]'}`}>
+                {promoBannerIsStatic ? 'ESTÁTICO (FIJO)' : 'ANIMADO (SCROLL)'}
+              </span>
+              <button
+                onClick={() => setPromoBannerIsStatic(!promoBannerIsStatic)}
+                className={`relative w-12 h-6 rounded-full transition-all duration-300 mt-1 ${
+                  promoBannerIsStatic ? 'bg-[#EA580C]' : 'bg-slate-200'
+                }`}
+              >
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${
+                  promoBannerIsStatic ? 'left-7' : 'left-1'
+                }`} />
+              </button>
+            </div>
+            
             <span className={`text-[10px] font-black uppercase tracking-widest ${promoBannerVisible ? 'text-[#00AAC7]' : 'text-[#64748B]'}`}>
               {promoBannerVisible ? 'MOSTRAR' : 'OCULTAR'}
             </span>
