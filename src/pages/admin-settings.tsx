@@ -7,6 +7,11 @@ interface AdminSettingsProps {
 
 export function AdminSettings({ adminToken }: AdminSettingsProps) {
   const [isMaintenance, setIsMaintenance] = useState(false);
+  const [promoBannerVisible, setPromoBannerVisible] = useState(true);
+  const [promoBannerText, setPromoBannerText] = useState("En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo");
+  const [promoBannerSpeed, setPromoBannerSpeed] = useState("20");
+  const [promoBannerLink, setPromoBannerLink] = useState("");
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -20,6 +25,10 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
       const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
       const data = await response.json();
       setIsMaintenance(data.maintenance_mode === '1');
+      setPromoBannerVisible(data.promo_banner_visible !== '0'); // default true
+      if (data.promo_banner_text) setPromoBannerText(data.promo_banner_text);
+      if (data.promo_banner_speed) setPromoBannerSpeed(data.promo_banner_speed);
+      if (data.promo_banner_link) setPromoBannerLink(data.promo_banner_link);
     } catch (error) {
       console.error("Error fetching settings:", error);
     } finally {
@@ -38,7 +47,11 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
           'Authorization': `Bearer ${adminToken}`
         },
         body: JSON.stringify({
-          maintenance_mode: isMaintenance ? '1' : '0'
+          maintenance_mode: isMaintenance ? '1' : '0',
+          promo_banner_visible: promoBannerVisible ? '1' : '0',
+          promo_banner_text: promoBannerText,
+          promo_banner_speed: promoBannerSpeed,
+          promo_banner_link: promoBannerLink
         })
       });
       const data = await response.json();
@@ -108,6 +121,81 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
             </p>
           </div>
         )}
+
+        <div className="border-t border-slate-100 pt-10 pb-8 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-5 h-5 bg-[#00AAC7] rounded flex items-center justify-center shrink-0">
+                  <span className="text-white text-[10px] font-black">TXT</span>
+                </div>
+                <h3 className="font-black text-sm uppercase tracking-widest text-[#0F172A]">Cintillo Promocional (Banner Superior)</h3>
+              </div>
+              <p className="text-xs text-[#64748B] leading-relaxed">
+                Administra el texto animado que aparece en la parte superior del sitio web.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${promoBannerVisible ? 'text-[#00AAC7]' : 'text-[#64748B]'}`}>
+                {promoBannerVisible ? 'MOSTRAR' : 'OCULTAR'}
+              </span>
+              <button
+                onClick={() => setPromoBannerVisible(!promoBannerVisible)}
+                className={`relative w-16 h-8 rounded-full transition-all duration-300 ${
+                  promoBannerVisible ? 'bg-[#00AAC7]' : 'bg-slate-200'
+                }`}
+              >
+                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all duration-300 shadow-sm ${
+                  promoBannerVisible ? 'left-9' : 'left-1'
+                }`} />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-xs font-black text-[#0F172A] uppercase tracking-widest mb-2">
+                Texto del Cintillo
+              </label>
+              <input
+                type="text"
+                value={promoBannerText}
+                onChange={(e) => setPromoBannerText(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:border-[#00AAC7] focus:bg-white transition-colors outline-none"
+                placeholder="Ej. En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-black text-[#0F172A] uppercase tracking-widest mb-2">
+                Velocidad de Animación (segundos)
+              </label>
+              <input
+                type="number"
+                value={promoBannerSpeed}
+                onChange={(e) => setPromoBannerSpeed(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:border-[#00AAC7] focus:bg-white transition-colors outline-none"
+                placeholder="20"
+                min="5"
+                max="100"
+              />
+              <p className="text-[10px] text-slate-400 mt-2">Un número menor hace que se mueva más rápido (recomendado: 20).</p>
+            </div>
+            <div>
+              <label className="block text-xs font-black text-[#0F172A] uppercase tracking-widest mb-2">
+                Enlace de Redirección (Opcional)
+              </label>
+              <input
+                type="text"
+                value={promoBannerLink}
+                onChange={(e) => setPromoBannerLink(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:border-[#00AAC7] focus:bg-white transition-colors outline-none"
+                placeholder="Ej. /productos/shaker o https://..."
+              />
+              <p className="text-[10px] text-slate-400 mt-2">URL a la que irá el usuario si hace clic en el cintillo.</p>
+            </div>
+          </div>
+        </div>
 
         <div className="flex justify-end">
           <button

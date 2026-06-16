@@ -1,5 +1,5 @@
 import { Menu, X, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CartButton } from "./CartButton";
 
@@ -10,6 +10,32 @@ interface HeaderProps {
 
 export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [promoSettings, setPromoSettings] = useState({
+    visible: true,
+    text: "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
+    speed: 20,
+    link: ""
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
+        if (response.ok) {
+          const data = await response.json();
+          setPromoSettings({
+            visible: data.promo_banner_visible !== '0',
+            text: data.promo_banner_text || "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
+            speed: data.promo_banner_speed ? parseInt(data.promo_banner_speed) : 20,
+            link: data.promo_banner_link || ""
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching promo banner settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const scrollToSection = (id: string) => {
     // Si estamos en una página de producto, primero volver al home
@@ -98,9 +124,39 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
       </div>
 
       {/* Promotional Banner */}
-      <div className="w-full bg-gradient-to-r from-[#0088A3] via-[#00AAC7] to-[#0088A3] text-white text-[10px] sm:text-xs font-black text-center py-1.5 px-4 uppercase tracking-wider shadow-md">
-        En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo
-      </div>
+      {promoSettings.visible && (
+        <div className="w-full bg-gradient-to-r from-[#0088A3] via-[#00AAC7] to-[#0088A3] text-white shadow-md border-t border-white/10 overflow-hidden relative group">
+          {promoSettings.link ? (
+            <a href={promoSettings.link} className="block w-full overflow-hidden" target={promoSettings.link.startsWith('http') ? '_blank' : '_self'} rel="noreferrer">
+              <motion.div
+                className="whitespace-nowrap py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block min-w-full text-center"
+                animate={{ x: ["100%", "-100%"] }}
+                transition={{
+                  repeat: Infinity,
+                  ease: "linear",
+                  duration: promoSettings.speed
+                }}
+              >
+                {promoSettings.text}
+              </motion.div>
+            </a>
+          ) : (
+            <div className="w-full overflow-hidden">
+              <motion.div
+                className="whitespace-nowrap py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block min-w-full text-center"
+                animate={{ x: ["100%", "-100%"] }}
+                transition={{
+                  repeat: Infinity,
+                  ease: "linear",
+                  duration: promoSettings.speed
+                }}
+              >
+                {promoSettings.text}
+              </motion.div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Mobile menu */}
       <AnimatePresence>
