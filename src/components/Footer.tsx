@@ -102,15 +102,6 @@ export function Footer() {
                   Contacto
                 </a>
               </li>
-              <li>
-                <button 
-                  onClick={() => navigateTo('rastreo')}
-                  className="text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center gap-2 group"
-                >
-                  <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all" />
-                  Rastrear Pedido
-                </button>
-              </li>
             </ul>
           </div>
         </div>
