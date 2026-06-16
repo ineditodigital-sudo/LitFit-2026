@@ -14,7 +14,8 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
     visible: true,
     text: "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
     speed: 20,
-    link: ""
+    link: "",
+    repetitions: 3
   });
 
   useEffect(() => {
@@ -27,7 +28,8 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
             visible: data.promo_banner_visible !== '0',
             text: data.promo_banner_text || "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
             speed: data.promo_banner_speed ? parseInt(data.promo_banner_speed) : 20,
-            link: data.promo_banner_link || ""
+            link: data.promo_banner_link || "",
+            repetitions: data.promo_banner_repetitions ? parseInt(data.promo_banner_repetitions) : 3
           });
         }
       } catch (error) {
@@ -67,6 +69,16 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  const RepeatedText = () => (
+    <>
+      {Array.from({ length: promoSettings.repetitions }).map((_, i) => (
+        <span key={i} className="mx-4 md:mx-8">
+          {promoSettings.text}
+        </span>
+      ))}
+    </>
+  );
 
   return (
     <motion.header
@@ -129,29 +141,31 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
           {promoSettings.link ? (
             <a href={promoSettings.link} className="block w-full overflow-hidden" target={promoSettings.link.startsWith('http') ? '_blank' : '_self'} rel="noreferrer">
               <motion.div
-                className="whitespace-nowrap py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block min-w-full text-center"
-                animate={{ x: ["100%", "-100%"] }}
+                className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
+                animate={{ x: ["0%", "-50%"] }}
                 transition={{
                   repeat: Infinity,
                   ease: "linear",
                   duration: promoSettings.speed
                 }}
               >
-                {promoSettings.text}
+                <RepeatedText />
+                <RepeatedText />
               </motion.div>
             </a>
           ) : (
             <div className="w-full overflow-hidden">
               <motion.div
-                className="whitespace-nowrap py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider inline-block min-w-full text-center"
-                animate={{ x: ["100%", "-100%"] }}
+                className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
+                animate={{ x: ["0%", "-50%"] }}
                 transition={{
                   repeat: Infinity,
                   ease: "linear",
                   duration: promoSettings.speed
                 }}
               >
-                {promoSettings.text}
+                <RepeatedText />
+                <RepeatedText />
               </motion.div>
             </div>
           )}

@@ -11,6 +11,7 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
   const [promoBannerText, setPromoBannerText] = useState("En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo");
   const [promoBannerSpeed, setPromoBannerSpeed] = useState("20");
   const [promoBannerLink, setPromoBannerLink] = useState("");
+  const [promoBannerRepetitions, setPromoBannerRepetitions] = useState("3");
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -29,6 +30,7 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
       if (data.promo_banner_text) setPromoBannerText(data.promo_banner_text);
       if (data.promo_banner_speed) setPromoBannerSpeed(data.promo_banner_speed);
       if (data.promo_banner_link) setPromoBannerLink(data.promo_banner_link);
+      if (data.promo_banner_repetitions) setPromoBannerRepetitions(data.promo_banner_repetitions);
     } catch (error) {
       console.error("Error fetching settings:", error);
     } finally {
@@ -51,7 +53,8 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
           promo_banner_visible: promoBannerVisible ? '1' : '0',
           promo_banner_text: promoBannerText,
           promo_banner_speed: promoBannerSpeed,
-          promo_banner_link: promoBannerLink
+          promo_banner_link: promoBannerLink,
+          promo_banner_repetitions: promoBannerRepetitions
         })
       });
       const data = await response.json();
@@ -193,6 +196,21 @@ export function AdminSettings({ adminToken }: AdminSettingsProps) {
                 placeholder="Ej. /productos/shaker o https://..."
               />
               <p className="text-[10px] text-slate-400 mt-2">URL a la que irá el usuario si hace clic en el cintillo.</p>
+            </div>
+            <div>
+              <label className="block text-xs font-black text-[#0F172A] uppercase tracking-widest mb-2">
+                Repeticiones del Texto
+              </label>
+              <input
+                type="number"
+                value={promoBannerRepetitions}
+                onChange={(e) => setPromoBannerRepetitions(e.target.value)}
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:border-[#00AAC7] focus:bg-white transition-colors outline-none"
+                placeholder="3"
+                min="1"
+                max="20"
+              />
+              <p className="text-[10px] text-slate-400 mt-2">Cantidad de veces que se repetirá el texto en el cintillo continuo.</p>
             </div>
           </div>
         </div>
