@@ -97,6 +97,11 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
         </div>
       </div>
 
+      {/* Promotional Banner */}
+      <div className="w-full bg-gradient-to-r from-[#0088A3] via-[#00AAC7] to-[#0088A3] text-white text-[10px] sm:text-xs font-black text-center py-1.5 px-4 uppercase tracking-wider shadow-md">
+        En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo
+      </div>
+
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
