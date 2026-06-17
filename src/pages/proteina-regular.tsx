@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
 import { ShareButton } from "../components/ShareButton";
+import { useProductReviews, ReviewStars, ReviewSection } from "../components/ProductReviews";
 
 interface ProteinaRegularProps {
   onBack: () => void;
@@ -32,6 +33,8 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState<number>(780);
+  
+  const { reviews, avgRating } = useProductReviews("proteina-clasica");
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -130,16 +133,14 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-3 mt-4">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#00AAC7] text-[#00AAC7]" />
-                ))}
-              </div>
-              <span className="text-sm text-gray-600 font-medium">
-                4.9 <span className="text-gray-400">(1,234 reviews)</span>
-              </span>
-            </div>
+            <ReviewStars 
+              avgRating={avgRating} 
+              reviewCount={reviews.length} 
+              onWriteReview={() => {
+                document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' });
+                // We'll let the ReviewSection handle the modal, so just scrolling there is enough
+              }} 
+            />
 
             {/* Nutrition Info - Desktop Only */}
             <div className="hidden lg:block mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
@@ -307,6 +308,11 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
               </div>
             </div>
           </motion.div>
+        </div>
+
+        {/* Dynamic Reviews */}
+        <div id="reviews-section">
+          <ReviewSection productId="proteina-clasica" reviews={reviews} />
         </div>
       </div>
     </div>

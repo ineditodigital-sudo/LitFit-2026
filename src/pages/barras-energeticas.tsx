@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
 import { ShareButton } from "../components/ShareButton";
+import { useProductReviews, ReviewStars, ReviewSection } from "../components/ProductReviews";
 
 interface BarrasEnergeticasProps {
   onBack: () => void;
@@ -41,6 +42,8 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [prices, setPrices] = useState({ 16: 560, 24: 790 });
+  
+  const { reviews, avgRating } = useProductReviews("barras-energeticas");
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -189,16 +192,13 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-3 mt-4">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#00AAC7] text-[#00AAC7]" />
-                ))}
-              </div>
-              <span className="text-sm text-gray-600 font-medium">
-                4.9 <span className="text-gray-400">(2,847 reviews)</span>
-              </span>
-            </div>
+            <ReviewStars 
+              avgRating={avgRating} 
+              reviewCount={reviews.length} 
+              onWriteReview={() => {
+                document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' });
+              }} 
+            />
 
             {/* Nutrition Info - Desktop Only */}
             <div className="hidden lg:block mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
@@ -389,6 +389,11 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
               </div>
             </div>
           </motion.div>
+        </div>
+
+        {/* Dynamic Reviews */}
+        <div id="reviews-section" className="mt-16">
+          <ReviewSection productId="barras-energeticas" reviews={reviews} />
         </div>
       </div>
     </div>
