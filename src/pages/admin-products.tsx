@@ -315,343 +315,370 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       {(editingId || isAdding) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => { setEditingId(null); setIsAdding(false); }} />
-          <div className="relative bg-white w-full max-w-2xl p-6 md:p-8 rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
-            <div className="overflow-y-auto pr-2 scrollbar-hide">
-              <div className="flex justify-between items-center mb-6 md:mb-8">
-                <h2 className="text-xl md:text-3xl font-black text-black uppercase tracking-tighter">
-                  {isAdding ? "Nuevo Producto" : "Editar"}
-                </h2>
-                <button onClick={() => { setEditingId(null); setIsAdding(false); }} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                  <X className="w-6 h-6 text-gray-400" />
-                </button>
-              </div>
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <Package className="w-3 h-3" /> Nombre
-                    </label>
+          <div className="relative bg-white w-full max-w-6xl rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
+
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 flex-shrink-0">
+              <h2 className="text-xl font-black text-black uppercase tracking-tighter">
+                {isAdding ? "Nuevo Producto" : `Editando: ${formData.name || "..."}`}
+              </h2>
+              <button onClick={() => { setEditingId(null); setIsAdding(false); }} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Two-column body */}
+            <div className="flex flex-col lg:flex-row flex-1 overflow-hidden min-h-0">
+
+              {/* ── LEFT: Form ── */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 scrollbar-hide lg:border-r border-slate-100">
+                <form onSubmit={handleFormSubmit} id="product-form" className="space-y-6">
+
+                  {/* Name & Category */}
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest">① Título del producto</label>
                     <input
-                      type="text"
-                      required
-                      value={formData.name}
+                      type="text" required value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full h-11 md:h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all"
+                      placeholder="Ej: Proteína ISO + Collagen"
+                      className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-black text-lg transition-all"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <Tag className="w-3 h-3" /> Categoría
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full h-11 md:h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all"
-                    />
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <DollarSign className="w-3 h-3" /> Precio (MXN)
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value.replace(/[^0-9]/g, "") })}
-                      className="w-full h-11 md:h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <Sparkles className="w-3 h-3" /> Badge
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ej: BEST SELLER"
-                      value={formData.badge}
-                      onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                      className="w-full h-11 md:h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                    <ImageIcon className="w-3 h-3" /> Imagen del Producto
-                  </label>
-                  <div className="flex gap-4 items-center">
-                    <input
-                      type="file"
-                      accept="image/png, image/jpeg, image/webp"
-                      onChange={handleFileUpload}
-                      className="flex-1 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:uppercase file:bg-black file:text-white hover:file:bg-[#00AAC7] file:transition-colors text-xs text-gray-500 cursor-pointer"
-                    />
-                  </div>
-                  <div className="flex gap-2 items-center mt-2">
-                    <span className="text-[10px] font-black text-gray-300">O PEGA UNA URL:</span>
-                    <input
-                      type="text"
-                      className="flex-1 h-10 px-4 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-[10px] transition-all"
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    />
-                  </div>
-                  {!formData.image && (
-                    <p className="text-[10px] text-red-500 font-bold mt-1 uppercase tracking-tighter">* Debes subir una imagen o poner una URL</p>
-                  )}
-                  {formData.image && (
-                    <div className="mt-4 rounded-2xl overflow-hidden border-2 border-slate-100 max-w-[200px]">
-                      <img src={formData.image} alt="Preview" className="w-full h-auto object-cover" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4 pt-4 border-t border-gray-100">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <ImageIcon className="w-3 h-3" /> Galería Adicional (Opcional)
-                    </label>
-                    <div className="flex gap-4 items-center">
-                      <input
-                        type="file"
-                        accept="image/png, image/jpeg, image/webp"
-                        onChange={(e) => handleFileUpload(e, true)}
-                        className="flex-1 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-xs text-gray-400 cursor-pointer"
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1"><Tag className="w-3 h-3" /> Categoría</label>
+                      <input type="text" required value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="w-full h-10 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1"><Sparkles className="w-3 h-3" /> Badge</label>
+                      <input type="text" placeholder="Ej: BEST SELLER" value={formData.badge}
+                        onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                        className="w-full h-10 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest">② Descripción</label>
+                    <textarea required value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="Describe el producto para el cliente..."
+                      className="w-full h-20 p-3 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-medium text-xs text-gray-600 resize-none transition-all scrollbar-hide leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest flex items-center gap-1"><DollarSign className="w-3 h-3" /> ③ Precio (MXN)</label>
+                    <input type="text" required value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value.replace(/[^0-9]/g, "") })}
+                      placeholder="890"
+                      className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-black text-2xl transition-all"
+                    />
+                  </div>
+
+                  {/* Image */}
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest flex items-center gap-1"><ImageIcon className="w-3 h-3" /> ④ Imagen principal</label>
+                    <input type="file" accept="image/png, image/jpeg, image/webp" onChange={handleFileUpload}
+                      className="w-full file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:uppercase file:bg-black file:text-white hover:file:bg-[#00AAC7] file:transition-colors text-xs text-gray-400 cursor-pointer"
+                    />
+                    <div className="flex gap-2 items-center">
+                      <span className="text-[9px] font-black text-gray-300 whitespace-nowrap">O PEGA URL:</span>
+                      <input type="text" value={formData.image}
+                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                        className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-medium text-[10px] transition-all"
+                      />
+                    </div>
+                    {!formData.image && <p className="text-[10px] text-red-500 font-bold uppercase">* Requerida</p>}
+                  </div>
+
+                  {/* Gallery */}
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1"><ImageIcon className="w-3 h-3" /> Galería adicional (opcional)</label>
+                    <input type="file" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleFileUpload(e, true)}
+                      className="w-full file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-xs text-gray-400 cursor-pointer"
+                    />
                     {formData.images && formData.images.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-4">
+                      <div className="flex flex-wrap gap-2">
                         {formData.images.map((img, idx) => (
-                          <div key={idx} className="relative group rounded-xl overflow-hidden border-2 border-slate-100 w-20 h-20">
-                            <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                            <button
-                              type="button"
-                              onClick={() => setFormData(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
-                              className="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="w-3 h-3" />
+                          <div key={idx} className="relative group rounded-xl overflow-hidden border-2 border-slate-100 w-16 h-16">
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                            <button type="button" onClick={() => setFormData(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
+                              className="absolute top-0.5 right-0.5 bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <X className="w-2.5 h-2.5" />
                             </button>
                           </div>
                         ))}
                       </div>
                     )}
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 gap-4 pt-4 border-t border-gray-100">
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <Activity className="w-3 h-3" /> Sabores y Variantes (Opcional)
-                    </label>
-                    <div className="space-y-3">
+                  {/* Variants / Flavors */}
+                  <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest">⑤ Sabores / Variantes</label>
+                    <div className="space-y-2">
                       {formData.variants?.map((v, idx) => {
                         const variant = typeof v === 'string' ? { name: v } : v;
                         return (
-                          <div key={idx} className="flex flex-col sm:flex-row gap-2 items-start border border-gray-200 p-3 rounded-xl bg-gray-50/50">
-                            <div className="flex-1 w-full space-y-2">
-                              <input
-                                type="text"
-                                placeholder="Nombre (ej. Fresa)"
-                                value={variant.name}
+                          <div key={idx} className="flex flex-col gap-2 border border-gray-100 p-3 rounded-2xl bg-slate-50/50">
+                            <div className="flex gap-2 items-center">
+                              {variant.image && (
+                                <img src={variant.image} alt="" className="w-9 h-9 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
+                              )}
+                              <input type="text" placeholder="Nombre del sabor (ej. Fresa)" value={variant.name}
                                 onChange={(e) => {
                                   const newVars = [...(formData.variants as Variant[] || [])];
                                   newVars[idx] = { ...variant, name: e.target.value };
                                   setFormData({ ...formData, variants: newVars });
                                 }}
-                                className="w-full h-10 px-3 bg-white border-2 border-transparent rounded-lg focus:border-[#00AAC7] outline-none font-bold text-xs"
+                                className="flex-1 h-9 px-3 bg-white border-2 border-transparent rounded-xl focus:border-[#00AAC7] outline-none font-bold text-xs"
                               />
-                              <div className="flex gap-2 items-center">
-                                <input
-                                  type="file"
-                                  accept="image/png, image/jpeg, image/webp"
-                                  onChange={(e) => handleVariantImageUpload(e, idx)}
-                                  className="flex-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-[10px] text-gray-400 cursor-pointer"
-                                />
-                                <span className="text-[10px] font-bold text-gray-300">Ó URL:</span>
-                                <input
-                                  type="text"
-                                  placeholder="URL (Opcional)"
-                                  value={variant.image || ""}
-                                  onChange={(e) => {
-                                    const newVars = [...(formData.variants as Variant[] || [])];
-                                    newVars[idx] = { ...variant, image: e.target.value };
-                                    setFormData({ ...formData, variants: newVars });
-                                  }}
-                                  className="w-full h-8 px-2 bg-white border-2 border-transparent rounded-lg focus:border-[#00AAC7] outline-none font-medium text-[10px] text-gray-600"
-                                />
-                              </div>
+                              <button type="button" onClick={() => { const nv = formData.variants?.filter((_, i) => i !== idx); setFormData({ ...formData, variants: nv }); }}
+                                className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg flex-shrink-0"><X className="w-3.5 h-3.5" /></button>
                             </div>
-                            {variant.image && (
-                              <div className="w-20 h-20 bg-white border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                <img src={variant.image} alt="Sabor" className="w-full h-full object-contain p-1" />
-                              </div>
-                            )}
-                            <button 
-                              type="button" 
-                              onClick={() => {
-                                const newVars = formData.variants?.filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: newVars });
-                              }} 
-                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg shrink-0 mt-1 sm:mt-0"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
+                            <div className="flex gap-2 items-center pl-0">
+                              <input type="file" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleVariantImageUpload(e, idx)}
+                                className="flex-1 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[9px] file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-[9px] text-gray-400 cursor-pointer"
+                              />
+                              <span className="text-[9px] font-bold text-gray-300 whitespace-nowrap">Ó URL:</span>
+                              <input type="text" placeholder="URL imagen" value={variant.image || ""}
+                                onChange={(e) => {
+                                  const newVars = [...(formData.variants as Variant[] || [])];
+                                  newVars[idx] = { ...variant, image: e.target.value };
+                                  setFormData({ ...formData, variants: newVars });
+                                }}
+                                className="flex-1 h-7 px-2 bg-white border border-gray-200 rounded-lg focus:border-[#00AAC7] outline-none font-medium text-[9px] text-gray-500"
+                              />
+                            </div>
                           </div>
                         );
                       })}
-                      <button
-                        type="button"
-                        onClick={() => setFormData({ ...formData, variants: [...(formData.variants || []), { name: "" }] })}
-                        className="w-full h-10 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
-                      >
+                      <button type="button" onClick={() => setFormData({ ...formData, variants: [...(formData.variants || []), { name: "" }] })}
+                        className="w-full h-9 border-2 border-dashed border-gray-200 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-400 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2">
                         <Plus className="w-3 h-3" /> Añadir sabor
                       </button>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2 mt-4 pt-4 border-t border-gray-100">
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                      <Package className="w-3 h-3" /> Tallas / Tamaños (Opcional)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ej: 16 barras, 24 barras (Separados por coma)"
+
+                  {/* Sizes */}
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1"><Package className="w-3 h-3" /> Tallas / Tamaños (opcional)</label>
+                    <input type="text" placeholder="Ej: 16 barras, 24 barras"
                       value={formData.sizes?.join(", ") || ""}
                       onChange={(e) => setFormData({ ...formData, sizes: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") })}
-                      className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-sm transition-all"
+                      className="w-full h-10 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
                     />
                   </div>
-                </div>
 
-                {/* Nutritional Info */}
-                <div className="space-y-3 pt-4 border-t border-gray-100">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                    <Activity className="w-3 h-3" /> Información Nutricional
-                  </label>
-                  <div className="space-y-2">
-                    {Object.entries(formData.nutrition || {}).map(([key, value], idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          placeholder="Nombre (ej. Proteína)"
-                          value={key}
-                          onChange={(e) => {
-                            const entries = Object.entries(formData.nutrition || {});
-                            entries[idx] = [e.target.value, value];
-                            setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
-                          }}
-                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
-                        />
-                        <span className="text-gray-300 font-bold text-xs">:</span>
-                        <input
-                          type="text"
-                          placeholder="Valor (ej. 20g)"
-                          value={value}
-                          onChange={(e) => {
-                            const entries = Object.entries(formData.nutrition || {});
-                            entries[idx] = [key, e.target.value];
-                            setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
-                          }}
-                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
+                  {/* Nutritional Info */}
+                  <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest flex items-center gap-1"><Activity className="w-3 h-3" /> ⑥ Información Nutricional</label>
+                    <div className="space-y-2">
+                      {Object.entries(formData.nutrition || {}).map(([key, value], idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <div className="flex-1 flex items-center gap-1 bg-slate-50 rounded-xl px-3 py-2 border-2 border-transparent focus-within:border-[#00AAC7]">
+                            <input type="text" placeholder="Nutriente" value={key}
+                              onChange={(e) => {
+                                const entries = Object.entries(formData.nutrition || {});
+                                entries[idx] = [e.target.value, value];
+                                setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                              }}
+                              className="w-24 bg-transparent outline-none font-bold text-xs text-gray-500"
+                            />
+                            <span className="text-gray-300 text-xs">|</span>
+                            <input type="text" placeholder="Valor" value={value}
+                              onChange={(e) => {
+                                const entries = Object.entries(formData.nutrition || {});
+                                entries[idx] = [key, e.target.value];
+                                setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                              }}
+                              className="flex-1 bg-transparent outline-none font-black text-sm text-black"
+                            />
+                          </div>
+                          <button type="button" onClick={() => {
                             const entries = Object.entries(formData.nutrition || {}).filter((_, i) => i !== idx);
                             setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
-                          }}
-                          className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => {
+                          }} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg flex-shrink-0"><X className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                      <button type="button" onClick={() => {
                         const entries = Object.entries(formData.nutrition || {});
                         entries.push(["", ""]);
                         setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
-                      }}
-                      className="w-full h-9 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Plus className="w-3 h-3" /> Añadir nutriente
+                      }} className="w-full h-9 border-2 border-dashed border-gray-200 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-400 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <Plus className="w-3 h-3" /> Añadir nutriente
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Features */}
+                  <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <label className="text-[10px] font-black uppercase text-[#00AAC7] tracking-widest flex items-center gap-1"><Sparkles className="w-3 h-3" /> ⑦ Características / Beneficios</label>
+                    <div className="space-y-2">
+                      {(formData.features || []).map((feat, idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <div className="flex-1 flex items-center gap-2 bg-slate-50 rounded-xl px-3 py-2 border-2 border-transparent focus-within:border-[#00AAC7]">
+                            <div className="w-5 h-5 rounded-full bg-[#00AAC7]/15 flex items-center justify-center flex-shrink-0">
+                              <Sparkles className="w-2.5 h-2.5 text-[#00AAC7]" />
+                            </div>
+                            <input type="text" placeholder="Ej: 28.5g de proteína por porción" value={feat}
+                              onChange={(e) => {
+                                const nf = [...(formData.features || [])];
+                                nf[idx] = e.target.value;
+                                setFormData({ ...formData, features: nf });
+                              }}
+                              className="flex-1 bg-transparent outline-none font-medium text-xs text-gray-700"
+                            />
+                          </div>
+                          <button type="button" onClick={() => {
+                            const nf = (formData.features || []).filter((_, i) => i !== idx);
+                            setFormData({ ...formData, features: nf });
+                          }} className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg flex-shrink-0"><X className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                      <button type="button" onClick={() => setFormData({ ...formData, features: [...(formData.features || []), ""] })}
+                        className="w-full h-9 border-2 border-dashed border-gray-200 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-400 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <Plus className="w-3 h-3" /> Añadir característica
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Save / Cancel */}
+                  <div className="flex gap-3 pt-4 pb-2">
+                    <button type="submit"
+                      className="flex-1 h-12 bg-black text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-[#00AAC7] transition-all flex items-center justify-center gap-2 shadow-xl shadow-slate-200">
+                      <Save className="w-4 h-4" /> Guardar
+                    </button>
+                    <button type="button" onClick={() => { setEditingId(null); setIsAdding(false); }}
+                      className="flex-1 h-12 bg-slate-100 text-slate-500 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-200 transition-all">
+                      Cancelar
                     </button>
                   </div>
+                </form>
+              </div>
+
+              {/* ── RIGHT: Live Preview ── */}
+              <div className="hidden lg:flex lg:w-[420px] flex-col bg-gray-50 overflow-y-auto scrollbar-hide">
+                {/* Preview header */}
+                <div className="px-5 py-3 border-b border-gray-100 bg-white flex items-center gap-2 flex-shrink-0">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Vista del cliente</span>
                 </div>
 
-                {/* Features / Benefits */}
-                <div className="space-y-3 pt-4 border-t border-gray-100">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
-                    <Sparkles className="w-3 h-3" /> Características / Beneficios
-                  </label>
-                  <div className="space-y-2">
-                    {(formData.features || []).map((feat, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
-                        <input
-                          type="text"
-                          placeholder="Ej: 28.5g de proteína por porción"
-                          value={feat}
-                          onChange={(e) => {
-                            const newFeats = [...(formData.features || [])];
-                            newFeats[idx] = e.target.value;
-                            setFormData({ ...formData, features: newFeats });
-                          }}
-                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newFeats = (formData.features || []).filter((_, i) => i !== idx);
-                            setFormData({ ...formData, features: newFeats });
-                          }}
-                          className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+                {/* Product Preview */}
+                <div className="p-5 space-y-4 flex-1">
+
+                  {/* Image */}
+                  <div className="relative aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex items-center justify-center">
+                    {formData.image ? (
+                      <img src={formData.image} alt={formData.name} className="w-full h-full object-contain p-4" />
+                    ) : (
+                      <div className="text-gray-300 flex flex-col items-center gap-2">
+                        <ImageIcon className="w-10 h-10" />
+                        <span className="text-xs font-bold">Sin imagen</span>
                       </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, features: [...(formData.features || []), ""] })}
-                      className="w-full h-9 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Plus className="w-3 h-3" /> Añadir característica
-                    </button>
+                    )}
+                    {formData.badge && (
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-[#00AAC7] to-[#00d4ff] text-black px-2.5 py-1 font-black text-[9px] tracking-widest shadow-lg">
+                        {formData.badge}
+                      </div>
+                    )}
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Descripción</label>
-                  <textarea
-                    required
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full h-24 p-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs resize-none transition-all scrollbar-hide"
-                  />
-                </div>
+                  {/* Rating placeholder */}
+                  <div className="flex items-center gap-1.5">
+                    {[1,2,3,4,5].map(i => <div key={i} className="w-3.5 h-3.5 rounded-sm bg-gray-200" />)}
+                    <span className="text-[10px] text-[#00AAC7] font-bold ml-1 underline cursor-pointer">Nuevo producto · Escribir reseña</span>
+                  </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 mt-8 pb-4">
-                  <button
-                    type="submit"
-                    className="flex-1 h-12 md:h-14 bg-black text-white font-black text-[10px] md:text-xs uppercase tracking-widest rounded-2xl hover:bg-[#00AAC7] transition-all flex items-center justify-center gap-2 shadow-xl shadow-slate-200"
-                  >
-                    <Save className="w-4 h-4" /> Guardar Producto
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setEditingId(null); setIsAdding(false); }}
-                    className="flex-1 h-12 md:h-14 bg-slate-100 text-slate-500 font-black text-[10px] md:text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-200 transition-all"
-                  >
-                    Cancelar
-                  </button>
+                  {/* Nutrition */}
+                  {Object.keys(formData.nutrition || {}).length > 0 && (
+                    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                      <h4 className="font-black text-black text-[10px] tracking-widest uppercase mb-3">Información Nutricional</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {Object.entries(formData.nutrition || {}).map(([k, v]) => (
+                          <div key={k} className="bg-gray-50 rounded-xl p-2">
+                            <p className="text-[9px] text-gray-400 font-medium">{k || "Nutriente"}</p>
+                            <p className="text-sm font-black text-black">{v || "—"}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Divider */}
+                  <div className="border-t border-dashed border-gray-200 my-1" />
+
+                  {/* Title */}
+                  <div>
+                    {formData.category && (
+                      <p className="text-[#00AAC7] font-black text-[10px] tracking-widest uppercase mb-1">{formData.category}</p>
+                    )}
+                    <h1 className="text-2xl font-black text-black tracking-tight leading-tight">
+                      {formData.name || <span className="text-gray-300">Nombre del producto</span>}
+                    </h1>
+                  </div>
+
+                  {/* Description */}
+                  {formData.description && (
+                    <p className="text-gray-500 text-xs leading-relaxed">{formData.description}</p>
+                  )}
+
+                  {/* Price */}
+                  <div className="text-3xl font-black text-black tracking-tight">
+                    {formData.price ? `$${Number(formData.price).toLocaleString()}` : <span className="text-gray-300 text-xl">$0</span>}
+                  </div>
+
+                  {/* Flavor selector preview */}
+                  {(formData.variants || []).filter(v => (typeof v === 'string' ? v : (v as Variant).name)).length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-black">Selecciona tu sabor</p>
+                      {(formData.variants as Variant[] || []).filter(v => v.name).map((v, i) => (
+                        <div key={i} className={`flex items-center gap-2 p-2.5 border-2 rounded-xl text-xs font-bold ${i === 0 ? 'border-[#00AAC7] bg-[#00AAC7]/5' : 'border-gray-100'}`}>
+                          {v.image && <img src={v.image} alt="" className="w-7 h-7 rounded-md object-cover" />}
+                          <span className="text-black">{v.name}</span>
+                          {i === 0 && <div className="ml-auto w-3.5 h-3.5 rounded-full bg-[#00AAC7] flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full" /></div>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add to cart preview */}
+                  <div className="space-y-2 pt-1">
+                    <div className="w-full py-3.5 bg-black text-white text-[10px] font-black tracking-widest text-center rounded-none">
+                      🛒 AGREGAR AL CARRITO — ${formData.price ? Number(formData.price).toLocaleString() : "0"}
+                    </div>
+                    <div className="w-full py-3 border-2 border-black text-black text-[10px] font-black tracking-widest text-center">
+                      COMPRAR AHORA
+                    </div>
+                  </div>
+
+                  {/* Features preview */}
+                  {(formData.features || []).filter(f => f).length > 0 && (
+                    <div className="space-y-2 pt-1 border-t border-gray-100">
+                      {(formData.features || []).filter(f => f).map((feat, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <div className="w-7 h-7 bg-[#00AAC7]/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Sparkles className="w-3 h-3 text-[#00AAC7]" />
+                          </div>
+                          <span className="text-xs text-gray-600 font-medium">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </form>
+              </div>
+
             </div>
           </div>
         </div>
