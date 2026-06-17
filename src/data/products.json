@@ -14,7 +14,12 @@
       "Proteína": "12g",
       "Carbohidratos": "28g",
       "Grasas": "6g"
-    }
+    },
+    "features": [
+      "Más proteína por barra",
+      "Envíos seguros a todo México",
+      "Recomendado por atletas"
+    ]
   },
   {
     "id": "proteina-clasica",
@@ -30,7 +35,12 @@
       "Calorías": "120 kcal",
       "Carbohidratos": "0.5g",
       "Grasas": "0.5g"
-    }
+    },
+    "features": [
+      "28.5g de proteína por porción",
+      "Rápida absorción",
+      "Envío seguro a todo México"
+    ]
   },
   {
     "id": "proteina-colageno",
@@ -46,7 +56,12 @@
       "Colágeno": "10g",
       "Carbohidratos": "2g",
       "Calorías": "130 kcal"
-    }
+    },
+    "features": [
+      "20g Proteína + 10g Colágeno",
+      "Fórmula exclusiva antiedad",
+      "Envío seguro a todo México"
+    ]
   },
   {
     "id": "test-pago-real",

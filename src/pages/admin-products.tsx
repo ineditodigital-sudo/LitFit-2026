@@ -22,6 +22,7 @@ interface Product {
   variants?: (string | Variant)[];
   sizes?: string[];
   nutrition?: Record<string, string>;
+  features?: string[];
 }
 
 export function AdminProducts({ adminToken }: { adminToken: string }) {
@@ -41,7 +42,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
     flavors: [],
     variants: [],
     sizes: [],
-    nutrition: {}
+    nutrition: {},
+    features: []
   });
 
   const fetchProducts = async () => {
@@ -101,7 +103,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       flavors: product.flavors || product.variants || [],
       variants: (product.variants || product.flavors || []).map(v => typeof v === 'string' ? { name: v } : v),
       sizes: product.sizes || [],
-      nutrition: product.nutrition || {}
+      nutrition: product.nutrition || {},
+      features: product.features || []
     });
     setIsAdding(false);
   };
@@ -121,7 +124,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       flavors: [],
       variants: [],
       sizes: [],
-      nutrition: {}
+      nutrition: {},
+      features: []
     });
   };
 
@@ -521,6 +525,104 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                       onChange={(e) => setFormData({ ...formData, sizes: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") })}
                       className="w-full h-12 px-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-sm transition-all"
                     />
+                  </div>
+                </div>
+
+                {/* Nutritional Info */}
+                <div className="space-y-3 pt-4 border-t border-gray-100">
+                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                    <Activity className="w-3 h-3" /> Información Nutricional
+                  </label>
+                  <div className="space-y-2">
+                    {Object.entries(formData.nutrition || {}).map(([key, value], idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          placeholder="Nombre (ej. Proteína)"
+                          value={key}
+                          onChange={(e) => {
+                            const entries = Object.entries(formData.nutrition || {});
+                            entries[idx] = [e.target.value, value];
+                            setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                          }}
+                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
+                        />
+                        <span className="text-gray-300 font-bold text-xs">:</span>
+                        <input
+                          type="text"
+                          placeholder="Valor (ej. 20g)"
+                          value={value}
+                          onChange={(e) => {
+                            const entries = Object.entries(formData.nutrition || {});
+                            entries[idx] = [key, e.target.value];
+                            setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                          }}
+                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const entries = Object.entries(formData.nutrition || {}).filter((_, i) => i !== idx);
+                            setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                          }}
+                          className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const entries = Object.entries(formData.nutrition || {});
+                        entries.push(["", ""]);
+                        setFormData({ ...formData, nutrition: Object.fromEntries(entries) });
+                      }}
+                      className="w-full h-9 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-3 h-3" /> Añadir nutriente
+                    </button>
+                  </div>
+                </div>
+
+                {/* Features / Benefits */}
+                <div className="space-y-3 pt-4 border-t border-gray-100">
+                  <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                    <Sparkles className="w-3 h-3" /> Características / Beneficios
+                  </label>
+                  <div className="space-y-2">
+                    {(formData.features || []).map((feat, idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          placeholder="Ej: 28.5g de proteína por porción"
+                          value={feat}
+                          onChange={(e) => {
+                            const newFeats = [...(formData.features || [])];
+                            newFeats[idx] = e.target.value;
+                            setFormData({ ...formData, features: newFeats });
+                          }}
+                          className="flex-1 h-9 px-3 bg-slate-50 border-2 border-transparent rounded-xl focus:border-[#00AAC7] focus:bg-white outline-none font-bold text-xs transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newFeats = (formData.features || []).filter((_, i) => i !== idx);
+                            setFormData({ ...formData, features: newFeats });
+                          }}
+                          className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, features: [...(formData.features || []), ""] })}
+                      className="w-full h-9 border-2 border-dashed border-gray-300 hover:border-[#00AAC7] hover:bg-[#00AAC7]/5 text-gray-500 hover:text-[#00AAC7] font-bold text-xs uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-3 h-3" /> Añadir característica
+                    </button>
                   </div>
                 </div>
 

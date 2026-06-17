@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, ShoppingCart, Check, Star, Shield, Truck, Award } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Check, Shield, Truck, Award } from "lucide-react";
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
@@ -10,46 +10,90 @@ interface ProteinaRegularProps {
   onBack: () => void;
 }
 
-const flavors = [
-  { id: "chocolate", name: "Chocolate", color: "#4A2511" },
-  { id: "vainilla", name: "Vainilla", color: "#F4E4C1" },
-  { id: "fresa", name: "Fresa", color: "#FF6B9D" },
+const DEFAULT_FLAVORS = [
+  { id: "chocolate", name: "Chocolate" },
+  { id: "vainilla", name: "Vainilla" },
+  { id: "fresa", name: "Fresa" },
 ];
 
-const productImages = [
+const DEFAULT_IMAGES = [
   "https://imagenes.inedito.digital/LITFIT/proteina-standard.webp",
 ];
 
-const features = [
-  { icon: Shield, text: "28.5g de proteína por porción" },
-  { icon: Award, text: "Rápida absorción" },
-  { icon: Truck, text: "Envío seguro a todo México" },
+const DEFAULT_FEATURES = [
+  "28.5g de proteína por porción",
+  "Rápida absorción",
+  "Envío seguro a todo México",
 ];
+
+const DEFAULT_NUTRITION: Record<string, string> = {
+  "Proteína": "28.5g",
+  "Calorías": "120 kcal",
+  "Carbohidratos": "0.5g",
+  "Grasas": "0.5g",
+};
+
+const FEATURE_ICONS = [Shield, Award, Truck];
 
 export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
   const { addItem } = useCart();
   const { navigateTo } = useNavigation();
-  const [selectedFlavor, setSelectedFlavor] = useState("chocolate");
+  const [selectedFlavor, setSelectedFlavor] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState<number>(780);
-  
+  const [productName, setProductName] = useState("Proteína aislada");
+  const [category, setCategory] = useState("ISOLATE PROTEIN");
+  const [description, setDescription] = useState("");
+  const [flavors, setFlavors] = useState(DEFAULT_FLAVORS);
+  const [productImages, setProductImages] = useState(DEFAULT_IMAGES);
+  const [features, setFeatures] = useState(DEFAULT_FEATURES);
+  const [nutrition, setNutrition] = useState(DEFAULT_NUTRITION);
+
   const { reviews, avgRating } = useProductReviews("proteina-clasica");
 
   useEffect(() => {
-    const fetchPrice = async () => {
+    const fetchProduct = async () => {
       try {
         const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
         const products = await response.json();
         const product = products.find((p: any) => p.id === "proteina-clasica");
         if (product) {
           setPrice(Number(product.price));
+          if (product.name) setProductName(product.name);
+          if (product.category) setCategory(product.category.toUpperCase());
+          if (product.description) setDescription(product.description);
+          if (product.nutrition && Object.keys(product.nutrition).length > 0) {
+            setNutrition(product.nutrition);
+          }
+          if (product.features && product.features.length > 0) {
+            setFeatures(product.features);
+          }
+          const rawFlavors = product.variants || product.flavors;
+          if (rawFlavors && rawFlavors.length > 0) {
+            const mapped = rawFlavors.map((f: any, i: number) => ({
+              id: typeof f === 'string'
+                ? f.toLowerCase().replace(/[^a-z0-9]/g, '-')
+                : f.name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || `flavor-${i}`,
+              name: typeof f === 'string' ? f : f.name,
+              image: typeof f === 'object' ? f.image : undefined,
+            }));
+            setFlavors(mapped);
+            setSelectedFlavor(mapped[0]?.id || "");
+          } else {
+            setSelectedFlavor(DEFAULT_FLAVORS[0].id);
+          }
+          const imgs = product.images && product.images.length > 0 ? product.images : [product.image];
+          if (imgs[0]) setProductImages(imgs.filter(Boolean));
+        } else {
+          setSelectedFlavor(DEFAULT_FLAVORS[0].id);
         }
       } catch (error) {
-        console.error("Error fetching price for ProteinaRegular:", error);
+        console.error("Error fetching product data:", error);
+        setSelectedFlavor(DEFAULT_FLAVORS[0].id);
       }
     };
-    fetchPrice();
+    fetchProduct();
   }, []);
 
   const selectedFlavorData = flavors.find((f) => f.id === selectedFlavor);
@@ -57,8 +101,8 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addItem({
-        id: `proteina-regular-${selectedFlavor}-${Date.now()}-${i}`,
-        name: "Proteína ISO",
+        id: `proteina-clasica-${selectedFlavor}-${Date.now()}-${i}`,
+        name: productName,
         price: price,
         image: productImages[0],
         variant: selectedFlavorData?.name,
@@ -89,7 +133,8 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
       {/* Product Section */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="grid lg:grid-cols-2 gap-8 items-start">
-          {/* Image Section */}
+
+          {/* ── LEFT COLUMN: Image Section ── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -105,96 +150,82 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4 }}
                   src={productImages[selectedImageIndex]}
-                  alt="Proteína ISO"
+                  alt={productName}
                   className="w-full h-full object-contain"
                 />
               </div>
             </div>
 
             {/* Image Carousel */}
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-              {productImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImageIndex(idx)}
-                  className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 border-2 transition-all duration-300 overflow-hidden bg-white ${
-                    selectedImageIndex === idx 
-                      ? 'border-[#00AAC7] scale-105' 
-                      : 'border-gray-200 hover:border-[#00AAC7]/50'
-                  }`}
-                >
-                  <img
-                    src={img}
-                    alt={`Vista ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {productImages.length > 1 && (
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+                {productImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 border-2 transition-all duration-300 overflow-hidden bg-white ${
+                      selectedImageIndex === idx
+                        ? 'border-[#00AAC7] scale-105'
+                        : 'border-gray-200 hover:border-[#00AAC7]/50'
+                    }`}
+                  >
+                    <img src={img} alt={`Vista ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Rating */}
-            <ReviewStars 
-              avgRating={avgRating} 
-              reviewCount={reviews.length} 
+            <ReviewStars
+              avgRating={avgRating}
+              reviewCount={reviews.length}
               onWriteReview={() => {
                 document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' });
-                // We'll let the ReviewSection handle the modal, so just scrolling there is enough
-              }} 
+              }}
             />
 
             {/* Nutrition Info - Desktop Only */}
-            <div className="hidden lg:block mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
-              <h3 className="font-black text-black mb-3 tracking-wide text-sm">INFORMACIÓN NUTRICIONAL</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-gray-500 text-xs">Proteína</p>
-                  <p className="font-bold text-black">28.5g</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Calorías</p>
-                  <p className="font-bold text-black">120 kcal</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Carbohidratos</p>
-                  <p className="font-bold text-black">0.5g</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Grasas</p>
-                  <p className="font-bold text-black">0.5g</p>
+            {Object.keys(nutrition).length > 0 && (
+              <div className="hidden lg:block mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
+                <h3 className="font-black text-black mb-3 tracking-wide text-sm">INFORMACIÓN NUTRICIONAL</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {Object.entries(nutrition).map(([key, val]) => (
+                    <div key={key}>
+                      <p className="text-gray-500 text-xs">{key}</p>
+                      <p className="font-bold text-black">{val}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </motion.div>
 
-          {/* Product Info */}
+          {/* ── RIGHT COLUMN: Product Info ── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:sticky lg:top-24"
           >
-            {/* Badge/Category */}
+            {/* Category */}
             <p className="text-[#00AAC7] font-black text-sm tracking-widest uppercase mb-2">
-              ISOLATE PROTEIN
+              {category}
             </p>
-            
+
             {/* Title & Share */}
             <div className="flex items-start justify-between gap-4 mb-3">
               <h1 className="text-3xl lg:text-4xl font-black text-black tracking-tight">
-                Proteína aislada
+                {productName}
               </h1>
-              <ShareButton 
-                title="LITFIT - Proteína aislada" 
-                text="Proteína de suero aislada de máxima pureza (90% proteína). Ideal para recuperación muscular post-entrenamiento." 
+              <ShareButton
+                title={`LITFIT - ${productName}`}
+                text={description || "Proteína de suero aislada de máxima pureza (90% proteína)."}
               />
             </div>
 
-            {/* Description */}
-            <p className="text-gray-600 mb-4 leading-relaxed text-sm">
-              Proteína de suero aislada de <span className="font-bold text-black">máxima pureza (90% proteína)</span>. Ideal para 
-              recuperación muscular post-entrenamiento. Formulación premium con absorción 
-              rápida y perfil completo de aminoácidos esenciales. <span className="font-bold text-black">Presentación de 1.5kg</span>.
-            </p>
+            {description && (
+              <p className="text-gray-600 mb-4 leading-relaxed text-sm">{description}</p>
+            )}
 
             {/* Price */}
             <div className="mb-6">
@@ -204,53 +235,49 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
             </div>
 
             {/* Flavor Selector */}
-            <div className="mb-6">
-              <label className="block text-xs font-black text-black mb-3 tracking-wide">
-                SELECCIONA TU SABOR
-              </label>
-              <div className="grid grid-cols-1 gap-2">
-                {flavors.map((flavor) => (
-                  <button
-                    key={flavor.id}
-                    onClick={() => setSelectedFlavor(flavor.id)}
-                    className={`relative p-3 border-2 transition-all duration-300 ${
-                      selectedFlavor === flavor.id
-                        ? "border-[#00AAC7] bg-[#00AAC7]/5"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-black">{flavor.name}</span>
-                    </div>
-                    {selectedFlavor === flavor.id && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="w-4 h-4 text-[#00AAC7]" />
+            {flavors.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-xs font-black text-black mb-3 tracking-wide">
+                  SELECCIONA TU SABOR
+                </label>
+                <div className="grid grid-cols-1 gap-2">
+                  {flavors.map((flavor) => (
+                    <button
+                      key={flavor.id}
+                      onClick={() => setSelectedFlavor(flavor.id)}
+                      className={`relative p-3 border-2 transition-all duration-300 ${
+                        selectedFlavor === flavor.id
+                          ? "border-[#00AAC7] bg-[#00AAC7]/5"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-black">{flavor.name}</span>
                       </div>
-                    )}
-                  </button>
-                ))}
+                      {selectedFlavor === flavor.id && (
+                        <div className="absolute top-2 right-2">
+                          <Check className="w-4 h-4 text-[#00AAC7]" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="block text-xs font-black text-black mb-3 tracking-wide">
-                CANTIDAD
-              </label>
+              <label className="block text-xs font-black text-black mb-3 tracking-wide">CANTIDAD</label>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-10 h-10 border-2 border-gray-300 hover:border-[#00AAC7] transition-colors font-black text-lg"
-                >
-                  -
-                </button>
+                >-</button>
                 <span className="text-xl font-black min-w-[50px] text-center">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="w-10 h-10 border-2 border-gray-300 hover:border-[#00AAC7] transition-colors font-black text-lg"
-                >
-                  +
-                </button>
+                >+</button>
               </div>
             </div>
 
@@ -271,47 +298,41 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
             </button>
 
             {/* Features */}
-            <div className="mt-6 space-y-3 pt-6 border-t border-gray-200">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <div key={index} className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 bg-[#00AAC7]/10 flex items-center justify-center rounded-full flex-shrink-0">
-                      <Icon className="w-4 h-4 text-[#00AAC7]" />
+            {features.length > 0 && (
+              <div className="mt-6 space-y-3 pt-6 border-t border-gray-200">
+                {features.map((feat, index) => {
+                  const Icon = FEATURE_ICONS[index % FEATURE_ICONS.length];
+                  return (
+                    <div key={index} className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 bg-[#00AAC7]/10 flex items-center justify-center rounded-full flex-shrink-0">
+                        <Icon className="w-4 h-4 text-[#00AAC7]" />
+                      </div>
+                      <span className="text-xs text-gray-700 font-medium">{feat}</span>
                     </div>
-                    <span className="text-xs text-gray-700 font-medium">{feature.text}</span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Nutrition Info - Mobile Only */}
-            <div className="lg:hidden mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
-              <h3 className="font-black text-black mb-3 tracking-wide text-sm">INFORMACIÓN NUTRICIONAL</h3>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-gray-500 text-xs">Proteína</p>
-                  <p className="font-bold text-black">28.5g</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Calorías</p>
-                  <p className="font-bold text-black">120 kcal</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Carbohidratos</p>
-                  <p className="font-bold text-black">0.5g</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 text-xs">Grasas</p>
-                  <p className="font-bold text-black">0.5g</p>
+            {Object.keys(nutrition).length > 0 && (
+              <div className="lg:hidden mt-6 bg-gradient-to-br from-gray-50 to-white p-4 border border-gray-200">
+                <h3 className="font-black text-black mb-3 tracking-wide text-sm">INFORMACIÓN NUTRICIONAL</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {Object.entries(nutrition).map(([key, val]) => (
+                    <div key={key}>
+                      <p className="text-gray-500 text-xs">{key}</p>
+                      <p className="font-bold text-black">{val}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
 
         {/* Dynamic Reviews */}
-        <div id="reviews-section">
+        <div id="reviews-section" className="mt-16">
           <ReviewSection productId="proteina-clasica" reviews={reviews} />
         </div>
       </div>
