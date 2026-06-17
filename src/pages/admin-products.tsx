@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Plus, Edit2, Trash2, Save, X, Package, Tag, DollarSign, Image as ImageIcon, Sparkles, Activity } from "lucide-react";
 import { toast } from "sonner";
 // Importar datos locales como fallback
@@ -312,8 +313,8 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       </div>
 
       {/* Edit/Add Modal */}
-      {(editingId || isAdding) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4">
+      {(editingId || isAdding) && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-2 md:p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => { setEditingId(null); setIsAdding(false); }} />
           <div className="relative bg-white w-full max-w-6xl rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
 
@@ -682,7 +683,7 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 }
