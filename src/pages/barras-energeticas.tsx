@@ -10,53 +10,23 @@ interface BarrasEnergeticasProps {
   onBack: () => void;
 }
 
-const DEFAULT_FLAVORS = [
-  { id: "surtido", name: "Surtido", image: "https://imagenes.inedito.digital/LITFIT/4-sabores.webp" },
-  { id: "choco-peanutbutter", name: "Choco-Peanutbutter", image: "https://imagenes.inedito.digital/LITFIT/peanut-butter.webp" },
-  { id: "chocolate-truffle", name: "Chocolate Truffle", image: "https://imagenes.inedito.digital/LITFIT/trufa.webp" },
-  { id: "tiramisu", name: "Tiramisú", image: "https://imagenes.inedito.digital/LITFIT/tiramisu.webp" },
-  { id: "vainilla", name: "Almond-Vainilla", image: "https://imagenes.inedito.digital/LITFIT/vainilla.webp" },
-  { id: "fresa", name: "Strawberry Milkshake", image: "https://imagenes.inedito.digital/LITFIT/fresa.webp" },
-];
-
-const DEFAULT_IMAGES = [
-  "https://imagenes.inedito.digital/LITFIT/4-sabores.webp",
-  "https://imagenes.inedito.digital/LITFIT/peanut-butter.webp",
-  "https://imagenes.inedito.digital/LITFIT/trufa.webp",
-  "https://imagenes.inedito.digital/LITFIT/tiramisu.webp",
-  "https://imagenes.inedito.digital/LITFIT/vainilla.webp",
-  "https://imagenes.inedito.digital/LITFIT/fresa.webp",
-];
-
-const DEFAULT_FEATURES = [
-  "Más proteína por barra",
-  "Envíos seguros a todo México",
-  "Recomendado por atletas",
-];
-
-const DEFAULT_NUTRITION: Record<string, string> = {
-  "Calorías": "210 kcal",
-  "Proteína": "12g",
-  "Carbohidratos": "28g",
-  "Grasas": "6g",
-};
-
 const FEATURE_ICONS = [Zap, Truck, Users];
 
 export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
   const { addItem } = useCart();
   const { navigateTo } = useNavigation();
-  const [selectedFlavor, setSelectedFlavor] = useState("surtido");
+  const [packageAvailable, setPackageAvailable] = useState<{ 16: boolean; 24: boolean }>({ 16: true, 24: true });
+  const [selectedFlavor, setSelectedFlavor] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("24");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [prices, setPrices] = useState({ 16: 560, 24: 790 });
-  const [productName, setProductName] = useState("Barras de Proteína");
+  const [prices, setPrices] = useState<{ 16: number | null; 24: number | null }>({ 16: null, 24: null });
+  const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
-  const [flavors, setFlavors] = useState(DEFAULT_FLAVORS);
-  const [productImages, setProductImages] = useState(DEFAULT_IMAGES);
-  const [features, setFeatures] = useState(DEFAULT_FEATURES);
-  const [nutrition, setNutrition] = useState(DEFAULT_NUTRITION);
+  const [flavors, setFlavors] = useState<{ id: string; name: string; image?: string; available?: boolean }[]>([]);
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [features, setFeatures] = useState<string[]>([]);
+  const [nutrition, setNutrition] = useState<Record<string, string>>({});
 
   const { reviews, avgRating } = useProductReviews("barras-energeticas");
 
@@ -66,14 +36,19 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
         const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
         const products = await response.json();
 
-        // Main barras product for name, description, features, nutrition
-        const mainProduct = products.find((p: any) => p.id === "barras-energeticas");
-        // Price products
+        // Cada paquete es un producto independiente en la base
         const p24Data = products.find((p: any) => p.name?.includes("24 pzs") || p.id === "barras-energeticas");
         const p16Data = products.find((p: any) => p.name?.includes("16 pzs"));
 
+        // El id legacy "barras-energeticas" ya no existe en la base, así que caemos al
+        // paquete de 24 (y luego al de 16): son los que traen variants, imágenes,
+        // información nutricional y features.
+        const mainProduct = products.find((p: any) => p.id === "barras-energeticas") || p24Data || p16Data;
+
         if (mainProduct) {
-          if (mainProduct.name) setProductName(mainProduct.name);
+          // El nombre llega como "BARRAS DE PROTEÍNA (24 pzs)"; el sufijo sobra porque
+          // el paquete se elige más abajo con su propio selector.
+          if (mainProduct.name) setProductName(mainProduct.name.replace(/\s*\(\s*\d+\s*pzs?\s*\)\s*$/i, "").trim());
           if (mainProduct.description) setDescription(mainProduct.description);
           if (mainProduct.nutrition && Object.keys(mainProduct.nutrition).length > 0) {
             setNutrition(mainProduct.nutrition);
@@ -90,31 +65,41 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
                 : f.name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || `flavor-${i}`,
               name: typeof f === 'string' ? f : f.name,
               image: typeof f === 'object' ? f.image : undefined,
+              available: typeof f === 'object' ? f.available !== false : true,
             }));
             setFlavors(mapped);
-            setSelectedFlavor(mapped[0]?.id || "surtido");
-            // Build images array from flavor images
+            const firstAvailable = mapped.find((f: any) => f.available) || mapped[0];
+            setSelectedFlavor(firstAvailable?.id || "");
+            // Build images array combining main image, gallery, and flavor images
+            const allImages: string[] = [];
+            if (mainProduct.image) allImages.push(mainProduct.image);
+            if (mainProduct.images && mainProduct.images.length > 0) {
+              allImages.push(...mainProduct.images);
+            }
+
             const flavorImages = mapped.filter((f: any) => f.image).map((f: any) => f.image);
-            if (flavorImages.length > 0) {
-              setProductImages(flavorImages);
-            } else if (mainProduct.images && mainProduct.images.length > 0) {
-              setProductImages(mainProduct.images);
-            } else if (mainProduct.image) {
-              setProductImages([mainProduct.image]);
+            flavorImages.forEach((img: string) => {
+              if (!allImages.includes(img)) allImages.push(img);
+            });
+
+            if (allImages.length > 0) {
+              setProductImages(allImages);
             }
           }
         }
 
-        // Update prices
-        if (p24Data || p16Data) {
-          const p16 = p16Data
-            ? Number(p16Data.price)
-            : (p24Data ? Math.round(Number(p24Data.price) * (560 / 790)) : 560);
-          const p24 = p24Data
-            ? Number(p24Data.price)
-            : Math.round(p16 * (790 / 560));
+        // Update prices — only set what we actually have from the API
+        const p16 = p16Data ? Number(p16Data.price) : null;
+        const p24 = p24Data ? Number(p24Data.price) : null;
+        if (p16 !== null || p24 !== null) {
           setPrices({ 16: p16, 24: p24 });
         }
+        // El stock se controla por paquete: marcar el de 24 como agotado no debe
+        // bloquear la venta del de 16.
+        setPackageAvailable({
+          16: p16Data ? p16Data.available !== false : true,
+          24: p24Data ? p24Data.available !== false : true,
+        });
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -137,13 +122,18 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
   }, [flavors, productImages]);
 
   const packageSizes = [
-    { id: "16", name: "16 barras", price: prices[16], pricePerBar: (prices[16] / 16).toFixed(2) },
-    { id: "24", name: "24 barras", price: prices[24], pricePerBar: (prices[24] / 24).toFixed(2) },
+    ...(prices[16] !== null ? [{ id: "16", name: "16 barras", price: prices[16] as number, pricePerBar: ((prices[16] as number) / 16).toFixed(2), available: packageAvailable[16] }] : []),
+    ...(prices[24] !== null ? [{ id: "24", name: "24 barras", price: prices[24] as number, pricePerBar: ((prices[24] as number) / 24).toFixed(2), available: packageAvailable[24] }] : []),
   ];
 
   const selectedFlavorData = flavors.find((f) => f.id === selectedFlavor);
+  const selectedFlavorAvailable = selectedFlavorData ? selectedFlavorData.available !== false : true;
   const selectedPackageData = packageSizes.find((p) => p.id === selectedPackage);
-  const currentPrice = selectedPackageData?.price || 790;
+  const currentPrice = selectedPackageData?.price ?? 0;
+  // La disponibilidad depende del paquete elegido, no de un producto "padre".
+  // Con la lista aún vacía seguimos cargando; ya cargada, un paquete que no está
+  // en la base no se puede comprar.
+  const available = selectedPackageData ? selectedPackageData.available : packageSizes.length === 0;
 
   const handleFlavorChange = (flavorId: string) => {
     setSelectedFlavor(flavorId);
@@ -155,6 +145,7 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
   };
 
   const handleAddToCart = () => {
+    if (!available || !selectedFlavorAvailable) return;
     for (let i = 0; i < quantity; i++) {
       addItem({
         id: `barras-${selectedFlavor}-${selectedPackage}-${Date.now()}-${i}`,
@@ -318,31 +309,39 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
                   SELECCIONA TU SABOR
                 </label>
                 <div className="grid grid-cols-1 gap-2">
-                  {flavors.map((flavor) => (
-                    <button
-                      key={flavor.id}
-                      onClick={() => handleFlavorChange(flavor.id)}
-                      className={`relative p-3 border-2 transition-all duration-300 flex items-center gap-3 ${
-                        selectedFlavor === flavor.id
-                          ? "border-[#00AAC7] bg-[#00AAC7]/5"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      {flavor.image && (
-                        <img
-                          src={flavor.image}
-                          alt={flavor.name}
-                          className="w-10 h-10 object-cover rounded-sm flex-shrink-0"
-                        />
-                      )}
-                      <span className="font-bold text-xs text-black">{flavor.name}</span>
-                      {selectedFlavor === flavor.id && (
-                        <div className="absolute top-2 right-2">
-                          <Check className="w-4 h-4 text-[#00AAC7]" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
+                  {flavors.map((flavor) => {
+                    const isOut = flavor.available === false;
+                    return (
+                      <button
+                        key={flavor.id}
+                        disabled={isOut}
+                        onClick={() => handleFlavorChange(flavor.id)}
+                        className={`relative p-3 border-2 transition-all duration-300 flex items-center gap-3 ${
+                          isOut
+                            ? "border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed"
+                            : selectedFlavor === flavor.id
+                              ? "border-[#00AAC7] bg-[#00AAC7]/5"
+                              : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        {flavor.image && (
+                          <img
+                            src={flavor.image}
+                            alt={flavor.name}
+                            className="w-10 h-10 object-cover rounded-sm flex-shrink-0"
+                          />
+                        )}
+                        <span className={`font-bold text-xs ${isOut ? 'text-gray-400 line-through' : 'text-black'}`}>{flavor.name}</span>
+                        {isOut ? (
+                          <span className="absolute top-2 right-2 text-[8px] font-black text-red-500 uppercase tracking-widest">Agotado</span>
+                        ) : selectedFlavor === flavor.id && (
+                          <div className="absolute top-2 right-2">
+                            <Check className="w-4 h-4 text-[#00AAC7]" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -364,17 +363,28 @@ export function BarrasEnergeticas({ onBack }: BarrasEnergeticasProps) {
             </div>
 
             {/* Add to Cart */}
+            {!available ? (
+              <div className="w-full mb-3 py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-xs tracking-widest text-center uppercase">
+                Producto agotado por el momento
+              </div>
+            ) : !selectedFlavorAvailable && (
+              <div className="w-full mb-3 py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-xs tracking-widest text-center uppercase">
+                Este sabor está agotado
+              </div>
+            )}
             <button
               onClick={handleAddToCart}
-              className="w-full bg-black hover:bg-[#00AAC7] text-white py-4 font-black text-xs tracking-widest transition-all duration-300 shadow-lg hover:shadow-2xl mb-3 flex items-center justify-center gap-2 group"
+              disabled={!available || !selectedFlavorAvailable}
+              className="w-full bg-black hover:bg-[#00AAC7] text-white py-4 font-black text-xs tracking-widest transition-all duration-300 shadow-lg hover:shadow-2xl mb-3 flex items-center justify-center gap-2 group disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-black"
             >
               <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              AGREGAR AL CARRITO - ${(currentPrice * quantity).toLocaleString()}
+              {available && selectedFlavorAvailable ? <>AGREGAR AL CARRITO - ${(currentPrice * quantity).toLocaleString()}</> : "AGOTADO"}
             </button>
 
             <button
               onClick={handleBuyNow}
-              className="w-full border-2 border-black text-black hover:bg-black hover:text-white py-4 font-black text-xs tracking-widest transition-all duration-300"
+              disabled={!available || !selectedFlavorAvailable}
+              className="w-full border-2 border-black text-black hover:bg-black hover:text-white py-4 font-black text-xs tracking-widest transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black"
             >
               COMPRAR AHORA
             </button>

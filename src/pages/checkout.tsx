@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, Lock, CreditCard, Truck, MapPin, User, Mail, Phone, CheckCircle, Zap } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import emailjs from '@emailjs/browser';
-import { Ticket, Loader2, Gift, X } from 'lucide-react';
+import { Ticket, Loader2, Gift, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ShippingQuote } from '../components/ShippingQuote';
 
@@ -99,6 +99,8 @@ function MercadoPagoButton({
         totalPrice,
         shippingCost,
         total,
+        discountAmount,
+        appliedCoupon,
         selectedShippingOption,
         timestamp: new Date().toISOString(),
         orderId
@@ -262,10 +264,14 @@ function MercadoPagoButton({
 export default function Checkout() {
   const { items, subtotal, discountAmount, finalTotal, appliedCoupon, applyCoupon, removeCoupon, clearCart, promoGift, addItem } = useCart();
   const [step, setStep] = useState<'info' | 'payment' | 'success'>('info');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'mercadopago' | null>(null);
+  // Mercado Pago es el único método disponible: se preselecciona para que el botón
+  // de pago sea visible al llegar al paso 2 (antes había que adivinar que la tarjeta
+  // era clickeable y el cliente se quedaba sin forma de pagar).
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'mercadopago' | null>('mercadopago');
   const [selectedShippingOption, setSelectedShippingOption] = useState<ShippingOption | null>(null);
   const [couponCode, setCouponCode] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState('');
   const [formData, setFormData] = useState({
     // Información personal
     firstName: '',
@@ -288,18 +294,24 @@ export default function Checkout() {
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
     setIsApplyingCoupon(true);
+    setCouponError('');
     try {
       const res = await fetch(`https://litfitmexico.com/envios/api-coupons.php?code=${encodeURIComponent(couponCode)}&cart_total=${subtotal}`);
       const data = await res.json();
       if (data.success) {
         applyCoupon(data.data);
         setCouponCode('');
+        setCouponError('');
         toast.success(`Cupón ${data.data.code} aplicado con éxito`);
       } else {
-        toast.error(data.message || "Cupón inválido");
+        const msg = data.message || "Este código de descuento no es válido";
+        setCouponError(msg);
+        toast.error(msg);
       }
     } catch (err) {
-      toast.error("Error al validar cupón");
+      const msg = "No pudimos validar el cupón. Revisa tu conexión e inténtalo de nuevo.";
+      setCouponError(msg);
+      toast.error(msg);
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -823,25 +835,33 @@ export default function Checkout() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="Código de descuento"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#00AAC7] focus:border-[#00AAC7] outline-none uppercase"
-                      />
+                  <>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Código de descuento"
+                          value={couponCode}
+                          onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); if (couponError) setCouponError(''); }}
+                          className={`w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-[#00AAC7] focus:border-[#00AAC7] outline-none uppercase ${couponError ? 'border-red-400 bg-red-50' : 'border-gray-300'}`}
+                        />
+                      </div>
+                      <button
+                        onClick={handleApplyCoupon}
+                        disabled={!couponCode.trim() || isApplyingCoupon}
+                        className="px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {isApplyingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
+                      </button>
                     </div>
-                    <button
-                      onClick={handleApplyCoupon}
-                      disabled={!couponCode.trim() || isApplyingCoupon}
-                      className="px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-black transition-colors disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {isApplyingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplicar'}
-                    </button>
-                  </div>
+                    {couponError && (
+                      <p className="mt-2 text-xs font-medium text-red-600 flex items-center gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        {couponError}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
 
