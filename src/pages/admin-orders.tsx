@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Search, Eye, ShoppingBag, Clock, User, CreditCard, ChevronRight, X, Phone, Mail, MapPin } from "lucide-react";
+import { Search, Eye, ShoppingBag, Clock, User, CreditCard, ChevronRight, X, Phone, Mail, MapPin, Ticket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -13,6 +13,8 @@ interface Order {
   shippingCost: number;
   paymentMethod?: string;
   status?: string;
+  appliedCoupon?: { code?: string; type?: string; value?: number } | null;
+  discountAmount?: number;
   formData: {
     firstName: string;
     lastName: string;
@@ -26,6 +28,36 @@ interface Order {
     notes?: string;
   };
   items: any[];
+}
+
+// Formatea la fecha del pedido a un formato legible en español (es-MX).
+// Usa el timestamp del pedido; si no existe (pedidos antiguos), lo extrae del orderId,
+// que tiene el formato "LITFIT-<Date.now()>-<random>".
+function formatOrderDate(order: Order): string {
+  let date: Date | null = null;
+
+  if (order.timestamp) {
+    const d = new Date(order.timestamp);
+    if (!isNaN(d.getTime())) date = d;
+  }
+
+  if (!date && order.orderId) {
+    const match = order.orderId.match(/LITFIT-(\d+)/);
+    if (match) {
+      const d = new Date(Number(match[1]));
+      if (!isNaN(d.getTime())) date = d;
+    }
+  }
+
+  if (!date) return "—";
+
+  return date.toLocaleString("es-MX", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function AdminOrders({ adminToken }: { adminToken: string }) {
@@ -146,6 +178,16 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
     return JSON.stringify(o).toLowerCase().includes(query);
   });
 
+  // Direccion completa del pedido abierto. Los pedidos viejos pueden no traer
+  // colonia/ciudad/estado, asi que se arma por lineas y se descartan las vacias.
+  const shippingLines = selectedOrder
+    ? [
+        selectedOrder.formData.street,
+        [selectedOrder.formData.colonia, selectedOrder.formData.city].filter(Boolean).join(', '),
+        [selectedOrder.formData.state, selectedOrder.formData.zipCode && `CP ${selectedOrder.formData.zipCode}`].filter(Boolean).join(' · '),
+      ].filter(Boolean)
+    : [];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -183,20 +225,22 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
               <tr className="bg-gray-50/50">
                 <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center md:text-left">ID</th>
                 <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest hidden md:table-cell">Cliente</th>
+                <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest hidden sm:table-cell">Fecha</th>
                 <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest hidden lg:table-cell">Estado</th>
                 <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Total</th>
                 <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest hidden sm:table-cell">Pago</th>
+                <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest hidden md:table-cell">Cupón</th>
                 <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Ver</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center font-bold text-gray-400 uppercase tracking-widest">Cargando historial...</td>
+                  <td colSpan={8} className="px-8 py-20 text-center font-bold text-gray-400 uppercase tracking-widest">Cargando historial...</td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center font-bold text-gray-400 uppercase tracking-widest">No se encontraron pedidos</td>
+                  <td colSpan={8} className="px-8 py-20 text-center font-bold text-gray-400 uppercase tracking-widest">No se encontraron pedidos</td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
@@ -211,6 +255,12 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
                       <div className="flex flex-col">
                         <span className="text-xs font-black text-black uppercase tracking-tight">{order.formData.firstName} {order.formData.lastName}</span>
                         <span className="text-[10px] text-gray-400 font-medium">{order.formData.email}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5 hidden sm:table-cell">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                        <span className="text-[11px] font-bold text-gray-500 whitespace-nowrap">{formatOrderDate(order)}</span>
                       </div>
                     </td>
                     <td className="px-8 py-5 hidden lg:table-cell">
@@ -239,6 +289,15 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
                         </div>
                         <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{order.paymentMethod || 'MP'}</span>
                       </div>
+                    </td>
+                    <td className="px-8 py-5 hidden md:table-cell">
+                      {order.appliedCoupon?.code ? (
+                        <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
+                          <Ticket className="w-3 h-3" /> {order.appliedCoupon.code}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300 text-xs font-bold">—</span>
+                      )}
                     </td>
                     <td className="px-4 md:px-8 py-5 text-right">
                       <button
@@ -283,6 +342,10 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
                 <div>
                   <h2 className="text-xl md:text-2xl font-black text-black uppercase tracking-tighter">Detalles de Orden</h2>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{selectedOrder.orderId}</p>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[#00AAC7]" />
+                    <span className="text-[11px] font-black text-[#00AAC7]">{formatOrderDate(selectedOrder)}</span>
+                  </div>
                 </div>
                 <button onClick={() => setSelectedOrder(null)} className="w-10 h-10 md:w-12 md:h-12 rounded-xl hover:bg-gray-100 transition-all flex items-center justify-center group pointer-events-auto">
                   <X className="w-5 h-5 text-gray-400 group-hover:rotate-90 transition-transform" />
@@ -312,8 +375,12 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
                       <span className="text-[9px] font-black uppercase tracking-widest">Envío</span>
                     </div>
                     <p className="text-[10px] md:text-xs font-black text-black uppercase leading-relaxed">
-                      {selectedOrder.formData.street}<br/>
-                      CP {selectedOrder.formData.zipCode}
+                      {shippingLines.map((linea, i) => (
+                        <span key={i}>
+                          {linea}
+                          {i < shippingLines.length - 1 && <br/>}
+                        </span>
+                      ))}
                     </p>
                   </div>
 
@@ -325,6 +392,12 @@ export function AdminOrders({ adminToken }: { adminToken: string }) {
                     <div className="flex flex-col">
                        <span className="text-xl md:text-2xl font-black text-black leading-none">${ (selectedOrder.total || selectedOrder.totalPrice).toLocaleString() }</span>
                        <span className="text-[9px] font-black text-[#00AAC7] uppercase mt-1">{selectedOrder.paymentMethod || 'MERCADO PAGO'}</span>
+                       {selectedOrder.appliedCoupon?.code && (
+                         <span className="inline-flex items-center gap-1 mt-2 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest w-fit">
+                           <Ticket className="w-3 h-3" /> {selectedOrder.appliedCoupon.code}
+                           {selectedOrder.discountAmount != null && ` · -$${Number(selectedOrder.discountAmount).toLocaleString()}`}
+                         </span>
+                       )}
                     </div>
                   </div>
                 </div>
