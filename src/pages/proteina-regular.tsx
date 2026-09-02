@@ -10,45 +10,23 @@ interface ProteinaRegularProps {
   onBack: () => void;
 }
 
-const DEFAULT_FLAVORS = [
-  { id: "chocolate", name: "Chocolate" },
-  { id: "vainilla", name: "Vainilla" },
-  { id: "fresa", name: "Fresa" },
-];
-
-const DEFAULT_IMAGES = [
-  "https://imagenes.inedito.digital/LITFIT/proteina-standard.webp",
-];
-
-const DEFAULT_FEATURES = [
-  "28.5g de proteína por porción",
-  "Rápida absorción",
-  "Envío seguro a todo México",
-];
-
-const DEFAULT_NUTRITION: Record<string, string> = {
-  "Proteína": "28.5g",
-  "Calorías": "120 kcal",
-  "Carbohidratos": "0.5g",
-  "Grasas": "0.5g",
-};
-
 const FEATURE_ICONS = [Shield, Award, Truck];
 
 export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
   const { addItem } = useCart();
+  const [available, setAvailable] = useState(true);
   const { navigateTo } = useNavigation();
   const [selectedFlavor, setSelectedFlavor] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState<number>(780);
-  const [productName, setProductName] = useState("Proteína aislada");
-  const [category, setCategory] = useState("ISOLATE PROTEIN");
+  const [price, setPrice] = useState<number | null>(null);
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [flavors, setFlavors] = useState(DEFAULT_FLAVORS);
-  const [productImages, setProductImages] = useState(DEFAULT_IMAGES);
-  const [features, setFeatures] = useState(DEFAULT_FEATURES);
-  const [nutrition, setNutrition] = useState(DEFAULT_NUTRITION);
+  const [flavors, setFlavors] = useState<{ id: string; name: string; image?: string; available?: boolean }[]>([]);
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [features, setFeatures] = useState<string[]>([]);
+  const [nutrition, setNutrition] = useState<Record<string, string>>({});
 
   const { reviews, avgRating } = useProductReviews("proteina-clasica");
 
@@ -58,6 +36,7 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
         const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
         const products = await response.json();
         const product = products.find((p: any) => p.id === "proteina-clasica");
+        setAvailable(product?.available !== false);
         if (product) {
           setPrice(Number(product.price));
           if (product.name) setProductName(product.name);
@@ -77,28 +56,31 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
                 : f.name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || `flavor-${i}`,
               name: typeof f === 'string' ? f : f.name,
               image: typeof f === 'object' ? f.image : undefined,
+              available: typeof f === 'object' ? f.available !== false : true,
             }));
             setFlavors(mapped);
-            setSelectedFlavor(mapped[0]?.id || "");
-          } else {
-            setSelectedFlavor(DEFAULT_FLAVORS[0].id);
+            const firstAvailable = mapped.find((f: any) => f.available) || mapped[0];
+            setSelectedFlavor(firstAvailable?.id || "");
           }
-          const imgs = product.images && product.images.length > 0 ? product.images : [product.image];
-          if (imgs[0]) setProductImages(imgs.filter(Boolean));
-        } else {
-          setSelectedFlavor(DEFAULT_FLAVORS[0].id);
+          // Galeria: la imagen principal primero y luego las adicionales que el
+          // admin haya subido, sin repetir si alguna ya venia en la lista.
+          const imgs = [product.image, ...(product.images || [])]
+            .filter(Boolean)
+            .filter((img: string, i: number, arr: string[]) => arr.indexOf(img) === i);
+          if (imgs.length > 0) setProductImages(imgs);
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
-        setSelectedFlavor(DEFAULT_FLAVORS[0].id);
       }
     };
     fetchProduct();
   }, []);
 
   const selectedFlavorData = flavors.find((f) => f.id === selectedFlavor);
+  const selectedFlavorAvailable = selectedFlavorData ? selectedFlavorData.available !== false : true;
 
   const handleAddToCart = () => {
+    if (!available || !selectedFlavorAvailable) return;
     for (let i = 0; i < quantity; i++) {
       addItem({
         id: `proteina-clasica-${selectedFlavor}-${Date.now()}-${i}`,
@@ -230,7 +212,7 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-black text-black tracking-tight">${price}</span>
+              <span className="text-4xl font-black text-black tracking-tight">${price ?? "—"}</span>
               </div>
             </div>
 
@@ -241,26 +223,34 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
                   SELECCIONA TU SABOR
                 </label>
                 <div className="grid grid-cols-1 gap-2">
-                  {flavors.map((flavor) => (
-                    <button
-                      key={flavor.id}
-                      onClick={() => setSelectedFlavor(flavor.id)}
-                      className={`relative p-3 border-2 transition-all duration-300 ${
-                        selectedFlavor === flavor.id
-                          ? "border-[#00AAC7] bg-[#00AAC7]/5"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-black">{flavor.name}</span>
-                      </div>
-                      {selectedFlavor === flavor.id && (
-                        <div className="absolute top-2 right-2">
-                          <Check className="w-4 h-4 text-[#00AAC7]" />
+                  {flavors.map((flavor) => {
+                    const isOut = flavor.available === false;
+                    return (
+                      <button
+                        key={flavor.id}
+                        disabled={isOut}
+                        onClick={() => setSelectedFlavor(flavor.id)}
+                        className={`relative p-3 border-2 transition-all duration-300 ${
+                          isOut
+                            ? "border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed"
+                            : selectedFlavor === flavor.id
+                              ? "border-[#00AAC7] bg-[#00AAC7]/5"
+                              : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`font-bold text-xs ${isOut ? 'text-gray-400 line-through' : 'text-black'}`}>{flavor.name}</span>
                         </div>
-                      )}
-                    </button>
-                  ))}
+                        {isOut ? (
+                          <span className="absolute top-2 right-2 text-[8px] font-black text-red-500 uppercase tracking-widest">Agotado</span>
+                        ) : selectedFlavor === flavor.id && (
+                          <div className="absolute top-2 right-2">
+                            <Check className="w-4 h-4 text-[#00AAC7]" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -282,17 +272,28 @@ export function ProteinaRegular({ onBack }: ProteinaRegularProps) {
             </div>
 
             {/* Add to Cart */}
+            {!available ? (
+              <div className="w-full mb-3 py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-xs tracking-widest text-center uppercase">
+                Producto agotado por el momento
+              </div>
+            ) : !selectedFlavorAvailable && (
+              <div className="w-full mb-3 py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-xs tracking-widest text-center uppercase">
+                Este sabor está agotado
+              </div>
+            )}
             <button
               onClick={handleAddToCart}
-              className="w-full bg-black hover:bg-[#00AAC7] text-white py-4 font-black text-xs tracking-widest transition-all duration-300 shadow-lg hover:shadow-2xl mb-3 flex items-center justify-center gap-2 group"
+              disabled={!available || !selectedFlavorAvailable}
+              className="w-full bg-black hover:bg-[#00AAC7] text-white py-4 font-black text-xs tracking-widest transition-all duration-300 shadow-lg hover:shadow-2xl mb-3 flex items-center justify-center gap-2 group disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-black"
             >
               <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              AGREGAR AL CARRITO - ${(price * quantity).toLocaleString()}
+              {available && selectedFlavorAvailable ? <>AGREGAR AL CARRITO - ${((price ?? 0) * quantity).toLocaleString()}</> : "AGOTADO"}
             </button>
 
             <button
               onClick={handleBuyNow}
-              className="w-full border-2 border-black text-black hover:bg-black hover:text-white py-4 font-black text-xs tracking-widest transition-all duration-300"
+              disabled={!available || !selectedFlavorAvailable}
+              className="w-full border-2 border-black text-black hover:bg-black hover:text-white py-4 font-black text-xs tracking-widest transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black"
             >
               COMPRAR AHORA
             </button>

@@ -4,10 +4,12 @@ import { toast } from "sonner";
 import { motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
+import { ShareButton } from "../components/ShareButton";
 
 export interface Variant {
   name: string;
   image?: string;
+  available?: boolean;
 }
 
 interface Product {
@@ -74,8 +76,9 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
           });
           const vars = found.variants || found.flavors || [];
           if (vars.length > 0) {
-            const first = vars[0];
-            setSelectedFlavor(typeof first === 'string' ? first : first.name);
+            const normalized = vars.map((v: any) => typeof v === 'string' ? { name: v } : v);
+            const firstAvailable = normalized.find((v: any) => v.available !== false) || normalized[0];
+            setSelectedFlavor(firstAvailable.name);
           }
         }
       } catch (error) {
@@ -147,19 +150,10 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
     );
   }
 
-  const barrasImages = [
-    "https://imagenes.inedito.digital/LITFIT/4-sabores.webp",
-    "https://imagenes.inedito.digital/LITFIT/peanut-butter.webp",
-    "https://imagenes.inedito.digital/LITFIT/trufa.webp",
-    "https://imagenes.inedito.digital/LITFIT/tiramisu.webp",
-    "https://imagenes.inedito.digital/LITFIT/vainilla.webp",
-    "https://imagenes.inedito.digital/LITFIT/fresa.webp",
-  ];
-
-  let baseImages = product.images && product.images.length > 0 ? product.images : [product.image];
-  if (product.name.toLowerCase().includes('barras')) {
-    baseImages = barrasImages;
-  }
+  // Galeria: la imagen principal primero y luego las adicionales del admin.
+  const baseImages = [product.image, ...(product.images || [])]
+    .filter(Boolean)
+    .filter((img, i, arr) => arr.indexOf(img) === i);
 
   const normalizedVariants: Variant[] = (product.variants || product.flavors || []).map(v => 
     typeof v === 'string' ? { name: v } : v
@@ -180,7 +174,10 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
     }
   });
 
+  const selectedFlavorAvailable = normalizedVariants.length === 0 || normalizedVariants.find(v => v.name === selectedFlavor)?.available !== false;
+
   const handleAddToCart = () => {
+    if ((product as any).available === false || !selectedFlavorAvailable) return;
     for (let i = 0; i < quantity; i++) {
       addItem({
         id: `${product.id}-${selectedFlavor || 'default'}-${Date.now()}-${i}`,
@@ -287,9 +284,16 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
 
           {/* INFORMACIÓN DEL PRODUCTO */}
           <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="lg:sticky lg:top-24">
-            <h1 className="text-3xl lg:text-5xl font-black text-black mb-2 tracking-tight uppercase">
-              {product.name}
-            </h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h1 className="text-3xl lg:text-5xl font-black text-black tracking-tight uppercase">
+                {product.name}
+              </h1>
+              <ShareButton
+                title={`LITFIT - ${product.name}`}
+                text={product.description}
+                url={`${window.location.origin}/?p=${product.id}`}
+              />
+            </div>
             <p className="text-gray-600 mb-6 leading-relaxed text-sm lg:text-base font-medium">
               {product.description}
             </p>
@@ -303,55 +307,56 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
 
             {/* SELECTOR DE SABOR DINÁMICO */}
             {(() => {
-              let flavorList: string[] = [];
-              
-              if (normalizedVariants.length > 0) {
-                flavorList = normalizedVariants.map(v => v.name);
-              } 
-
-              if (flavorList.length === 0) return null;
+              if (normalizedVariants.length === 0) return null;
+              const flavorList = normalizedVariants;
 
               return (
                 <div className="mb-8">
                   <div className="flex justify-between items-end mb-3">
                     <h3 className="font-black text-sm tracking-wide uppercase">SELECCIONA TU SABOR</h3>
-                    <span className="text-xs font-bold text-[#00AAC7] uppercase">{selectedFlavor || flavorList[0]}</span>
+                    <span className="text-xs font-bold text-[#00AAC7] uppercase">{selectedFlavor || flavorList[0].name}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    {flavorList.map((flavor) => (
-                      <button
-                        key={flavor}
-                        onClick={() => {
-                          setSelectedFlavor(flavor);
-                          if (variantImageIndices[flavor] !== undefined) {
-                            // Cambia a la imagen de la variante si tiene una asignada desde el admin
-                            setSelectedImageIndex(variantImageIndices[flavor]);
-                          } else if (product.name.toLowerCase().includes('barras')) {
-                            // Fallback para barras basado en el indice
-                            const idx = flavorList.indexOf(flavor);
-                            if (idx !== -1 && idx < allImages.length) {
-                              setSelectedImageIndex(idx);
+                    {flavorList.map((flavor) => {
+                      const isOut = flavor.available === false;
+                      return (
+                        <button
+                          key={flavor.name}
+                          disabled={isOut}
+                          onClick={() => {
+                            setSelectedFlavor(flavor.name);
+                            if (variantImageIndices[flavor.name] !== undefined) {
+                              setSelectedImageIndex(variantImageIndices[flavor.name]);
+                            } else {
+                              // No image for this flavor, show main product image
+                              setSelectedImageIndex(0);
                             }
-                          }
-                        }}
-                        className={`relative p-3 rounded-none border-2 transition-all flex flex-col items-center justify-center gap-2 group ${
-                          (selectedFlavor || flavorList[0]) === flavor
-                            ? 'border-[#00AAC7] bg-[#00AAC7]/5'
-                            : 'border-gray-200 hover:border-[#00AAC7]/50 bg-white'
-                        }`}
-                      >
-                        <span className={`text-[12px] font-black uppercase text-center transition-colors ${
-                          (selectedFlavor || flavorList[0]) === flavor ? 'text-[#00AAC7]' : 'text-gray-900 group-hover:text-black'
-                        }`}>
-                          {flavor}
-                        </span>
-                        {(selectedFlavor || flavorList[0]) === flavor && (
-                           <div className="absolute top-1 right-2">
-                             <div className="w-1.5 h-1.5 bg-[#00AAC7] rounded-full" />
-                           </div>
-                        )}
-                      </button>
-                    ))}
+                          }}
+                          className={`relative p-3 rounded-none border-2 transition-all flex flex-col items-center justify-center gap-2 group ${
+                            isOut
+                              ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
+                              : (selectedFlavor || flavorList[0].name) === flavor.name
+                                ? 'border-[#00AAC7] bg-[#00AAC7]/5'
+                                : 'border-gray-200 hover:border-[#00AAC7]/50 bg-white'
+                          }`}
+                        >
+                          <span className={`text-[12px] font-black uppercase text-center transition-colors ${
+                            isOut
+                              ? 'text-gray-400 line-through'
+                              : (selectedFlavor || flavorList[0].name) === flavor.name ? 'text-[#00AAC7]' : 'text-gray-900 group-hover:text-black'
+                          }`}>
+                            {flavor.name}
+                          </span>
+                          {isOut ? (
+                            <span className="absolute top-1 right-2 text-[8px] font-black text-red-500 uppercase tracking-widest">Agotado</span>
+                          ) : (selectedFlavor || flavorList[0].name) === flavor.name && (
+                             <div className="absolute top-1 right-2">
+                               <div className="w-1.5 h-1.5 bg-[#00AAC7] rounded-full" />
+                             </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -378,16 +383,27 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-black hover:bg-gray-900 text-white font-black tracking-wide text-sm rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-xl shadow-black/10"
+                  disabled={(product as any).available === false || !selectedFlavorAvailable}
+                  className="flex-1 bg-black hover:bg-gray-900 text-white font-black tracking-wide text-sm rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-xl shadow-black/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-black"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  AGREGAR AL CARRITO
+                  {(product as any).available === false || !selectedFlavorAvailable ? "AGOTADO" : "AGREGAR AL CARRITO"}
                 </button>
               </div>
 
+              {(product as any).available === false ? (
+                <div className="w-full py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-sm tracking-widest text-center uppercase rounded-2xl">
+                  Producto agotado por el momento
+                </div>
+              ) : !selectedFlavorAvailable && (
+                <div className="w-full py-3 bg-red-50 border-2 border-red-200 text-red-600 font-black text-sm tracking-widest text-center uppercase rounded-2xl">
+                  Este sabor está agotado
+                </div>
+              )}
               <button
                 onClick={handleBuyNow}
-                className="w-full h-14 bg-[#00AAC7] hover:bg-[#0091AB] text-white font-black tracking-wide text-sm rounded-2xl transition-all hover:scale-[1.02] shadow-xl shadow-[#00AAC7]/20"
+                disabled={(product as any).available === false || !selectedFlavorAvailable}
+                className="w-full h-14 bg-[#00AAC7] hover:bg-[#0091AB] text-white font-black tracking-wide text-sm rounded-2xl transition-all hover:scale-[1.02] shadow-xl shadow-[#00AAC7]/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#00AAC7]"
               >
                 COMPRAR AHORA
               </button>

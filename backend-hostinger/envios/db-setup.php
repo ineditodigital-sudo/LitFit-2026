@@ -12,10 +12,13 @@ try {
         name VARCHAR(255) NOT NULL,
         price DECIMAL(10,2) NOT NULL,
         image TEXT,
+        images JSON,
         category VARCHAR(100),
         description TEXT,
         variants JSON,
         sizes JSON,
+        nutrition JSON,
+        features JSON,
         available BOOLEAN DEFAULT 1,
         is_new BOOLEAN DEFAULT 0,
         is_featured BOOLEAN DEFAULT 0,
@@ -53,6 +56,23 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
     echo "✅ Tablas creadas correctamente.<br>";
+
+    // 2.5 MIGRACION DE ESQUEMA
+    // CREATE TABLE IF NOT EXISTS no toca una tabla que ya existe, asi que las
+    // columnas agregadas despues del despliegue inicial nunca aparecian solas y
+    // habia que anadirlas a mano por SQL. Esto las reconcilia y es idempotente.
+    $columnasProducts = [
+        'images'    => "ALTER TABLE products ADD COLUMN images JSON AFTER image",
+        'nutrition' => "ALTER TABLE products ADD COLUMN nutrition JSON AFTER sizes",
+        'features'  => "ALTER TABLE products ADD COLUMN features JSON AFTER nutrition",
+    ];
+    $existentes = $pdo->query("SHOW COLUMNS FROM products")->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($columnasProducts as $columna => $sql) {
+        if (!in_array($columna, $existentes, true)) {
+            $pdo->exec($sql);
+            echo "Columna products.$columna anadida.<br>";
+        }
+    }
 
     // 3. MIGRACIÓN: Importar productos desde products.json si la tabla está vacía
     $checkProducts = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();

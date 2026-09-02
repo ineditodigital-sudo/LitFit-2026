@@ -20,6 +20,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         foreach ($products as &$p) {
             $p['variants'] = json_decode($p['variants'] ?? '[]', true);
             $p['sizes'] = json_decode($p['sizes'] ?? '[]', true);
+            $p['images'] = json_decode($p['images'] ?? '[]', true);
+            $p['nutrition'] = json_decode($p['nutrition'] ?? '{}', true);
+            $p['features'] = json_decode($p['features'] ?? '[]', true);
             // Transformar tipos de dato SQL a los que espera el frontend
             $p['price'] = (float)$p['price'];
             $p['available'] = (bool)$p['available'];
@@ -50,13 +53,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $pdo->exec("DELETE FROM products");
             
             $stmt = $pdo->prepare("INSERT INTO products 
-                (id, name, price, image, category, description, variants, sizes, available, is_new, is_featured, is_best_seller, is_sale, sale_price, sale_percentage) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                (id, name, price, image, images, category, description, variants, sizes, nutrition, features, available, is_new, is_featured, is_best_seller, is_sale, sale_price, sale_percentage) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
             foreach ($products as $p) {
                 $stmt->execute([
-                    $p['id'], $p['name'], $p['price'], $p['image'], $p['category'] ?? '', $p['description'] ?? '',
+                    $p['id'], $p['name'], $p['price'], $p['image'], json_encode($p['images'] ?? []),
+                    $p['category'] ?? '', $p['description'] ?? '',
                     json_encode($p['variants'] ?? []), json_encode($p['sizes'] ?? []),
+                    json_encode($p['nutrition'] ?? new stdClass()), json_encode($p['features'] ?? []),
                     $p['available'] ?? 1, $p['isNew'] ?? 0, $p['isFeatured'] ?? 0, $p['isBestSeller'] ?? 0,
                     $p['isSale'] ?? 0, $p['salePrice'] ?? null, $p['salePercentage'] ?? null
                 ]);

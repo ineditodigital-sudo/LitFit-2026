@@ -65,6 +65,9 @@
     "dev": "vite",
     "build": "vite build",
     "deploy": "node scripts/deploy.mjs",
-    "deploy:ftp": "node scripts/ftp-deploy.mjs"
+    "deploy:ftp": "node scripts/ftp-deploy.mjs",
+    "deploy:frontend": "node scripts/ftp-frontend.mjs",
+    "limpiar:debug": "node scripts/ftp-limpiar-debug.mjs",
+    "deploy:backend": "node scripts/ftp-backend.mjs"
   }
 }
