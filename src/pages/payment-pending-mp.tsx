@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import { m as motion } from 'motion/react';
 import { Clock, ArrowLeft } from 'lucide-react';
 
 export default function PaymentPendingMercadoPago() {

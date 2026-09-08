@@ -1,7 +1,8 @@
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { m as motion, AnimatePresence } from "motion/react";
 import { CartButton } from "./CartButton";
+import { obtenerAjustes } from "../config/datos-tienda";
 
 interface HeaderProps {
   onLogoClick?: () => void;
@@ -22,18 +23,15 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPromoSettings({
-            visible: data.promo_banner_visible !== '0',
-            text: data.promo_banner_text || "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
-            speed: data.promo_banner_speed ? parseInt(data.promo_banner_speed) : 20,
-            link: data.promo_banner_link || "",
-            repetitions: data.promo_banner_repetitions ? parseInt(data.promo_banner_repetitions) : 3,
-            isStatic: data.promo_banner_is_static === '1'
-          });
-        }
+        const data = await obtenerAjustes();
+        setPromoSettings({
+          visible: data.promo_banner_visible !== '0',
+          text: data.promo_banner_text || "En la compra de $1,000 o más en productos, agrega a tu carrito un shaker de regalo",
+          speed: data.promo_banner_speed ? parseInt(data.promo_banner_speed) : 20,
+          link: data.promo_banner_link || "",
+          repetitions: data.promo_banner_repetitions ? parseInt(data.promo_banner_repetitions) : 3,
+          isStatic: data.promo_banner_is_static === '1'
+        });
       } catch (error) {
         console.error("Error fetching promo banner settings:", error);
       }
@@ -71,6 +69,21 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  // La cinta promocional anima sin descanso. Girando desde el primer instante
+  // consumia hilo principal durante el arranque y, al no parar nunca, la pagina
+  // no llegaba a considerarse "visualmente estable". Se queda quieta hasta que
+  // la carga termina, se detiene con la pestana en segundo plano y respeta la
+  // preferencia de movimiento reducido del sistema.
+  const [animarCinta, setAnimarCinta] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let t: ReturnType<typeof setTimeout>;
+    const arrancar = () => { t = setTimeout(() => setAnimarCinta(true), 2500); };
+    if (document.readyState === "complete") arrancar();
+    else window.addEventListener("load", arrancar, { once: true });
+    return () => { clearTimeout(t); window.removeEventListener("load", arrancar); };
+  }, []);
 
   const RepeatedText = () => (
     <>
@@ -147,19 +160,13 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
                   {promoSettings.text}
                 </div>
               ) : (
-                <motion.div
-                  key={`${promoSettings.speed}-${promoSettings.repetitions}-${promoSettings.isStatic}`}
-                  className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
-                  animate={{ x: ["0%", "-50%"] }}
-                  transition={{
-                    repeat: Infinity,
-                    ease: "linear",
-                    duration: promoSettings.speed
-                  }}
+                <div
+                  className={`whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider ${animarCinta ? "litfit-cinta" : ""}`}
+                  style={{ ["--litfit-cinta-duracion" as any]: `${promoSettings.speed}s` }}
                 >
                   <RepeatedText />
                   <RepeatedText />
-                </motion.div>
+                </div>
               )}
             </a>
           ) : (
@@ -169,19 +176,13 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
                   {promoSettings.text}
                 </div>
               ) : (
-                <motion.div
-                  key={`${promoSettings.speed}-${promoSettings.repetitions}-${promoSettings.isStatic}`}
-                  className="whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider"
-                  animate={{ x: ["0%", "-50%"] }}
-                  transition={{
-                    repeat: Infinity,
-                    ease: "linear",
-                    duration: promoSettings.speed
-                  }}
+                <div
+                  className={`whitespace-nowrap flex items-center w-max py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-wider ${animarCinta ? "litfit-cinta" : ""}`}
+                  style={{ ["--litfit-cinta-duracion" as any]: `${promoSettings.speed}s` }}
                 >
                   <RepeatedText />
                   <RepeatedText />
-                </motion.div>
+                </div>
               )}
             </div>
           )}

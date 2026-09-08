@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { m as motion, AnimatePresence } from "motion/react";
 
 interface FAQItem {
   question: string;

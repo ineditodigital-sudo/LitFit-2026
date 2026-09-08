@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
+import { m as motion } from 'motion/react';
 import { Package, Send, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
 export default function TestEnvio() {

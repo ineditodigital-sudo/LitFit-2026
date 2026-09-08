@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 
 export function AmazonBanner() {
   const scrollToContact = () => {
@@ -20,6 +20,8 @@ export function AmazonBanner() {
           onClick={scrollToContact}
         >
           <img
+            loading="lazy"
+            decoding="async"
             src="https://imagenes.inedito.digital/LITFIT/QUIERES_LITFIT_EN_TU_GYM.webp"
             alt="¿Quieres LITFIT en tu Gym?"
             className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m as motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingCart, Trash2, ArrowRight, Truck, Gift, Ticket, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCart } from '../contexts/CartContext';

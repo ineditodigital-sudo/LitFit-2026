@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'motion/react';
+import { m as motion, AnimatePresence } from 'motion/react';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 

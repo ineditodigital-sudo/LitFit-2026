@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Lock, User, Shield } from "lucide-react";
 
 const ADMIN_AUTH_URL = "https://litfitmexico.com/envios/admin-auth.php";

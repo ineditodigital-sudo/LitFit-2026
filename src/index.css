@@ -1,2 +1,12 @@
-@import "tailwindcss";
+/*
+  Tailwind v4 detecta las fuentes solo desde la raiz del proyecto y no respeta
+  .gitignore para carpetas que si estan versionadas. Aqui eso significaba
+  escanear LITFIT_BUILD_de_emergencia-fresa/, SUBIR_A_HOSTINGER/,
+  anterior-servidor/, backend-hostinger/ y ocho backup-index.*, todos con
+  bundles antiguos llenos de nombres de clase. La hoja resultante pesaba 156 KB
+  de utilidades que este sitio no usa. Se acota a lo que realmente se compila.
+*/
+@import "tailwindcss" source(none);
+@source "./";
+@source "../index.html";
 @import "./styles/globals.css";

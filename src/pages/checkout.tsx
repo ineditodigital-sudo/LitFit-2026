@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { m as motion } from 'motion/react';
 import { ArrowLeft, Lock, CreditCard, Truck, MapPin, User, Mail, Phone, CheckCircle, Zap } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import emailjs from '@emailjs/browser';

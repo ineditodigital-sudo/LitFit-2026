@@ -1,6 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { ShareButton } from "../components/ShareButton";
 
 interface TestProductProps {

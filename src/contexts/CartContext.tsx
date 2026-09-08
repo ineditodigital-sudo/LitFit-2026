@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { obtenerProductos, obtenerAjustes } from "../config/datos-tienda";
 
 export interface CartItem {
   id: string;
@@ -75,13 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchPromoGift = async () => {
       try {
-        const [settingsRes, productsRes] = await Promise.all([
-          fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`),
-          fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`)
-        ]);
-        
-        const settings = await settingsRes.json();
-        const productsData = await productsRes.json();
+        const [settings, productsData] = await Promise.all([obtenerAjustes(), obtenerProductos()]);
         
         if (settings.promo_gift_enabled === '1' && settings.promo_gift_product_id) {
           const productList = Array.isArray(productsData) ? productsData : (productsData.products || []);

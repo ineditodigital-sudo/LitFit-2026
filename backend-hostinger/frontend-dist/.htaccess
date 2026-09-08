@@ -2,18 +2,32 @@ Options -MultiViews
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [QSA,L]
+# A index.php, NO a index.html: el build genera index.php (Open Graph + IDs de
+# seguimiento leidos de la BD). Apuntando a index.html, rutas como /admin o las
+# de retorno de Mercado Pago servian un index.html viejo que quedo en el
+# servidor, con un bundle antiguo y sin etiquetas Open Graph.
+RewriteRule ^ index.php [QSA,L]
 
-<FilesMatch "\.html$">
+# El HTML se genera con PHP en cada visita, y en el hosting compartido eso hacia
+# oscilar el tiempo de respuesta entre 140 ms y casi 2 s. Se deja que la CDN de
+# Hostinger lo guarde 5 minutos (s-maxage) mientras el navegador sigue
+# revalidando siempre (max-age=0). El HTML no lleva nada personalizado: carrito,
+# sesion y admin viven en el cliente, asi que compartir esa copia es seguro.
+#
+# Tras publicar, un visitante puede recibir el HTML anterior durante ese rato.
+# No rompe nada: los bundles llevan hash y los antiguos siguen en el servidor.
+# Para ver un cambio al instante, purgar la cache desde el panel de Hostinger.
+<FilesMatch "^index\.(php|html)$">
     FileETag None
     Header unset ETag
-    Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
-    Header set Pragma "no-cache"
-    Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+    Header set Cache-Control "public, max-age=0, s-maxage=300, stale-while-revalidate=600, must-revalidate"
+    Header unset Pragma
+    Header unset Expires
 </FilesMatch>
 
 <IfModule LiteSpeed>
     CacheDisable public /
+    CacheDisable public /index.php
     CacheDisable public /index.html
     RewriteRule .* - [E=Cache-Control:no-cache]
 </IfModule>

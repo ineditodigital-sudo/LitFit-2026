@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Header } from "./components/Header";
 import { HeroCarousel } from "./components/HeroCarousel";
 import { ProductsSection } from "./components/ProductsSection";
@@ -8,21 +8,33 @@ import { AmazonBanner } from "./components/AmazonBanner";
 import { FAQ } from "./components/FAQ";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
-import { BarrasEnergeticas } from "./pages/barras-energeticas";
-import { ProteinaRegular } from "./pages/proteina-regular";
-import { ProteinaColageno } from "./pages/proteina-colageno";
-import { TestProduct } from "./pages/test-product";
-import { ProductDetail } from "./pages/product-detail";
-import Checkout from "./pages/checkout";
-import PaymentSuccessMercadoPago from "./pages/payment-success-mp";
-import PaymentFailureMercadoPago from "./pages/payment-failure-mp";
-import PaymentPendingMercadoPago from "./pages/payment-pending-mp";
-import { AdminLogin } from "./pages/admin-login";
-import { AdminDashboard } from "./pages/admin-dashboard";
+// Todo lo que no se ve en la portada se carga bajo demanda. El bundle unico
+// obligaba a bajar el panel de administracion, el checkout y las fichas de
+// producto antes de pintar la home. Cada uno viaja ahora en su propio archivo.
+const BarrasEnergeticas = lazy(() => import("./pages/barras-energeticas").then(m => ({ default: m.BarrasEnergeticas })));
+const ProteinaRegular = lazy(() => import("./pages/proteina-regular").then(m => ({ default: m.ProteinaRegular })));
+const ProteinaColageno = lazy(() => import("./pages/proteina-colageno").then(m => ({ default: m.ProteinaColageno })));
+const TestProduct = lazy(() => import("./pages/test-product").then(m => ({ default: m.TestProduct })));
+const ProductDetail = lazy(() => import("./pages/product-detail").then(m => ({ default: m.ProductDetail })));
+const Checkout = lazy(() => import("./pages/checkout"));
+const PaymentSuccessMercadoPago = lazy(() => import("./pages/payment-success-mp"));
+const PaymentFailureMercadoPago = lazy(() => import("./pages/payment-failure-mp"));
+const PaymentPendingMercadoPago = lazy(() => import("./pages/payment-pending-mp"));
+const AdminLogin = lazy(() => import("./pages/admin-login").then(m => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() => import("./pages/admin-dashboard").then(m => ({ default: m.AdminDashboard })));
 import { MaintenancePage } from "./pages/maintenance";
 import { CartProvider } from "./contexts/CartContext";
 import { CartDrawer } from "./components/CartDrawer";
 import { NavigationProvider } from "./contexts/NavigationContext";
+const AvisoPrivacidad = lazy(() => import("./pages/aviso-privacidad").then(m => ({ default: m.AvisoPrivacidad })));
+import { trackPageView, tagSession } from "./config/analytics";
+import { obtenerAjustes } from "./config/datos-tienda";
+
+// Reserva alto mientras llega el trozo de codigo de la pagina, para que la carga
+// diferida no genere un salto de maquetacion.
+function CargandoPagina() {
+  return <div className="min-h-screen" aria-busy="true" />;
+}
 
 // ─── Session helpers ──────────────────────────────────────────────────────────
 function getStoredAdminSession(): string | null {
@@ -44,6 +56,16 @@ function clearAdminSession() {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<string>("home");
+
+  // index.php pinta el banner del hero en una capa encima de #root para que se
+  // vea antes de que arranque React. Se retira una vez React ya pinto debajo:
+  // el useEffect corre tras el commit y el rAF espera al pintado, asi el relevo
+  // no deja ni un fotograma en negro.
+  useEffect(() => {
+    const capa = document.getElementById("lcp-overlay");
+    if (!capa) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => capa.remove()));
+  }, []);
   const [adminToken, setAdminToken]   = useState<string | null>(null);
   const [isMaintenanceMode, setIsMaintenanceMode] = useState<boolean>(false);
   const [isLoadingMaintenance, setIsLoadingMaintenance] = useState<boolean>(true);
@@ -69,8 +91,7 @@ export default function App() {
   useEffect(() => {
     const checkMaintenance = async () => {
       try {
-        const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
-        const settings = await response.json();
+        const settings = await obtenerAjustes();
         if (settings && settings.maintenance_mode === '1') {
           setIsMaintenanceMode(true);
         } else {
@@ -84,6 +105,18 @@ export default function App() {
     };
     checkMaintenance();
   }, []);
+
+  // Reportar cada cambio de página a Meta Pixel y Clarity.
+  // El primer PageView ya lo dispara el snippet de index.html, así que lo omitimos.
+  const isFirstPageView = useRef(true);
+  useEffect(() => {
+    if (isFirstPageView.current) {
+      isFirstPageView.current = false;
+    } else {
+      trackPageView();
+    }
+    tagSession("page", currentPage);
+  }, [currentPage]);
 
   // Verificar expiración de sesión cada minuto
   useEffect(() => {
@@ -118,6 +151,8 @@ export default function App() {
     setCurrentPage(page);
     if (page === "home") {
       window.history.pushState({}, '', window.location.pathname);
+    } else {
+      window.history.pushState({}, '', `?p=${page}`);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -148,7 +183,7 @@ export default function App() {
 
         {/* Admin Panel */}
         {currentPage === "admin" && (
-          <>
+          <Suspense fallback={<CargandoPagina />}>
             {!adminToken ? (
               <AdminLogin onLoginSuccess={handleAdminLogin} />
             ) : (
@@ -157,16 +192,22 @@ export default function App() {
                 onLogout={handleAdminLogout}
               />
             )}
-          </>
+          </Suspense>
         )}
 
         {/* Checkout */}
-        {currentPage === "checkout" && <Checkout />}
+        {currentPage === "checkout" && (
+          <Suspense fallback={<CargandoPagina />}><Checkout /></Suspense>
+        )}
 
         {/* Mercado Pago return pages */}
-        {currentPage === "payment-success-mp" && <PaymentSuccessMercadoPago />}
-        {currentPage === "payment-failure-mp"  && <PaymentFailureMercadoPago />}
-        {currentPage === "payment-pending-mp"  && <PaymentPendingMercadoPago />}
+        {["payment-success-mp", "payment-failure-mp", "payment-pending-mp"].includes(currentPage) && (
+          <Suspense fallback={<CargandoPagina />}>
+            {currentPage === "payment-success-mp" && <PaymentSuccessMercadoPago />}
+            {currentPage === "payment-failure-mp"  && <PaymentFailureMercadoPago />}
+            {currentPage === "payment-pending-mp"  && <PaymentPendingMercadoPago />}
+          </Suspense>
+        )}
 
         {/* Home + Products */}
         {!["checkout", "payment-success-mp", "payment-failure-mp", "payment-pending-mp", "admin"].includes(currentPage) && (
@@ -177,6 +218,10 @@ export default function App() {
                 <div className="pt-16">
                   <HeroCarousel onSlideClick={navigateToProduct} />
                 </div>
+                {/* Debajo del pliegue: el navegador se salta su maquetacion hasta
+                    que se acercan a la pantalla. Siguen en el DOM, asi que no
+                    cambia nada para buscadores ni para el usuario. */}
+                <div className="difiere-maquetacion">
                 <ProductsSection onProductClick={navigateToProduct} />
                 <BrandSection />
                 <BarsPromotion onShopClick={(flavorId?: string | React.MouseEvent) => {
@@ -192,21 +237,27 @@ export default function App() {
                 <FAQ />
                 <Contact />
                 <Footer />
+                </div>
               </div>
             )}
 
             {currentPage !== "home" && (
               <div className="min-h-screen">
                 <Header onLogoClick={navigateHome} isProductPage={true} />
-                {currentPage === "barras-energeticas" && <BarrasEnergeticas onBack={navigateHome} />}
-                {currentPage === "proteina-clasica"   && <ProteinaRegular onBack={navigateHome} />}
-                {currentPage === "proteina-regular"   && <ProteinaRegular onBack={navigateHome} />}
-                {currentPage === "proteina-colageno"  && <ProteinaColageno onBack={navigateHome} />}
-                {currentPage === "test-product"       && <TestProduct onBack={navigateHome} />}
-                {/* Fallback para productos nuevos dinámicos generados desde el backend */}
-                {!["barras-energeticas", "proteina-clasica", "proteina-regular", "proteina-colageno", "test-product"].includes(currentPage) && (
-                  <ProductDetail productId={currentPage} onBack={navigateHome} />
-                )}
+                {/* El Suspense envuelve solo la pagina: asi el header y el pie
+                    siguen visibles mientras llega su codigo. */}
+                <Suspense fallback={<CargandoPagina />}>
+                  {currentPage === "barras-energeticas" && <BarrasEnergeticas onBack={navigateHome} />}
+                  {currentPage === "proteina-clasica"   && <ProteinaRegular onBack={navigateHome} />}
+                  {currentPage === "proteina-regular"   && <ProteinaRegular onBack={navigateHome} />}
+                  {currentPage === "proteina-colageno"  && <ProteinaColageno onBack={navigateHome} />}
+                  {currentPage === "test-product"       && <TestProduct onBack={navigateHome} />}
+                  {currentPage === "aviso-privacidad"   && <AvisoPrivacidad />}
+                  {/* Fallback para productos nuevos dinámicos generados desde el backend */}
+                  {!["barras-energeticas", "proteina-clasica", "proteina-regular", "proteina-colageno", "test-product", "aviso-privacidad"].includes(currentPage) && (
+                    <ProductDetail productId={currentPage} onBack={navigateHome} />
+                  )}
+                </Suspense>
                 <Footer />
               </div>
             )}

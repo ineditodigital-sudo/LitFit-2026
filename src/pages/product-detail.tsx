@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, ShoppingCart, Star, Zap, Truck, Users, MessageSquare, X } from "lucide-react";
 import { toast } from "sonner";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
 import { ShareButton } from "../components/ShareButton";

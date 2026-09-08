@@ -5,10 +5,19 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="icon" type="image/webp" href="/favicon-litfit.webp" />
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+      <!--
+        La tipografia va auto-alojada (ver @font-face en styles/globals.css) y
+        viaja junto al resto de los assets, asi que aqui ya no hace falta
+        conectar con Google ni descargar su hoja de estilos.
+      -->
       <title>LITFIT México | Nutrición Deportiva</title>
+
+      <!--
+        Los scripts de Meta Pixel y Microsoft Clarity NO van aquí.
+        Los inyecta index.php leyendo los IDs de la tabla `settings`, que se
+        editan desde Admin -> Configuración (ver scripts/deploy.mjs).
+        Por eso en desarrollo (vite) no se carga seguimiento, que es lo deseable.
+      -->
     </head>
 
     <body>

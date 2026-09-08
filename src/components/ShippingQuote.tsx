@@ -104,6 +104,24 @@ export function ShippingQuote({
       const cleanCity = removeAccents(formData.city || "");
       const cleanColonia = removeAccents(formData.colonia || "");
 
+      // Detección automática del municipio de Aguascalientes (excluyendo otros municipios del estado como Jesús María, Calvillo, etc.)
+      // Los códigos postales de la capital son del 20000 al 20399, o si explícitamente pusieron Aguascalientes como ciudad.
+      const isAguascalientes = cleanCity.toLowerCase() === "aguascalientes" || (formData.zipCode.startsWith("20") && parseInt(formData.zipCode) >= 20000 && parseInt(formData.zipCode) <= 20399);
+
+      if (isAguascalientes) {
+        const localOption: ShippingOption = {
+          id: "local-ags",
+          carrier: "Envío Local",
+          service: "Entrega Local en Aguascalientes",
+          price: isFreeEffective ? 0 : 50,
+          deliveryDays: "1-2 días",
+        };
+        setShippingOptions([localOption]);
+        onSelectShipping(localOption);
+        setLoading(false);
+        return;
+      }
+
       // ✅ CORRECCIÓN CRÍTICA: Estructura exacta requerida por la API
       const requestBody = {
         quotation: {

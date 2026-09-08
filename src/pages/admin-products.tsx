@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, Edit2, Trash2, Save, X, Package, Tag, DollarSign, Image as ImageIcon, Sparkles, Activity } from "lucide-react";
+import { Plus, Edit2, Trash2, Save, X, Package, Tag, DollarSign, Image as ImageIcon, Sparkles, Activity, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 // Importar datos locales como fallback
 import localProducts from "../data/products.json";
@@ -8,6 +8,7 @@ import localProducts from "../data/products.json";
 export interface Variant {
   name: string;
   image?: string;
+  available?: boolean;
 }
 
 interface Product {
@@ -24,6 +25,7 @@ interface Product {
   sizes?: string[];
   nutrition?: Record<string, string>;
   features?: string[];
+  available?: boolean;
 }
 
 export function AdminProducts({ adminToken }: { adminToken: string }) {
@@ -94,6 +96,13 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
       setEditingId(null);
       setIsAdding(false);
     }
+  };
+
+  const toggleAvailability = (product: Product) => {
+    const newList = products.map((p) =>
+      p.id === product.id ? { ...p, available: product.available === false ? true : false } : p
+    );
+    handleSave(newList);
   };
 
   const startEdit = (product: Product) => {
@@ -267,6 +276,11 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                     {product.badge}
                   </div>
                 )}
+                {product.available === false && (
+                  <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 text-[9px] font-black uppercase tracking-widest shadow-xl">
+                    AGOTADO
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
               <div className="p-6 flex-1 flex flex-col">
@@ -283,8 +297,9 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                   <div className="mb-6 flex flex-wrap gap-1">
                     {(product.flavors || product.variants)!.map((f, idx) => {
                       const vName = typeof f === 'string' ? f : (f as Variant).name;
+                      const vAvailable = typeof f === 'string' ? true : (f as Variant).available !== false;
                       return (
-                        <span key={idx} className="text-[8px] font-bold text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded-md uppercase">
+                        <span key={idx} className={`text-[8px] font-bold px-1.5 py-0.5 rounded-md uppercase border ${vAvailable ? 'text-gray-400 border-gray-100' : 'text-red-500 border-red-200 bg-red-50 line-through'}`}>
                           {vName}
                         </span>
                       );
@@ -292,6 +307,13 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                   </div>
                 )}
 
+                <button
+                  onClick={() => toggleAvailability(product)}
+                  title="Cambiar disponibilidad (stock)"
+                  className={`w-full h-10 mb-3 flex items-center justify-center gap-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${product.available === false ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                >
+                  {product.available === false ? '● Agotado — Reactivar' : '● En stock — Marcar agotado'}
+                </button>
                 <div className="flex gap-3 border-t border-slate-50 pt-4">
                   <button
                     onClick={() => startEdit(product)}
@@ -406,14 +428,57 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                       className="w-full file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gray-100 file:text-black hover:file:bg-black hover:file:text-white file:transition-all text-xs text-gray-400 cursor-pointer"
                     />
                     {formData.images && formData.images.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 mt-2">
                         {formData.images.map((img, idx) => (
-                          <div key={idx} className="relative group rounded-xl overflow-hidden border-2 border-slate-100 w-16 h-16">
+                          <div key={idx} className="relative group rounded-xl overflow-hidden border-2 border-slate-100 w-20 h-20">
                             <img src={img} alt="" className="w-full h-full object-cover" />
-                            <button type="button" onClick={() => setFormData(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
-                              className="absolute top-0.5 right-0.5 bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <X className="w-2.5 h-2.5" />
-                            </button>
+                            
+                            {/* Gradient Overlay for controls */}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-1">
+                              {/* Top row: Delete */}
+                              <div className="flex justify-end">
+                                <button type="button" onClick={() => setFormData(p => ({ ...p, images: p.images?.filter((_, i) => i !== idx) }))}
+                                  className="bg-red-500 hover:bg-red-600 text-white w-5 h-5 rounded-full flex items-center justify-center transition-colors">
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+                              
+                              {/* Bottom row: Move Left/Right */}
+                              <div className="flex justify-between">
+                                <button type="button" 
+                                  onClick={() => {
+                                    if (idx > 0) {
+                                      setFormData(p => {
+                                        const newImages = [...(p.images || [])];
+                                        [newImages[idx - 1], newImages[idx]] = [newImages[idx], newImages[idx - 1]];
+                                        return { ...p, images: newImages };
+                                      });
+                                    }
+                                  }}
+                                  disabled={idx === 0}
+                                  className={`bg-white/90 hover:bg-white text-black w-5 h-5 rounded-full flex items-center justify-center transition-colors ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}>
+                                  <ChevronLeft className="w-3 h-3" />
+                                </button>
+                                <button type="button" 
+                                  onClick={() => {
+                                    if (formData.images && idx < formData.images.length - 1) {
+                                      setFormData(p => {
+                                        const newImages = [...(p.images || [])];
+                                        [newImages[idx + 1], newImages[idx]] = [newImages[idx], newImages[idx + 1]];
+                                        return { ...p, images: newImages };
+                                      });
+                                    }
+                                  }}
+                                  disabled={formData.images ? idx === formData.images.length - 1 : true}
+                                  className={`bg-white/90 hover:bg-white text-black w-5 h-5 rounded-full flex items-center justify-center transition-colors ${(formData.images && idx === formData.images.length - 1) ? 'opacity-30 cursor-not-allowed' : ''}`}>
+                                  <ChevronRight className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <div className="absolute top-0 left-0 bg-black/60 text-white text-[8px] px-1 py-0.5 rounded-br-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                              {idx + 1}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -432,6 +497,26 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                               {variant.image && (
                                 <img src={variant.image} alt="" className="w-9 h-9 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                               )}
+                              <div className="flex flex-col justify-center gap-1 pr-2 border-r border-gray-100">
+                                <button type="button" onClick={() => {
+                                  if (idx > 0) {
+                                    const newVars = [...(formData.variants as Variant[] || [])];
+                                    [newVars[idx-1], newVars[idx]] = [newVars[idx], newVars[idx-1]];
+                                    setFormData({ ...formData, variants: newVars });
+                                  }
+                                }} className={`p-0.5 rounded transition-colors ${idx > 0 ? 'text-gray-400 hover:text-[#00AAC7] hover:bg-[#00AAC7]/10' : 'text-gray-200 cursor-not-allowed'}`}>
+                                  <ArrowUp className="w-3.5 h-3.5" />
+                                </button>
+                                <button type="button" onClick={() => {
+                                  if (formData.variants && idx < formData.variants.length - 1) {
+                                    const newVars = [...(formData.variants as Variant[])];
+                                    [newVars[idx+1], newVars[idx]] = [newVars[idx], newVars[idx+1]];
+                                    setFormData({ ...formData, variants: newVars });
+                                  }
+                                }} className={`p-0.5 rounded transition-colors ${formData.variants && idx < formData.variants.length - 1 ? 'text-gray-400 hover:text-[#00AAC7] hover:bg-[#00AAC7]/10' : 'text-gray-200 cursor-not-allowed'}`}>
+                                  <ArrowDown className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                               <input type="text" placeholder="Nombre del sabor (ej. Fresa)" value={variant.name}
                                 onChange={(e) => {
                                   const newVars = [...(formData.variants as Variant[] || [])];
@@ -440,6 +525,17 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                                 }}
                                 className="flex-1 h-9 px-3 bg-white border-2 border-transparent rounded-xl focus:border-[#00AAC7] outline-none font-bold text-xs"
                               />
+                              <button type="button"
+                                onClick={() => {
+                                  const newVars = [...(formData.variants as Variant[] || [])];
+                                  newVars[idx] = { ...variant, available: variant.available === false ? true : false };
+                                  setFormData({ ...formData, variants: newVars });
+                                }}
+                                title="Cambiar disponibilidad de este sabor"
+                                className={`flex-shrink-0 h-9 px-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${variant.available === false ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                              >
+                                {variant.available === false ? 'Agotado' : 'En stock'}
+                              </button>
                               <button type="button" onClick={() => { const nv = formData.variants?.filter((_, i) => i !== idx); setFormData({ ...formData, variants: nv }); }}
                                 className="p-1.5 text-red-400 hover:bg-red-50 rounded-lg flex-shrink-0"><X className="w-3.5 h-3.5" /></button>
                             </div>
@@ -596,6 +692,36 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                     )}
                   </div>
 
+                  {/* Carousel Preview (Mirrors store logic) */}
+                  {(() => {
+                    const carouselImages: string[] = [];
+                    if (formData.image) carouselImages.push(formData.image);
+                    if (formData.images && formData.images.length > 0) {
+                      carouselImages.push(...formData.images);
+                    }
+                    const flavorImages = (formData.variants || []).filter((v: any) => v.image).map((v: any) => v.image);
+                    flavorImages.forEach((img: string) => {
+                      if (!carouselImages.includes(img)) carouselImages.push(img);
+                    });
+
+                    if (carouselImages.length > 1) {
+                      return (
+                        <div className="mt-2">
+                          <p className="text-[9px] font-black uppercase text-gray-400 mb-2">Orden del carrusel</p>
+                          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                            {carouselImages.map((img: string, idx: number) => (
+                              <div key={idx} className="flex-shrink-0 w-16 h-16 bg-white border-2 border-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative">
+                                <span className="absolute top-0 left-0 bg-black text-white text-[8px] font-black px-1 z-10">{idx + 1}</span>
+                                <img src={img} className="w-full h-full object-cover" alt="" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   {/* Rating placeholder */}
                   <div className="flex items-center gap-1.5">
                     {[1,2,3,4,5].map(i => <div key={i} className="w-3.5 h-3.5 rounded-sm bg-gray-200" />)}
@@ -645,10 +771,14 @@ export function AdminProducts({ adminToken }: { adminToken: string }) {
                     <div className="space-y-1.5">
                       <p className="text-[9px] font-black uppercase tracking-widest text-black">Selecciona tu sabor</p>
                       {(formData.variants as Variant[] || []).filter(v => v.name).map((v, i) => (
-                        <div key={i} className={`flex items-center gap-2 p-2.5 border-2 rounded-xl text-xs font-bold ${i === 0 ? 'border-[#00AAC7] bg-[#00AAC7]/5' : 'border-gray-100'}`}>
+                        <div key={i} className={`flex items-center gap-2 p-2.5 border-2 rounded-xl text-xs font-bold ${v.available === false ? 'border-gray-100 opacity-50' : (i === 0 ? 'border-[#00AAC7] bg-[#00AAC7]/5' : 'border-gray-100')}`}>
                           {v.image && <img src={v.image} alt="" className="w-7 h-7 rounded-md object-cover" />}
                           <span className="text-black">{v.name}</span>
-                          {i === 0 && <div className="ml-auto w-3.5 h-3.5 rounded-full bg-[#00AAC7] flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full" /></div>}
+                          {v.available === false ? (
+                            <span className="ml-auto text-[8px] font-black text-red-500 uppercase tracking-widest">Agotado</span>
+                          ) : (
+                            i === 0 && <div className="ml-auto w-3.5 h-3.5 rounded-full bg-[#00AAC7] flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full" /></div>
+                          )}
                         </div>
                       ))}
                     </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, ShoppingCart, Check, Shield, Truck, Award } from "lucide-react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { useCart } from "../contexts/CartContext";
 import { useNavigation } from "../contexts/NavigationContext";
 import { ShareButton } from "../components/ShareButton";

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import { m as motion } from 'motion/react';
 import { XCircle, ArrowLeft } from 'lucide-react';
 
 export default function PaymentFailureMercadoPago() {

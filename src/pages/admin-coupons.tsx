@@ -1,6 +1,23 @@
 import { useState, useEffect } from "react";
-import { Ticket, Plus, Trash2, Edit2, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Ticket, Plus, Trash2, Edit2, CheckCircle2, AlertCircle, Loader2, Clock, TrendingUp, X, Mail, Package, User } from "lucide-react";
 import { toast } from "sonner";
+
+// Calcula el estado real del cupón considerando la vigencia, no solo is_active.
+// El backend rechaza cupones expirados o aún no vigentes aunque estén "activos".
+type CouponStatus = 'inactive' | 'expired' | 'scheduled' | 'active';
+function getCouponStatus(coupon: { is_active: boolean; valid_from: string | null; valid_until: string | null }): CouponStatus {
+  if (!coupon.is_active) return 'inactive';
+  const now = new Date();
+  if (coupon.valid_until) {
+    const until = new Date(coupon.valid_until.replace(' ', 'T'));
+    if (!isNaN(until.getTime()) && until < now) return 'expired';
+  }
+  if (coupon.valid_from) {
+    const from = new Date(coupon.valid_from.replace(' ', 'T'));
+    if (!isNaN(from.getTime()) && from > now) return 'scheduled';
+  }
+  return 'active';
+}
 
 interface Coupon {
   id: string;
@@ -25,6 +42,8 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [usageCoupon, setUsageCoupon] = useState<Coupon | null>(null);
 
   const [formData, setFormData] = useState<Partial<Coupon>>({
     code: '',
@@ -55,9 +74,29 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
     }
   };
 
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(`https://litfitmexico.com/envios/get-orders.php`, {
+        headers: { 'Authorization': `Bearer ${adminToken}`, 'X-Admin-Token': adminToken }
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) setOrders(data);
+    } catch (err) {
+      console.error("Error al cargar pedidos para uso de cupones");
+    }
+  };
+
+  // Un "uso" = pedido PAGADO en el que se aplicó ese cupón.
+  const getCouponUses = (code: string) =>
+    orders.filter((o: any) =>
+      o && o.status === 'PAID' &&
+      (((o.appliedCoupon && o.appliedCoupon.code) || '')).toUpperCase() === code.toUpperCase()
+    );
+
   useEffect(() => {
     fetchCoupons();
     fetchPromoGift();
+    fetchOrders();
   }, [adminToken]);
 
   const [promoGift, setPromoGift] = useState<{ enabled: boolean, name: string } | null>(null);
@@ -200,6 +239,7 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                   <th className="p-4">Descuento</th>
                   <th className="p-4">Condiciones</th>
                   <th className="p-4">Vigencia</th>
+                  <th className="p-4">Usos</th>
                   <th className="p-4">Estado</th>
                   <th className="p-4 text-right">Acciones</th>
                 </tr>
@@ -235,15 +275,41 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                       )}
                     </td>
                     <td className="p-4">
-                      {coupon.is_active ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                          <CheckCircle2 className="w-3 h-3" /> Activo
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                          <AlertCircle className="w-3 h-3" /> Inactivo
-                        </span>
-                      )}
+                      {(() => {
+                        const uses = getCouponUses(coupon.code);
+                        return uses.length > 0 ? (
+                          <button onClick={() => setUsageCoupon(coupon)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-[#00AAC7]/10 text-[#00AAC7] hover:bg-[#00AAC7]/20 transition-colors">
+                            <TrendingUp className="w-3.5 h-3.5" /> {uses.length} {uses.length === 1 ? 'uso' : 'usos'}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-slate-400">Sin usos</span>
+                        );
+                      })()}
+                    </td>
+                    <td className="p-4">
+                      {(() => {
+                        const status = getCouponStatus(coupon);
+                        if (status === 'inactive') return (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                            <AlertCircle className="w-3 h-3" /> Inactivo
+                          </span>
+                        );
+                        if (status === 'expired') return (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                            <AlertCircle className="w-3 h-3" /> Expirado
+                          </span>
+                        );
+                        if (status === 'scheduled') return (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                            <Clock className="w-3 h-3" /> Programado
+                          </span>
+                        );
+                        return (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                            <CheckCircle2 className="w-3 h-3" /> Activo
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="p-4 text-right space-x-2">
                       <button onClick={() => handleOpenModal(coupon)} className="p-2 text-slate-400 hover:text-[#00AAC7] transition-colors rounded-lg hover:bg-slate-100">
@@ -257,7 +323,7 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                 ))}
                 {coupons.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">
+                    <td colSpan={7} className="p-8 text-center text-slate-500">
                       No hay cupones creados. ¡Crea el primero!
                     </td>
                   </tr>
@@ -403,6 +469,70 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
           </div>
         </div>
       )}
+
+      {/* Modal Detalle de Usos */}
+      {usageCoupon && (() => {
+        const uses = getCouponUses(usageCoupon.code);
+        const totalDesc = uses.reduce((sum: number, o: any) => sum + (Number(o.discountAmount) || 0), 0);
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" onClick={() => setUsageCoupon(null)}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div>
+                  <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-[#00AAC7]" />
+                    Usos de <span className="uppercase tracking-wide">{usageCoupon.code}</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {uses.length} {uses.length === 1 ? 'pedido pagado' : 'pedidos pagados'} · ${totalDesc.toLocaleString('es-MX')} descontado en total
+                  </p>
+                </div>
+                <button onClick={() => setUsageCoupon(null)} className="text-slate-400 hover:text-slate-600 p-1"><X className="w-5 h-5" /></button>
+              </div>
+              <div className="p-4 overflow-y-auto space-y-3">
+                {uses.length === 0 ? (
+                  <p className="text-center text-slate-500 py-8 text-sm">Este cupón aún no se ha usado en pedidos pagados.</p>
+                ) : (
+                  uses
+                    .slice()
+                    .sort((a: any, b: any) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime())
+                    .map((o: any, i: number) => (
+                      <div key={i} className="border border-slate-100 rounded-xl p-4 hover:bg-slate-50/50 transition-colors">
+                        <div className="flex justify-between items-start gap-3 flex-wrap">
+                          <div className="min-w-0">
+                            <p className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                              <User className="w-3.5 h-3.5 text-slate-400" />
+                              {(o.formData?.firstName || '') + ' ' + (o.formData?.lastName || '') || 'Cliente'}
+                            </p>
+                            <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1">
+                              <Mail className="w-3 h-3" /> {o.formData?.email || '—'}
+                            </p>
+                            <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1">
+                              <Package className="w-3 h-3" /> <span className="font-mono">{o.orderId}</span>
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-xs text-slate-400 flex items-center gap-1 justify-end">
+                              <Clock className="w-3 h-3" />
+                              {o.timestamp ? new Date(o.timestamp).toLocaleString('es-MX', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+                            </p>
+                            {o.discountAmount != null && (
+                              <p className="text-sm font-bold text-emerald-600 mt-1">-${Number(o.discountAmount).toLocaleString('es-MX')}</p>
+                            )}
+                            <span className="inline-block mt-1 text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold uppercase">Pagado</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                )}
+              </div>
+              <div className="px-6 py-3 border-t border-slate-100 bg-slate-50">
+                <button onClick={() => setUsageCoupon(null)} className="w-full py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-colors">Cerrar</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

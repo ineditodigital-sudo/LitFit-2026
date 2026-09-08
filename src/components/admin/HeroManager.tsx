@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Save, MoveUp, MoveDown, Image as ImageIcon, Link as LinkIcon, Upload } from "lucide-react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { toast } from "sonner";
 
 interface HeroManagerProps {

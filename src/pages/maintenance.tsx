@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Hammer, Lock, Mail, Instagram } from "lucide-react";
 
 export function MaintenancePage() {

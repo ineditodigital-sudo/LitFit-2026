@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
+import { m as motion } from 'motion/react';
 import { Search, Package, MapPin, Clock, CheckCircle, Truck, ArrowLeft, Loader2 } from 'lucide-react';
 
 const RASTREO_BACKEND_URL = "https://inedito.digital/api/envios/rastrear.php";

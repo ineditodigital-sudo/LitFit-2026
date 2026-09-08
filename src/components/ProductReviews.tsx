@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Star, MessageSquare, X } from "lucide-react";
 import { toast } from "sonner";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 
 interface Review {
   id: string;

@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import React, { useState, FormEvent } from "react";
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart } from "lucide-react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
+import { obtenerProductos } from "../config/datos-tienda";
 
 interface ProductsSectionProps {
   onProductClick?: (productId: string) => void;
@@ -14,6 +15,7 @@ interface Product {
   image: string;
   badge?: string;
   description: string;
+  available?: boolean;
 }
 
 export function ProductsSection({ onProductClick }: ProductsSectionProps) {
@@ -23,8 +25,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
-        const data = await response.json();
+        const data = await obtenerProductos();
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -114,10 +115,19 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
                     </div>
                   </div>
                 )}
+                {product.available === false && (
+                  <div className="absolute top-2 right-2 md:top-3 md:right-3 lg:top-4 lg:right-4 z-20">
+                    <div className="bg-red-600 text-white px-2 py-1 lg:px-3 text-[9px] md:text-xs font-black tracking-wider shadow-lg uppercase">
+                      Agotado
+                    </div>
+                  </div>
+                )}
 
                 {/* Image */}
                 <div className="relative h-full md:h-[350px] lg:h-[400px] overflow-hidden">
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={product.image}
                       alt={product.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -143,10 +153,10 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
                       {product.id === "barras-energeticas" ? "Desde " : ""}${product.price}
                     </span>
                     <button className="relative group/btn overflow-hidden flex-shrink-0">
-                      <div className="absolute inset-0 bg-white transition-transform duration-300 group-hover/btn:scale-105 shadow-xl" />
+                      <div className={`absolute inset-0 transition-transform duration-300 group-hover/btn:scale-105 shadow-xl ${product.available === false ? 'bg-gray-400' : 'bg-white'}`} />
                       <div className="relative px-4 py-2 md:px-4 md:py-2 lg:px-6 lg:py-3 flex items-center gap-1.5 md:gap-2">
                         <ShoppingCart className="w-4 h-4 md:w-4 md:h-4 text-black" />
-                        <span className="text-black font-black text-xs md:text-xs tracking-wide">COMPRAR</span>
+                        <span className="text-black font-black text-xs md:text-xs tracking-wide">{product.available === false ? 'AGOTADO' : 'COMPRAR'}</span>
                       </div>
                     </button>
                   </div>

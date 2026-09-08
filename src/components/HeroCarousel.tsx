@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { m as motion, AnimatePresence } from "motion/react";
 
 interface HeroCarouselProps {
   onSlideClick?: (productId: string) => void;
@@ -8,7 +8,11 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [slides, setSlides] = useState<any[]>([]);
+  // index.php inyecta los slides en el HTML (window.__LITFIT_HERO__), asi el
+  // banner se pinta en el primer render en vez de esperar a api-settings. Si no
+  // vienen (desarrollo con vite), se consultan como antes.
+  const slidesIniciales = typeof window !== "undefined" ? (window as any).__LITFIT_HERO__ : null;
+  const [slides, setSlides] = useState<any[]>(Array.isArray(slidesIniciales) && slidesIniciales.length > 0 ? slidesIniciales : []);
 
   const defaultSlides = [
     {
@@ -39,6 +43,9 @@ export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
   ];
 
   useEffect(() => {
+    // Ya vinieron en el HTML: no hace falta pedirlos.
+    if (slides.length > 0) return;
+
     const fetchSlides = async () => {
       try {
         const response = await fetch(`https://litfitmexico.com/envios/api-settings.php?t=${Date.now()}`);
@@ -72,55 +79,113 @@ export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  // El carrusel ocupa toda la pantalla en movil, asi que cada giro repinta el
+  // viewport entero. Girando desde el primer instante competia con la carga de
+  // la pagina y no dejaba que se estabilizara nunca.
+  //
+  // Ahora empieza cuando la pagina ya termino de cargar y el visitante llevaba
+  // unos segundos mirando el primer banner, se detiene si la pestana pasa a
+  // segundo plano, y no gira si el sistema pide reducir el movimiento.
   useEffect(() => {
-    if (slides.length === 0) return;
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
+    if (slides.length < 2) return;
+
+    const sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (sinMovimiento.matches) return;
+
+    let intervalo: ReturnType<typeof setInterval> | undefined;
+    let arranque: ReturnType<typeof setTimeout> | undefined;
+
+    const detener = () => { if (intervalo) { clearInterval(intervalo); intervalo = undefined; } };
+    const arrancar = () => { if (!intervalo && document.visibilityState === "visible") intervalo = setInterval(nextSlide, 5000); };
+
+    // 12 s antes del primer giro: da tiempo a leer el banner de entrada y evita
+    // que el carrusel repinte la pantalla completa mientras la pagina todavia se
+    // esta asentando. Los giros siguientes van cada 5 s, como siempre.
+    const programar = () => { arranque = setTimeout(arrancar, 12000); };
+    if (document.readyState === "complete") programar();
+    else window.addEventListener("load", programar, { once: true });
+
+    const alCambiarVisibilidad = () => { if (document.visibilityState === "hidden") detener(); else if (arranque === undefined || intervalo) arrancar(); };
+    document.addEventListener("visibilitychange", alCambiarVisibilidad);
+
+    return () => {
+      detener();
+      if (arranque) clearTimeout(arranque);
+      window.removeEventListener("load", programar);
+      document.removeEventListener("visibilitychange", alCambiarVisibilidad);
+    };
   }, [slides.length]);
 
+  // Adelanta la imagen del siguiente slide cuando el navegador esta libre. Antes
+  // se descargaban las de todos los slides (movil y escritorio) nada mas entrar:
+  // mas de 1 MB compitiendo con el arranque. Con solo la siguiente, el cambio
+  // sigue siendo instantaneo y la carga inicial se mantiene ligera.
+  useEffect(() => {
+    if (slides.length < 2) return;
+    const siguiente = slides[(currentSlide + 1) % slides.length];
+    if (!siguiente) return;
+    const esEscritorio = typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches;
+    const url = esEscritorio ? siguiente.image : (siguiente.imageMobile || siguiente.image);
+    if (!url) return;
+
+    const w = window as any;
+    const adelantar = () => { new Image().src = url; };
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(adelantar, { timeout: 2500 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const id = setTimeout(adelantar, 1500);
+    return () => clearTimeout(id);
+  }, [currentSlide, slides]);
+
+  // El contenedor reserva el alto con la proporcion real de los banners
+  // (9:16 en movil, 5:2 en escritorio). Antes el placeholder era h-screen y al
+  // llegar los slides el alto cambiaba de golpe: era el origen del CLS.
+  const PROPORCION = "aspect-[9/16] md:aspect-[5/2]";
+
   if (slides.length === 0) {
-    return <div className="w-full h-screen bg-black" />; // Splash / placeholder
+    return <div className={`w-full bg-black ${PROPORCION}`} />;
   }
 
   return (
-    <div id="hero" className="relative w-full h-auto overflow-hidden bg-black">
-      {/* Preload images to fix slow loading on transitions */}
-      <div className="hidden">
-        {slides.map((slide, index) => (
-          <div key={`preload-${index}`}>
-            <link rel="preload" as="image" href={slide.image} fetchPriority={index === 0 ? "high" : "auto"} />
-            <link rel="preload" as="image" href={slide.imageMobile} fetchPriority={index === 0 ? "high" : "auto"} />
-            {/* hidden img tags just fallback caching */}
-            <img src={slide.image} alt="preload desk" />
-            <img src={slide.imageMobile} alt="preload mob" />
-          </div>
-        ))}
-      </div>
-
-      <AnimatePresence mode="wait">
+    <div id="hero" className={`relative w-full overflow-hidden bg-black ${PROPORCION}`}>
+      {/* initial={false}: el primer slide aparece ya visible, sin fundido.
+          El HTML pinta ese banner antes de que arranque React; al montar, el
+          fundido de entrada lo llevaba a opacity 0 y lo hacia reaparecer poco a
+          poco, de modo que la imagen parpadeaba a negro casi dos segundos.
+          Los cambios de slide posteriores si se funden, como siempre. */}
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentSlide}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative w-full flex items-center justify-center cursor-pointer"
+          className="absolute inset-0 flex items-center justify-center cursor-pointer"
           onClick={() => {
             if (onSlideClick && slides[currentSlide].productId) {
               onSlideClick(slides[currentSlide].productId);
             }
           }}
         >
-          <img
-            src={slides[currentSlide].image}
-            alt={`LITFIT Banner ${currentSlide + 1}`}
-            className="hidden md:block w-full h-auto object-contain"
-          />
-          <img
-            src={slides[currentSlide].imageMobile}
-            alt={`LITFIT Banner ${currentSlide + 1}`}
-            className="block md:hidden w-full h-auto object-contain"
-          />
+          {/* Un solo <picture>: el navegador descarga la version movil O la de
+              escritorio, nunca las dos. Antes se bajaban ambas en todos los
+              dispositivos, y ademas las de todos los slides. */}
+          <picture className="w-full h-full">
+            <source media="(min-width: 768px)" srcSet={slides[currentSlide].image} />
+            <img
+              src={slides[currentSlide].imageMobile || slides[currentSlide].image}
+              alt={`LITFIT Banner ${currentSlide + 1}`}
+              width={1080}
+              height={1920}
+              loading="eager"
+              // React 18 no reconoce fetchPriority en camelCase: avisa en consola y
+              // lo pasa en minusculas. Se manda ya en minusculas.
+              {...({ fetchpriority: currentSlide === 0 ? "high" : "auto" } as Record<string, string>)}
+              decoding="async"
+              className="w-full h-full object-contain"
+            />
+          </picture>
         </motion.div>
       </AnimatePresence>
 

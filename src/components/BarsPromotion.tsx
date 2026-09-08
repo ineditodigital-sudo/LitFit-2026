@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { obtenerProductos, obtenerAjustes } from "../config/datos-tienda";
 
 interface BarsPromotionProps {
   onShopClick?: (flavorId?: string | React.MouseEvent) => void;
@@ -33,8 +34,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const response = await fetch(`https://litfitmexico.com/envios/api-products.php?t=${Date.now()}`);
-        const products = await response.json();
+        const products = await obtenerProductos();
         
         const p16 = products.find((p: any) => p.name.includes("16 pzs"));
         const p24 = products.find((p: any) => p.name.includes("24 pzs"));
@@ -51,8 +51,7 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
 
         // Fetch promo flavors
         try {
-          const settingsRes = await fetch("https://litfitmexico.com/envios/api-settings.php");
-          const settings = await settingsRes.json();
+          const settings = await obtenerAjustes();
           if (settings.bars_promotion_flavors) {
             setFlavors(JSON.parse(settings.bars_promotion_flavors));
           }
@@ -166,6 +165,8 @@ export function BarsPromotion({ onShopClick }: BarsPromotionProps) {
                     {/* Flavor Image */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <img
+                        loading="lazy"
+                        decoding="async"
                         src={flavor.image}
                         alt={flavor.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

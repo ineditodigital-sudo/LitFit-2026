@@ -1,15 +1,48 @@
+import React, { useState, useEffect } from "react";
 import { Facebook, Instagram, ArrowRight } from "lucide-react";
 import { useNavigation } from "../contexts/NavigationContext";
+import { obtenerProductos } from "../config/datos-tienda";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { navigateTo } = useNavigation();
 
-  const products = [
-    { name: "Barras de Proteína", page: "barras-energeticas" },
-    { name: "Proteína ISO", page: "proteina-regular" },
-    { name: "Proteína ISO + Colágeno", page: "proteina-colageno" },
-  ];
+  const [products, setProducts] = useState<{name: string, page: string}[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await obtenerProductos();
+        // Filtrar productos que no sean de "24 pzs" o similares si solo queremos los principales.
+        // O simplemente tomamos todos los principales que tengan una URL.
+        // Asumiendo que todos los devueltos son principales excepto los que dicen "24 pzs".
+        const mainProducts = data.filter((p: any) => p.status !== "inactive" && !p.name.includes("24 pzs") && !p.name.includes("16 pzs"));
+        
+        const formatted = mainProducts.map((p: any) => ({
+          name: p.name,
+          page: `prod-${p.id}`
+        }));
+        
+        if (formatted.length > 0) {
+          setProducts(formatted);
+        } else {
+          // Fallback a los quemados por si acaso falla
+          setProducts([
+            { name: "Barras de Proteína", page: "barras-energeticas" },
+            { name: "Proteína ISO", page: "proteina-regular" },
+            { name: "Proteína ISO + Colágeno", page: "proteina-colageno" },
+          ]);
+        }
+      } catch (err) {
+        setProducts([
+          { name: "Barras de Proteína", page: "barras-energeticas" },
+          { name: "Proteína ISO", page: "proteina-regular" },
+          { name: "Proteína ISO + Colágeno", page: "proteina-colageno" },
+        ]);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <footer className="bg-black text-white border-t border-white/10">
@@ -19,6 +52,8 @@ export function Footer() {
           {/* Brand Column - Larger */}
           <div className="lg:col-span-5">
             <img
+              loading="lazy"
+              decoding="async"
               src="https://imagenes.inedito.digital/LITFIT/LOGO%20LITFIT%20BLANCO%20Y%20AZUL.webp"
               alt="LITFIT"
               className="h-10 mb-6"
@@ -69,15 +104,15 @@ export function Footer() {
             <h3 className="text-sm font-black tracking-widest uppercase mb-4 text-[#00AAC7]">
               Productos
             </h3>
-            <ul className="space-y-2">
+            <ul className={`grid gap-x-6 gap-y-2 ${products.length > 4 ? 'grid-cols-2' : 'grid-cols-1'}`}>
               {products.map((product) => (
                 <li key={product.name}>
                   <button 
                     onClick={() => navigateTo(product.page)}
-                    className="text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center gap-2 group"
+                    className="text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center gap-2 group text-left"
                   >
-                    <span className="w-1 h-1 bg-white/40 group-hover:bg-[#00AAC7] transition-colors" />
-                    {product.name}
+                    <span className="w-1 h-1 bg-white/40 group-hover:bg-[#00AAC7] transition-colors shrink-0" />
+                    <span className="line-clamp-2">{product.name}</span>
                   </button>
                 </li>
               ))}
@@ -115,15 +150,9 @@ export function Footer() {
               © {currentYear} LITFIT. Elite Performance Nutrition.
             </p>
             <div className="flex gap-6">
-              {["Privacidad", "Términos", "Cookies"].map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="text-white/40 hover:text-white transition-colors font-medium"
-                >
-                  {item}
-                </a>
-              ))}
+              <button onClick={() => navigateTo('aviso-privacidad')} className="text-white/40 hover:text-white transition-colors font-medium">
+                Aviso de Privacidad y Uso de Cookies
+              </button>
             </div>
           </div>
         </div>

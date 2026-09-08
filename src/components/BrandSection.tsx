@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { m as motion } from "motion/react";
 import { Activity, Zap, TrendingUp, Sparkles } from "lucide-react";
 
 const productHighlights = [
@@ -127,6 +127,8 @@ export function BrandSection() {
           >
             <div className="relative aspect-square overflow-hidden">
               <img
+                loading="lazy"
+                decoding="async"
                 src="https://imagenes.inedito.digital/LITFIT/imagen-nosotros-litfit.webp"
                 alt="LITFIT Elite"
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
