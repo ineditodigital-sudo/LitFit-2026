@@ -75,7 +75,7 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
               className="h-10 mx-auto mb-4 object-contain"
             />
             <h1 className="text-white font-black text-xl tracking-tight">Panel de Control</h1>
-            <p className="text-white/40 text-xs font-medium mt-1">Acceso exclusivo administradores</p>
+            <p className="text-white/50 text-xs font-medium mt-1">Acceso exclusivo administradores</p>
           </div>
 
           {/* Form */}

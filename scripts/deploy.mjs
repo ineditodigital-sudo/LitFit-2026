@@ -86,6 +86,83 @@ fs.mkdirSync(outDir, { recursive: true });
 copyDir(buildDir, outDir);
 log("   OK: Frontend en public_html/", "green");
 
+// 3.9 Generar llms.txt y sitemap.xml con el catalogo real
+//
+// Ambos archivos son necesarios y no existian: el .htaccess reescribe cualquier
+// ruta inexistente a index.php, asi que /llms.txt y /sitemap.xml devolvian el
+// HTML de la tienda. robots.txt ya anunciaba el sitemap, y Lighthouse marcaba
+// llms.txt como invalido por recibir HTML en vez de Markdown.
+//
+// Se arman con los productos publicados para que no queden desactualizados.
+async function generarArchivosParaAgentes(destino) {
+  const BASE = "https://litfitmexico.com";
+  let productos = [];
+  try {
+    const res = await fetch(`${BASE}/envios/api-products.php`, { signal: AbortSignal.timeout(15000) });
+    const datos = await res.json();
+    if (Array.isArray(datos)) {
+      productos = datos
+        .filter((p) => p && p.id && p.name && p.category !== "TEST")
+        .map((p) => ({
+          id: String(p.id),
+          nombre: String(p.name).trim(),
+          descripcion: String(p.description || "").replace(/\s+/g, " ").trim().slice(0, 160),
+          precio: p.price,
+        }));
+    }
+  } catch (e) {
+    log(`   AVISO: no se pudo leer el catalogo (${e.message}); se generan sin productos.`, "yellow");
+  }
+
+  const paginas = [
+    { url: `${BASE}/`, titulo: "Inicio", desc: "Catalogo completo de LITFIT." },
+    { url: `${BASE}/?p=proteina-clasica`, titulo: "Proteina aislada", desc: "Proteina de suero aislada." },
+    { url: `${BASE}/?p=proteina-colageno`, titulo: "Proteina + colageno", desc: "Proteina con colageno hidrolizado." },
+    { url: `${BASE}/?p=barras-energeticas`, titulo: "Barras de proteina", desc: "Barras en paquetes de 16 y 24 piezas." },
+    { url: `${BASE}/?p=aviso-privacidad`, titulo: "Aviso de privacidad", desc: "Tratamiento de datos personales." },
+  ];
+
+  const enlacesProductos = productos
+    .map((p) => `- [${p.nombre}](${BASE}/?p=${encodeURIComponent(p.id)})${p.descripcion ? ": " + p.descripcion : ""}`)
+    .join("\n");
+
+  const llms = `# LITFIT Mexico
+
+> Tienda en linea de nutricion deportiva: proteina de suero aislada, proteina con colageno, creatina, barras y galletas de proteina. Envios a toda la Republica Mexicana, pago con Mercado Pago.
+
+Las fichas de producto se abren con el parametro \`?p=<id-del-producto>\`. La compra se completa en \`/?p=checkout\`, que pide datos de envio, cotiza paqueteria por codigo postal y redirige a Mercado Pago.
+
+## Productos
+${enlacesProductos || "- [Catalogo completo](" + BASE + "/)"}
+
+## Paginas
+${paginas.map((p) => `- [${p.titulo}](${p.url}): ${p.desc}`).join("\n")}
+
+## Notas
+- Precios en pesos mexicanos (MXN).
+- El catalogo y las existencias se sirven en ${BASE}/envios/api-products.php (JSON, solo lectura).
+`;
+
+  fs.writeFileSync(path.join(destino, "llms.txt"), llms, "utf-8");
+
+  const urlsSitemap = [...paginas.map((p) => p.url), ...productos.map((p) => `${BASE}/?p=${encodeURIComponent(p.id)}`)];
+  const unicas = [...new Set(urlsSitemap)];
+  const hoy = new Date().toISOString().slice(0, 10);
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${unicas.map((u) => `  <url>
+    <loc>${u.replace(/&/g, "&amp;")}</loc>
+    <lastmod>${hoy}</lastmod>
+  </url>`).join("\n")}
+</urlset>
+`;
+  fs.writeFileSync(path.join(destino, "sitemap.xml"), sitemap, "utf-8");
+
+  log(`   OK: llms.txt y sitemap.xml (${productos.length} productos)`, "green");
+}
+
+await generarArchivosParaAgentes(outDir);
+
 // 4. Copiar .htaccess
 log("   [3/5] Copiando .htaccess...", "reset");
 const htaccess = path.join(backend, "frontend-dist", ".htaccess");
@@ -281,6 +358,9 @@ if (isset($_GET['p'])) {
 `;
 
   const ogTagsHtml = `
+<!-- La descripcion ya se calcula para Open Graph (cambia por producto), asi que
+     se reutiliza para la meta description, que faltaba por completo. -->
+<meta name="description" content="<?php echo htmlspecialchars($og_desc); ?>" />
 <meta property="og:title" content="<?php echo htmlspecialchars($og_title); ?>" />
 <meta property="og:description" content="<?php echo htmlspecialchars($og_desc); ?>" />
 <meta property="og:image" content="<?php echo htmlspecialchars($og_image); ?>" />

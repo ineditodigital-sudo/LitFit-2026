@@ -143,8 +143,11 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-white"
+              aria-label={mobileMenuOpen ? "Cerrar menu" : "Abrir menu"}
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {/* Los iconos son decorativos: el nombre lo da el aria-label. */}
+              {mobileMenuOpen ? <X aria-hidden="true" className="w-6 h-6" /> : <Menu aria-hidden="true" className="w-6 h-6" />}
             </button>
           </div>
         </div>

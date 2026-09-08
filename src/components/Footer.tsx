@@ -146,11 +146,11 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-            <p className="text-white/40 font-medium">
+            <p className="text-white/50 font-medium">
               © {currentYear} LITFIT. Elite Performance Nutrition.
             </p>
             <div className="flex gap-6">
-              <button onClick={() => navigateTo('aviso-privacidad')} className="text-white/40 hover:text-white transition-colors font-medium">
+              <button onClick={() => navigateTo('aviso-privacidad')} className="text-white/50 hover:text-white transition-colors font-medium">
                 Aviso de Privacidad y Uso de Cookies
               </button>
             </div>

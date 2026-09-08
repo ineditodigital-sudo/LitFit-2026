@@ -215,9 +215,11 @@ export default function App() {
             {currentPage === "home" && (
               <div className="min-h-screen">
                 <Header onLogoClick={navigateHome} isProductPage={false} />
-                <div className="pt-16">
+                {/* <main> es el punto de referencia principal: los lectores de
+                    pantalla y los agentes lo usan para saltar directo al
+                    contenido, y sin el la pagina no tenia ninguno. */}
+                <main className="pt-16">
                   <HeroCarousel onSlideClick={navigateToProduct} />
-                </div>
                 {/* Debajo del pliegue: el navegador se salta su maquetacion hasta
                     que se acercan a la pantalla. Siguen en el DOM, asi que no
                     cambia nada para buscadores ni para el usuario. */}
@@ -236,7 +238,10 @@ export default function App() {
                 <AmazonBanner />
                 <FAQ />
                 <Contact />
-                <Footer />
+                </div>
+                </main>
+                <div className="difiere-maquetacion">
+                  <Footer />
                 </div>
               </div>
             )}
@@ -246,6 +251,7 @@ export default function App() {
                 <Header onLogoClick={navigateHome} isProductPage={true} />
                 {/* El Suspense envuelve solo la pagina: asi el header y el pie
                     siguen visibles mientras llega su codigo. */}
+                <main>
                 <Suspense fallback={<CargandoPagina />}>
                   {currentPage === "barras-energeticas" && <BarrasEnergeticas onBack={navigateHome} />}
                   {currentPage === "proteina-clasica"   && <ProteinaRegular onBack={navigateHome} />}
@@ -258,6 +264,7 @@ export default function App() {
                     <ProductDetail productId={currentPage} onBack={navigateHome} />
                   )}
                 </Suspense>
+                </main>
                 <Footer />
               </div>
             )}

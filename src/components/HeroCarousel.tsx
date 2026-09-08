@@ -196,6 +196,8 @@ export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className="group relative"
+            aria-label={`Ver banner ${index + 1} de ${slides.length}`}
+            aria-current={currentSlide === index ? "true" : undefined}
           >
             <div
               className={`h-1 rounded-full transition-all duration-300 ${
@@ -211,16 +213,18 @@ export function HeroCarousel({ onSlideClick }: HeroCarouselProps) {
       {/* Navigation Arrows */}
       <button
         onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+        aria-label="Banner anterior"
         className="absolute top-1/2 left-4 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-black/30 hover:bg-black/60 border border-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all z-20 group"
       >
-        <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 group-hover:-translate-x-1 transition-transform" />
+        <ChevronLeft aria-hidden="true" className="w-6 h-6 md:w-8 md:h-8 group-hover:-translate-x-1 transition-transform" />
       </button>
 
       <button
         onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+        aria-label="Banner siguiente"
         className="absolute top-1/2 right-4 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-black/30 hover:bg-black/60 border border-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all z-20 group"
       >
-        <ChevronRight className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-1 transition-transform" />
+        <ChevronRight aria-hidden="true" className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-1 transition-transform" />
       </button>
 
       {/* Slide Counter */}

@@ -118,6 +118,7 @@ console.log(`   Modo:    ${config.secure ? "FTPS (cifrado)" : "FTP plano"}`);
 console.log("   Archivos:");
 console.log("     index.php");
 console.log(`     assets/  (${bundles.length} archivos .js/.css/.woff2)`);
+console.log("     robots.txt, llms.txt, sitemap.xml");
 if (conHtaccess) console.log("     .htaccess   <-- incluido por --htaccess");
 console.log(
   `\n   NO se tocan: /envios, /mercadopago, imágenes${conHtaccess ? "" : ", .htaccess"}\n`
@@ -162,6 +163,17 @@ try {
   // index.php al raíz
   await client.uploadFrom(indexPhp, "index.php");
   console.log("   OK  index.php");
+
+  // Archivos sueltos de la raíz que consumen buscadores y agentes. Se generan en
+  // cada build (llms.txt, sitemap.xml) o viven en public/ (robots.txt), y sin
+  // esto nunca llegaban al servidor: el .htaccess devolvía el HTML de la tienda
+  // en su lugar.
+  for (const nombre of ["robots.txt", "llms.txt", "sitemap.xml"]) {
+    const ruta = path.join(localDir, nombre);
+    if (!fs.existsSync(ruta)) continue;
+    await client.uploadFrom(ruta, nombre);
+    console.log(`   OK  ${nombre}`);
+  }
 
   if (conHtaccess) {
     const htaccess = path.join(localDir, ".htaccess");
