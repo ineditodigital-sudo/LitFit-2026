@@ -6,6 +6,7 @@ import emailjs from '@emailjs/browser';
 import { Ticket, Loader2, Gift, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ShippingQuote } from '../components/ShippingQuote';
+import { obtenerIdVisitante } from '../config/visitante';
 
 // ⚠️ IMPORTANTE: Backend PHP usando subdominio cdn.inedito.digital
 // Frontend en: litfit.inedito.digital (Figma Make)
@@ -102,6 +103,7 @@ function MercadoPagoButton({
         discountAmount,
         appliedCoupon,
         selectedShippingOption,
+        visitorId: obtenerIdVisitante(),
         timestamp: new Date().toISOString(),
         orderId
       };
@@ -296,7 +298,15 @@ export default function Checkout() {
     setIsApplyingCoupon(true);
     setCouponError('');
     try {
-      const res = await fetch(`https://litfitmexico.com/envios/api-coupons.php?code=${encodeURIComponent(couponCode)}&cart_total=${subtotal}`);
+      // El correo y el identificador del navegador permiten al servidor saber a
+      // nombre de quien queda el cupon cuando es de un solo uso.
+      const parametros = new URLSearchParams({
+        code: couponCode,
+        cart_total: String(subtotal),
+        email: formData.email || '',
+        visitor: obtenerIdVisitante(),
+      });
+      const res = await fetch(`https://litfitmexico.com/envios/api-coupons.php?${parametros}`);
       const data = await res.json();
       if (data.success) {
         applyCoupon(data.data);

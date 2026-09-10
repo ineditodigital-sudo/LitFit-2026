@@ -74,6 +74,46 @@ try {
         }
     }
 
+    // 2.6 LIMITE DE USO DE CUPONES
+    //
+    // Los cupones no tenian ningun tope: un mismo codigo servia infinitas veces.
+    // usage_limit define el alcance del tope:
+    //   'none'         sin limite (comportamiento de siempre, y el que traen los
+    //                  cupones que ya existian)
+    //   'total'        un solo pedido en toda la vida del cupon
+    //   'per_customer' un pedido por correo
+    // En su propio try: si algo falla aqui, no debe llevarse por delante la
+    // migracion de productos ni dejar la pagina a medias.
+    try {
+        if ($pdo->query("SHOW TABLES LIKE 'coupons'")->fetch()) {
+            $colsCupones = $pdo->query("SHOW COLUMNS FROM coupons")->fetchAll(PDO::FETCH_COLUMN);
+            if (!in_array('usage_limit', $colsCupones, true)) {
+                $pdo->exec("ALTER TABLE coupons ADD COLUMN usage_limit ENUM('none','total','per_customer') NOT NULL DEFAULT 'none'");
+                echo "Columna coupons.usage_limit anadida.<br>";
+            }
+        }
+    } catch (Throwable $e) {
+        echo "Aviso: no se pudo migrar coupons.usage_limit (" . htmlspecialchars($e->getMessage()) . ").<br>";
+    }
+
+    // Registro de consumos. Se apunta al aplicar el cupon en el carrito, no al
+    // pagar, para que dos personas no puedan usar a la vez un codigo de un solo
+    // uso. 'holder' es el correo cuando se conoce, y si no un identificador del
+    // navegador, para que reintentar no gaste el cupon dos veces.
+    try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS coupon_uses (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        coupon_code VARCHAR(50) NOT NULL,
+        holder VARCHAR(190) NOT NULL,
+        order_id VARCHAR(100) DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uso_unico (coupon_code, holder),
+        KEY por_codigo (coupon_code)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    } catch (Throwable $e) {
+        echo "Aviso: no se pudo crear coupon_uses (" . htmlspecialchars($e->getMessage()) . ").<br>";
+    }
+
     // 3. MIGRACIÓN: Importar productos desde products.json si la tabla está vacía
     $checkProducts = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
     if ($checkProducts == 0 && file_exists('products.json')) {

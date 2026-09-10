@@ -46,6 +46,8 @@ const config = {
 const ARCHIVOS = [
   "envios/db-setup.php",
   "envios/api-products.php",
+  "envios/api-coupons.php",
+  "envios/save-order.php",
 ];
 
 const dryRun = process.argv.includes("--dry-run");

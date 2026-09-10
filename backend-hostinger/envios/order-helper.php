@@ -178,6 +178,26 @@ function shipping_create_externally($orderId) {
     $formData = $orderData['formData'];
     $shippingOption = $orderData['shippingOption'] ?? ($orderData['selectedShippingOption'] ?? null);
     
+    // Si es envío local, omitir llamada a la API de paquetería
+    if (isset($shippingOption['id']) && $shippingOption['id'] === 'local-ags') {
+        error_log("Aviso: Envío local detectado para $orderId. Omitiendo creación de guía en API de paquetería externa.");
+        file_put_contents($jsonPath, json_encode([
+            'orderId' => $orderId,
+            'success' => true,
+            'status' => 'local_delivery',
+            'message' => 'Envío Local Programado',
+            'carrier' => 'LITFIT Local',
+            'trackingNumber' => 'LOCAL-' . $orderId,
+            'labelUrl' => ''
+        ]));
+        db_update_order_status($orderId, 'PAID', [
+            'trackingNumber' => 'LOCAL-' . $orderId,
+            'carrier' => 'LITFIT Local',
+            'labelUrl' => ''
+        ]);
+        return true;
+    }
+    
     // 🚀 LÓGICA DE AUTENTICACIÓN OAUTH CORRECTA (Como en crear-orden-FINAL.php)
     $postAuthData = http_build_query([
         'grant_type' => 'client_credentials',

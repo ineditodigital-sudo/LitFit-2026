@@ -505,8 +505,12 @@ if (isset($_GET['p'])) {
     (_, src) =>
       `<link rel="modulepreload" crossorigin href="${src}">
 ` +
-      `<script>(function(){function arranca(){var s=document.createElement('script');` +
-      `s.type='module';s.crossOrigin='anonymous';s.src='${src}';document.head.appendChild(s);}` +
+      `<script>(function(){var arrancado=false;function arranca(){if(arrancado)return;arrancado=true;` +
+      `var s=document.createElement('script');s.type='module';s.crossOrigin='anonymous';s.src='${src}';document.head.appendChild(s);}` +
+      // El doble rAF espera al primer pintado, pero en una pestana de fondo el
+      // navegador no dispara rAF: sin el temporizador la pagina se quedaba sin
+      // montar hasta que el visitante le diera foco.
+      `setTimeout(arranca,300);` +
       `if('requestAnimationFrame'in window){requestAnimationFrame(function(){requestAnimationFrame(arranca);});}else{arranca();}})();</script>`
   );
 

@@ -44,6 +44,44 @@ try {
         json_encode($data)
     ]);
 
+    // ── Cupon: ligar el consumo a este pedido ─────────────────────────
+    //
+    // Al aplicar el cupon queda una reserva a nombre de quien lo aplico. Aqui se
+    // le pega el numero de pedido, que es lo que distingue "lo tengo apartado en
+    // el carrito" de "ya compre con el". El modo por cliente se apoya en esa
+    // diferencia para dejar reaplicar y bloquear la segunda compra.
+    //
+    // La reserva pudo quedar a nombre del navegador si el cupon se aplico antes
+    // de escribir el correo. En ese caso se reescribe a nombre del correo, para
+    // que el limite siga valiendo aunque el cliente vuelva desde otro equipo.
+    $codigoCupon = strtoupper(trim($data['appliedCoupon']['code'] ?? ''));
+    if ($codigoCupon !== '') {
+        try {
+            $correo = strtolower(trim($customerEmail));
+            $claveCorreo = (filter_var($correo, FILTER_VALIDATE_EMAIL)) ? 'mail:' . $correo : '';
+            $navegador = preg_replace('/[^A-Za-z0-9_-]/', '', (string)($data['visitorId'] ?? ''));
+            $claveNavegador = $navegador !== '' ? 'nav:' . substr($navegador, 0, 60) : '';
+
+            $posibles = array_values(array_filter([$claveCorreo, $claveNavegador]));
+            if ($posibles) {
+                $marcadores = implode(',', array_fill(0, count($posibles), '?'));
+                $stmt = $pdo->prepare("UPDATE coupon_uses SET order_id = ?, holder = ? WHERE coupon_code = ? AND holder IN ($marcadores)");
+                $stmt->execute(array_merge([$orderId, $claveCorreo ?: $posibles[0], $codigoCupon], $posibles));
+
+                // Si no habia reserva (cupon sin limite, o se aplico antes de
+                // que existiera esta funcion) se deja el registro igual, para
+                // que el panel pueda contarlo.
+                if ($stmt->rowCount() === 0) {
+                    $pdo->prepare("INSERT IGNORE INTO coupon_uses (coupon_code, holder, order_id) VALUES (?, ?, ?)")
+                        ->execute([$codigoCupon, $claveCorreo ?: $posibles[0], $orderId]);
+                }
+            }
+        } catch (Exception $e) {
+            // El cupon no debe impedir que se registre el pedido.
+            error_log("No se pudo ligar el cupon $codigoCupon al pedido $orderId: " . $e->getMessage());
+        }
+    }
+
     echo json_encode(['success' => true, 'message' => 'Pedido guardado con éxito', 'id' => $orderId]);
 } catch (Exception $e) {
     // Si llegamos aquí, al menos el respaldo en disco ya se intentó guardar

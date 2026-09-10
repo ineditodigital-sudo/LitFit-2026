@@ -28,6 +28,11 @@ interface Coupon {
   valid_from: string | null;
   valid_until: string | null;
   allow_shaker: boolean;
+  // 'none' sin tope, 'total' un solo pedido en la vida del cupon,
+  // 'per_customer' un pedido por correo.
+  usage_limit: 'none' | 'total' | 'per_customer';
+  taken_count?: number;    // cuantos lo tienen tomado (aplicado o ya comprado)
+  redeemed_count?: number; // cuantos ya compraron con el
   is_active: boolean;
   created_at?: string;
 }
@@ -53,6 +58,7 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
     valid_from: '',
     valid_until: '',
     allow_shaker: true,
+    usage_limit: 'none',
     is_active: true
   });
 
@@ -71,6 +77,42 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
       toast.error("Error de conexión al cargar cupones");
     } finally {
       setLoading(false);
+    }
+  };
+
+  /**
+   * Libera los apartados de un cupón limitado.
+   *
+   * Un código de un solo uso queda tomado en cuanto alguien lo aplica en el
+   * carrito. Si esa persona no completa la compra, el código se queda
+   * bloqueado, y esto lo devuelve a circulación. No toca los pedidos ya
+   * pagados: solo quita el apartado.
+   */
+  const liberarUsos = async (coupon: Coupon) => {
+    const pendientes = (coupon.taken_count ?? 0) - (coupon.redeemed_count ?? 0);
+    const confirmado = window.confirm(
+      `Liberar el cupón ${coupon.code}?
+
+` +
+      `${pendientes} ${pendientes === 1 ? 'persona lo tiene apartada' : 'personas lo tienen apartado'} sin haber comprado. ` +
+      `Al liberarlo vuelve a estar disponible.`
+    );
+    if (!confirmado) return;
+
+    try {
+      const res = await fetch(
+        `https://litfitmexico.com/envios/api-coupons.php?liberar_usos=${encodeURIComponent(coupon.code)}`,
+        { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } }
+      );
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Cupón ${coupon.code} liberado`);
+        fetchCoupons();
+      } else {
+        toast.error(data.message || 'No se pudo liberar el cupón');
+      }
+    } catch (err) {
+      toast.error('Error de conexión al liberar el cupón');
     }
   };
 
@@ -133,13 +175,14 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
         valid_from: coupon.valid_from ? coupon.valid_from.replace(' ', 'T').slice(0, 16) : '',
         valid_until: coupon.valid_until ? coupon.valid_until.replace(' ', 'T').slice(0, 16) : '',
         allow_shaker: Boolean(coupon.allow_shaker),
+        usage_limit: coupon.usage_limit || 'none',
         is_active: Boolean(coupon.is_active)
       });
     } else {
       setEditingId(null);
       setFormData({
         code: '', type: 'percent', value: 10, min_purchase: 0,
-        valid_from: '', valid_until: '', allow_shaker: true, is_active: true
+        valid_from: '', valid_until: '', allow_shaker: true, usage_limit: 'none', is_active: true
       });
     }
     setShowModal(true);
@@ -155,6 +198,7 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
         valid_from: formData.valid_from ? formData.valid_from.replace('T', ' ') + ':00' : null,
         valid_until: formData.valid_until ? formData.valid_until.replace('T', ' ') + ':00' : null,
         allow_shaker: formData.allow_shaker ? 1 : 0,
+        usage_limit: formData.usage_limit || 'none',
         is_active: formData.is_active ? 1 : 0
       };
 
@@ -252,11 +296,23 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                         <Ticket className="w-4 h-4 text-[#00AAC7]" />
                         <span className="font-bold text-slate-800 tracking-wide uppercase">{coupon.code}</span>
                       </div>
-                      {!coupon.allow_shaker && (
-                        <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium mt-1 inline-block">
-                          Excluye Shaker
-                        </span>
-                      )}
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {!coupon.allow_shaker && (
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                            Excluye Shaker
+                          </span>
+                        )}
+                        {coupon.usage_limit === 'total' && (
+                          <span className="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-medium">
+                            Un solo uso
+                          </span>
+                        )}
+                        {coupon.usage_limit === 'per_customer' && (
+                          <span className="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-medium">
+                            Uno por cliente
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 font-medium text-slate-700">
                       {coupon.type === 'percent' ? `${coupon.value}% OFF` : `$${coupon.value} MXN`}
@@ -277,12 +333,28 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                     <td className="p-4">
                       {(() => {
                         const uses = getCouponUses(coupon.code);
-                        return uses.length > 0 ? (
-                          <button onClick={() => setUsageCoupon(coupon)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-[#00AAC7]/10 text-[#00AAC7] hover:bg-[#00AAC7]/20 transition-colors">
-                            <TrendingUp className="w-3.5 h-3.5" /> {uses.length} {uses.length === 1 ? 'uso' : 'usos'}
-                          </button>
-                        ) : (
-                          <span className="text-xs text-slate-400">Sin usos</span>
+                        // Apartados sin compra: alguien aplico el codigo y no pago.
+                        // En un cupon de un solo uso eso lo deja bloqueado.
+                        const apartadosSinCompra = (coupon.taken_count ?? 0) - (coupon.redeemed_count ?? 0);
+                        return (
+                          <div className="space-y-1">
+                            {uses.length > 0 ? (
+                              <button onClick={() => setUsageCoupon(coupon)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-[#00AAC7]/10 text-[#00AAC7] hover:bg-[#00AAC7]/20 transition-colors">
+                                <TrendingUp className="w-3.5 h-3.5" /> {uses.length} {uses.length === 1 ? 'uso' : 'usos'}
+                              </button>
+                            ) : (
+                              <span className="text-xs text-slate-400 block">Sin usos</span>
+                            )}
+                            {coupon.usage_limit !== 'none' && apartadosSinCompra > 0 && (
+                              <button
+                                onClick={() => liberarUsos(coupon)}
+                                title="Alguien aplicó el código y no completó la compra. Liberarlo lo deja disponible otra vez."
+                                className="inline-flex items-center gap-1 text-[10px] font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 px-2 py-0.5 rounded-full transition-colors"
+                              >
+                                {apartadosSinCompra} apartado{apartadosSinCompra === 1 ? '' : 's'} sin compra · Liberar
+                              </button>
+                            )}
+                          </div>
                         );
                       })()}
                     </td>
@@ -435,6 +507,58 @@ export function AdminCoupons({ adminToken }: AdminCouponsProps) {
                   </label>
                 </div>
               )}
+
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mt-2">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-1 w-4 h-4 text-[#00AAC7] rounded border-gray-300"
+                    checked={formData.usage_limit !== 'none'}
+                    onChange={e => setFormData({ ...formData, usage_limit: e.target.checked ? 'total' : 'none' })}
+                  />
+                  <div className="flex-1">
+                    <span className="block text-sm font-bold text-slate-900">Un solo uso</span>
+                    <span className="block text-xs text-slate-500 mt-0.5">
+                      Sin esto, el código se puede usar cuantas veces quieran.
+                    </span>
+
+                    {formData.usage_limit !== 'none' && (
+                      <div className="mt-3 space-y-2">
+                        <label className="flex items-start gap-2.5 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="alcance-uso"
+                            className="mt-0.5 w-4 h-4 text-[#00AAC7] border-gray-300"
+                            checked={formData.usage_limit === 'total'}
+                            onChange={() => setFormData({ ...formData, usage_limit: 'total' })}
+                          />
+                          <span className="text-xs text-slate-700">
+                            <b className="font-bold">Una vez en total.</b> Sirve para un único pedido y después deja de
+                            funcionar para todos. Para códigos personales o de compensación.
+                          </span>
+                        </label>
+                        <label className="flex items-start gap-2.5 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="alcance-uso"
+                            className="mt-0.5 w-4 h-4 text-[#00AAC7] border-gray-300"
+                            checked={formData.usage_limit === 'per_customer'}
+                            onChange={() => setFormData({ ...formData, usage_limit: 'per_customer' })}
+                          />
+                          <span className="text-xs text-slate-700">
+                            <b className="font-bold">Una vez por cliente.</b> Cada correo lo usa una sola vez y el código
+                            sigue vivo para los demás. Para códigos de bienvenida.
+                          </span>
+                        </label>
+                        <p className="text-[11px] text-slate-500 leading-relaxed pt-1">
+                          El código queda apartado en cuanto alguien lo aplica en el carrito, aunque todavía no pague.
+                          Si alguien lo aparta y no compra, puedes liberarlo desde la lista de cupones.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </label>
+              </div>
 
               <div className="pt-2 border-t border-slate-100">
                 <label className="flex items-center gap-2 cursor-pointer">
