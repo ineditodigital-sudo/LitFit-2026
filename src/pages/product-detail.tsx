@@ -195,7 +195,7 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-[80px]">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 bajo-cabecera">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
@@ -209,7 +209,7 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
       </div>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 items-start [&>*]:min-w-0">
           
           {/* SECCIÓN DE IMAGEN */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="relative">

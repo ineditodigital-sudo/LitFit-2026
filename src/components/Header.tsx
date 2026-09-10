@@ -1,5 +1,5 @@
 import { Menu, X, ShoppingCart } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { m as motion, AnimatePresence } from "motion/react";
 import { CartButton } from "./CartButton";
 import { obtenerAjustes } from "../config/datos-tienda";
@@ -40,24 +40,33 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
   }, []);
 
   const scrollToSection = (id: string) => {
-    // Si estamos en una página de producto, primero volver al home
-    if (isProductPage && onLogoClick) {
-      onLogoClick();
-      // Esperar a que se renderice la página de home y luego hacer scroll
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
-    } else {
-      // Si estamos en home, hacer scroll directo
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    // El menú se cierra primero. Al cerrarse, Motion hace una pasada de medición
+    // que guarda y vuelve a poner la posición de scroll (window.scrollTo con el
+    // valor suspendido), y eso cancelaba el desplazamiento suave si se lanzaba
+    // antes: en móvil el menú se cerraba y la página no se movía a la sección.
     setMobileMenuOpen(false);
+
+    const irALaSeccion = () => {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: "smooth" });
+    };
+
+    // Dos cuadros de espera dejan pasar esa medición. El temporizador es el
+    // respaldo por si el navegador no entrega cuadros.
+    const cuandoTermineLaMedicion = (retraso = 0) => {
+      let hecho = false;
+      const unaVez = () => { if (!hecho) { hecho = true; irALaSeccion(); } };
+      setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(unaVez)), retraso);
+      setTimeout(unaVez, retraso + 250);
+    };
+
+    if (isProductPage && onLogoClick) {
+      // Volver a la portada y esperar a que monte antes de buscar la sección.
+      onLogoClick();
+      cuandoTermineLaMedicion(300);
+    } else {
+      cuandoTermineLaMedicion(0);
+    }
   };
 
   const handleLogoClick = () => {
@@ -75,6 +84,23 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
   // no llegaba a considerarse "visualmente estable". Se queda quieta hasta que
   // la carga termina, se detiene con la pestana en segundo plano y respeta la
   // preferencia de movimiento reducido del sistema.
+  // La cabecera es fija y su alto cambia: 64 px de barra mas la cinta
+  // promocional cuando esta encendida. Las fichas de producto reservaban 80 px
+  // fijos, asi que el boton VOLVER quedaba debajo de la cinta y no se podia
+  // tocar. Se publica el alto real para que cualquier pagina lo use.
+  const cabeceraRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const nodo = cabeceraRef.current;
+    if (!nodo) return;
+    const publicar = () => {
+      document.documentElement.style.setProperty('--alto-cabecera', `${Math.round(nodo.getBoundingClientRect().height)}px`);
+    };
+    publicar();
+    const observador = new ResizeObserver(publicar);
+    observador.observe(nodo);
+    return () => observador.disconnect();
+  }, []);
+
   const [animarCinta, setAnimarCinta] = useState(false);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -97,6 +123,7 @@ export function Header({ onLogoClick, isProductPage = false }: HeaderProps) {
 
   return (
     <motion.header
+      ref={cabeceraRef}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}

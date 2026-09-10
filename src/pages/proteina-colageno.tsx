@@ -125,7 +125,7 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Back Button */}
-      <div className="max-w-[1400px] mx-auto lg:px-8 pt-[80px] pb-[0px] pr-[24px] pl-[24px] px-[24px] py-[0px]">
+      <div className="max-w-[1400px] mx-auto lg:px-8 bajo-cabecera pb-[0px] pr-[24px] pl-[24px] px-[24px] py-[0px]">
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -139,7 +139,7 @@ export function ProteinaColageno({ onBack }: ProteinaColagenoProps) {
 
       {/* Product Section */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 items-start [&>*]:min-w-0">
 
           {/* ── LEFT COLUMN: Image Section ── */}
           <motion.div

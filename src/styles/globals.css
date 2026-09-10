@@ -253,3 +253,32 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .litfit-cinta { animation: none; }
 }
+
+/*
+  Espacio bajo la cabecera fija.
+
+  La cabecera mide 64 px de barra mas la cinta promocional cuando esta activa,
+  y publica su alto real en --alto-cabecera (ver Header.tsx). Las fichas de
+  producto reservaban 80 px fijos y el boton de volver quedaba tapado por la
+  cinta en movil. El valor de respaldo cubre el caso de que el JavaScript aun
+  no haya medido.
+*/
+.bajo-cabecera {
+  padding-top: calc(var(--alto-cabecera, 93px) + 1rem);
+}
+
+/*
+  Texto que escribe el cliente desde el panel.
+
+  Los nombres y descripciones de producto los captura una persona, y una palabra
+  larga sin espacios (un SKU, una URL pegada, un nombre pegado sin separar)
+  ensanchaba la página entera en móvil: el título no cabía y empujaba el resto
+  del diseño hacia la derecha.
+
+  `anywhere` y no `break-word` a propósito: solo `anywhere` reduce el ancho
+  mínimo que el elemento le pide a su contenedor, que es lo que hace que la
+  columna pueda encogerse de verdad. Sin palabras largas no cambia nada.
+*/
+h1, h2, h3, h4, p, li, figcaption {
+  overflow-wrap: anywhere;
+}
